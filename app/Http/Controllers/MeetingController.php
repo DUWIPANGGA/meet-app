@@ -427,6 +427,14 @@ class MeetingController extends Controller
         $apiSecret = config('livekit.api_secret');
         $host = request()->getHost();
         $liveKitPort = parse_url(config('livekit.server_url'), PHP_URL_PORT) ?: '7880';
+
+        if (filter_var($host, FILTER_VALIDATE_IP) !== false) {
+            $ip = ip2long($host);
+            if ($ip !== false && ($ip & 0xFF000000) === 0x7F000000) {
+                $host = '127.0.0.1';
+            }
+        }
+
         $serverUrl = "ws://{$host}:{$liveKitPort}";
 
         $header = self::base64UrlEncode(json_encode([
