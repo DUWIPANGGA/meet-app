@@ -1329,20 +1329,38 @@
                 if (isCameraOff && videoTrack) videoTrack.enabled = false;
                 if (isMuted && audioTrack) audioTrack.enabled = false;
                 if (videoTrack) {
-                    await room.localParticipant.publishTrack(videoTrack, {
-                        name: 'camera',
-                        source: LiveKit.Track.Source.Camera,
-                    });
+                    try {
+                        await room.localParticipant.publishTrack(videoTrack, {
+                            name: 'camera',
+                            source: LiveKit.Track.Source.Camera,
+                        });
+                    } catch (pubErr) {
+                        console.warn('publish camera (retry 1):', pubErr);
+                        await new Promise(r => setTimeout(r, 2000));
+                        await room.localParticipant.publishTrack(videoTrack, {
+                            name: 'camera',
+                            source: LiveKit.Track.Source.Camera,
+                        });
+                    }
                     if (isCameraOff) {
                         const pub = room.localParticipant.getTrackPublication(LiveKit.Track.Source.Camera);
                         if (pub?.track) pub.track.mute().catch(e => console.warn(e));
                     }
                 }
                 if (audioTrack) {
-                    await room.localParticipant.publishTrack(audioTrack, {
-                        name: 'microphone',
-                        source: LiveKit.Track.Source.Microphone,
-                    });
+                    try {
+                        await room.localParticipant.publishTrack(audioTrack, {
+                            name: 'microphone',
+                            source: LiveKit.Track.Source.Microphone,
+                        });
+                    } catch (pubErr) {
+                        console.warn('publish mic (retry 1):', pubErr);
+                        await new Promise(r => setTimeout(r, 2000));
+                        await room.localParticipant.publishTrack(audioTrack, {
+                            name: 'microphone',
+                            source: LiveKit.Track.Source.Microphone,
+                        });
+                    }
                     if (isMuted) {
                         const pub = room.localParticipant.getTrackPublication(LiveKit.Track.Source.Microphone);
                         if (pub?.track) pub.track.mute().catch(e => console.warn(e));
