@@ -359,8 +359,7 @@
 
         {{-- ===== FOOTER ===== --}}
         <div class="footer">
-            Dokumen ini dibuat otomatis oleh <strong>Gemini AI Notulensi</strong>
-            &bull; Endpoint: <strong>api.siputzx.my.id/api/ai/gemini</strong>
+            Dokumen ini dibuat otomatis oleh <strong>AI Notulensi</strong>
             &bull; Dicetak: {{ now()->format('d F Y, H:i') }} WIB
         </div>
 

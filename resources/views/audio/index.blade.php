@@ -271,38 +271,10 @@ document.addEventListener('alpine:init', () => {
 
         // Config dari server (diisi saat init)
         whisperUrl: '{{ env("WHISPER_URL", "http://127.0.0.1:8001/transcribe") }}',
-        geminiUrl: 'https://api.siputzx.my.id/api/ai/gemini',
+        summarizeUrl: '{{ route("ai.summarize") }}',
         saveUrl: '{{ route("audio.save") }}',
         saveRawUrl: '{{ route("audio.save-raw") }}',
         csrfToken: '{{ csrf_token() }}',
-
-        // Gemini prompt system (sama persis seperti GeminiNotulensiSummarizerService.php)
-        geminiPrompt: `Kamu adalah sekretaris dan pembuat notulensi rapat profesional. Tugasmu adalah menganalisis transkrip percakapan rapat yang diberikan dalam bahasa Indonesia dan menyusun notulensi yang sangat rapi.
-Keluarkan hasil analisis dalam format JSON murni tanpa membungkusnya dengan tag markdown seperti \`\`\`json atau tanda kutip tambahan lainnya. Respons kamu harus berupa string JSON valid yang dapat langsung diparse dengan json_decode di PHP.
-
-Struktur JSON yang WAJIB kamu ikuti adalah:
-{
-  "ringkasan": "Ringkasan eksekutif jalannya rapat secara ringkas namun padat dan jelas (5-10 kalimat).",
-  "topik_dibahas": [
-    "Topik ke-1 yang dibahas...",
-    "Topik ke-2..."
-  ],
-  "keputusan": [
-    "Keputusan rapat ke-1...",
-    "Keputusan rapat ke-2..."
-  ],
-  "action_items": [
-    {
-      "task": "Detail tugas yang harus dikerjakan",
-      "pic": "Nama orang atau tim yang bertanggung jawab (isi '-' jika tidak disebutkan)",
-      "deadline": "Batas waktu pengerjaan tugas (isi '-' jika tidak disebutkan)"
-    }
-  ],
-  "risiko_catatan": [
-    "Risiko, kendala, atau catatan penting tambahan ke-1...",
-    "Risiko, kendala, atau catatan penting tambahan ke-2..."
-  ]
-}`,
 
         init() {
             this.canvas = document.getElementById('visualizerCanvas');
@@ -466,51 +438,31 @@ Struktur JSON yang WAJIB kamu ikuti adalah:
             }
 
             // ---------------------------
-            // STEP 2: Gemini AI
+            // STEP 2: AI Notulensi (DeepSeek → fallback Gemini)
             // ---------------------------
             try {
                 this.step = 2;
-                this.statusMessage = 'Membuat notulensi dengan Gemini AI...';
+                this.statusMessage = 'Membuat notulensi dengan AI...';
 
-                // Gemini API dari GeminiNotulensiSummarizerService — pakai GET dengan params
-                const cookie = Math.random().toString(36).substring(2, 18);
-                const params = new URLSearchParams({
-                    text: transcript,
-                    cookie: cookie,
-                    promptSystem: this.geminiPrompt,
+                const res = await fetch(this.summarizeUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': this.csrfToken,
+                    },
+                    body: JSON.stringify({ text: transcript }),
                 });
-
-                const res = await fetch(`${this.geminiUrl}?${params.toString()}`, {
-                    method: 'GET',
-                });
-
-                if (!res.ok) {
-                    throw new Error(`HTTP ${res.status} dari Gemini API`);
-                }
 
                 const data = await res.json();
-                let responseText = data?.data?.response ?? '';
-
-                if (!responseText) {
-                    throw new Error('Gemini tidak mengembalikan hasil. Coba lagi.');
+                if (!res.ok || data.status === 'error') {
+                    throw new Error(data.message ?? `HTTP ${res.status}`);
                 }
 
-                // Bersihkan markdown wrapper jika ada (``` json ... ```)
-                responseText = responseText.trim();
-                const mdMatch = responseText.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/);
-                if (mdMatch) responseText = mdMatch[1].trim();
-
-                // Validasi JSON
-                const parsed = JSON.parse(responseText);
-                notulensiJson = JSON.stringify(parsed);
+                notulensiJson = JSON.stringify(data.data);
 
             } catch (err) {
                 this.stepError = true;
-                if (err instanceof SyntaxError) {
-                    this.errorMessage = 'Gemini mengembalikan format yang tidak valid (bukan JSON). Coba lagi.';
-                } else {
-                    this.errorMessage = `Gagal generate notulensi: ${err.message}`;
-                }
+                this.errorMessage = `Gagal generate notulensi: ${err.message}`;
                 return;
             }
 
