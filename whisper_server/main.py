@@ -165,8 +165,9 @@ async def transcribe(file: UploadFile = File(...)):
     if suffix not in [".pcm", ".raw"]:
         output_path = input_path + ".wav"
         import subprocess
+        ffmpeg_exe = FFMPEG_PATH if os.path.isfile(FFMPEG_PATH) else "ffmpeg"
         ffmpeg_cmd = [
-            FFMPEG_PATH, "-y",
+            ffmpeg_exe, "-y",
             "-i", input_path,
             "-ar", "16000",
             "-ac", "1",
