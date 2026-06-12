@@ -456,7 +456,8 @@
             <!-- Audio (Mic) -->
             <button id="muteBtn" class="flex flex-col items-center text-white hover:text-gray-200 transition toolbar-btn">
                 <div class="h-12 flex items-center justify-center">
-                    <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24"><path d="M19 11h-1.7c0 .74-.16 1.43-.43 2.05l1.23 1.23c.56-.98.9-2.09.9-3.28zm-4.02 3.28c-.91.71-2.04 1.16-3.28 1.29v1.94c1.83-.16 3.49-.91 4.77-2.02l-1.49-1.21zM11 20v-2.11c-1.89-.25-3.59-1.21-4.83-2.58l1.41-1.41c1.02 1.13 2.45 1.83 4.02 1.96V20h-1.6zm-5-9H4.3c0 1.19.34 2.3.9 3.28l1.23-1.23c-.27-.62-.43-1.31-.43-2.05zm7-7c-1.66 0-3 1.34-3 3v5.17l3.63-3.63V7c0-.34-.28-.62-.63-.62zm3 8.35L11.65 14H12c1.66 0 3-1.34 3-3V9.65l2-2v4.7zm1.1-6.1L4.27 1 3 2.27l18.73 18.73L23 19.73 17.1 13.83z"/></svg>
+                    <svg id="micIcon" class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V21h2v-3.08c3.02-.43 5.42-2.78 5.91-5.78.09-.6-.39-1.14-1-1.14z"/></svg>
+                    <svg id="micOffIcon" class="w-10 h-10 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M19 11h-1.7c0 .74-.16 1.43-.43 2.05l1.23 1.23c.56-.98.9-2.09.9-3.28zm-4.02 3.28c-.91.71-2.04 1.16-3.28 1.29v1.94c1.83-.16 3.49-.91 4.77-2.02l-1.49-1.21zM11 20v-2.11c-1.89-.25-3.59-1.21-4.83-2.58l1.41-1.41c1.02 1.13 2.45 1.83 4.02 1.96V20h-1.6zm-5-9H4.3c0 1.19.34 2.3.9 3.28l1.23-1.23c-.27-.62-.43-1.31-.43-2.05zm7-7c-1.66 0-3 1.34-3 3v5.17l3.63-3.63V7c0-.34-.28-.62-.63-.62zm3 8.35L11.65 14H12c1.66 0 3-1.34 3-3V9.65l2-2v4.7zm1.1-6.1L4.27 1 3 2.27l18.73 18.73L23 19.73 17.1 13.83z"/></svg>
                 </div>
                 <span class="text-sm font-semibold mt-1">Audio</span>
             </button>
@@ -749,10 +750,19 @@
         function saveDeviceState() {
             try { localStorage.setItem('device_' + meetingId, JSON.stringify({ m: isMuted, c: isCameraOff })); } catch (e) {}
         }
+        function toggleMicIcons(muted) {
+            const mic = document.getElementById('micIcon');
+            const micOff = document.getElementById('micOffIcon');
+            if (mic && micOff) {
+                mic.classList.toggle('hidden', muted);
+                micOff.classList.toggle('hidden', !muted);
+            }
+        }
         function applyDeviceState() {
             if (muteBtn) {
                 muteBtn.classList.toggle('text-red-400', isMuted);
                 muteBtn.classList.toggle('text-white', !isMuted);
+                toggleMicIcons(isMuted);
             }
             if (cameraBtn) {
                 cameraBtn.classList.toggle('text-red-400', isCameraOff);
@@ -2368,6 +2378,7 @@
                     muteBtn.classList.add('text-white');
                     muteBtn.classList.remove('text-red-400');
                 }
+                toggleMicIcons(isMuted);
             });
         }
 
