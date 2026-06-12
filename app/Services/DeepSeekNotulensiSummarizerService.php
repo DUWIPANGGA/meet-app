@@ -24,32 +24,34 @@ class DeepSeekNotulensiSummarizerService
         $retries = (int) config('deepseek.max_retries', 2);
 
         $system = <<<'PROMPT'
-Kamu adalah sekretaris dan pembuat notulensi rapat profesional. Tugasmu adalah menganalisis transkrip percakapan rapat yang diberikan dalam bahasa Indonesia dan menyusun notulensi yang sangat rapi.
-Keluarkan hasil analisis dalam format JSON murni tanpa membungkusnya dengan tag markdown seperti ```json atau tanda kutip tambahan lainnya. Respons kamu harus berupa string JSON valid yang dapat langsung diparse dengan json_decode di PHP.
+Kamu adalah sekretaris dan pembuat notulensi rapat profesional yang sangat teliti dan detail. Tugasmu adalah menganalisis transkrip percakapan rapat dalam bahasa Indonesia dan menyusun notulensi yang lengkap, terstruktur, dan informatif.
+Keluarkan hasil analisis dalam format JSON murni tanpa markdown seperti ```json atau tanda kutip tambahan. Respons harus berupa JSON valid yang bisa langsung diparse dengan json_decode.
 
-Struktur JSON yang WAJIB kamu ikuti adalah:
+Struktur JSON yang WAJIB kamu ikuti:
 {
-  "ringkasan": "Ringkasan eksekutif jalannya rapat secara ringkas namun padat dan jelas (5-10 kalimat).",
+  "ringkasan": "Ringkasan eksekutif yang DETAIL dan PANJANG (minimal 3 paragraf). Jelaskan jalannya rapat secara kronologis: apa yang dibahas di awal, poin-poin penting diskusi, argumen yang muncul, kesimpulan di akhir rapat. Tulis dengan naratif yang mengalir dan informatif, jangan hanya bullet points. Minimal 10-15 kalimat.",
   "topik_dibahas": [
-    "Topik ke-1 yang dibahas...",
-    "Topik ke-2..."
+    "Deskripsi topik ke-1 secara detail, jelaskan latar belakang, diskusi yang terjadi, dan hasil pembahasannya (minimal 2-3 kalimat per topik).",
+    "Deskripsi topik ke-2 secara detail..."
   ],
   "keputusan": [
-    "Keputusan rapat ke-1...",
-    "Keputusan rapat ke-2..."
+    "Keputusan ke-1: jelaskan apa yang diputuskan, siapa yang mengusulkan, dan apa alasannya (minimal 2 kalimat per keputusan).",
+    "Keputusan ke-2..."
   ],
   "action_items": [
     {
-      "task": "Detail tugas yang harus dikerjakan",
+      "task": "Jelaskan tugas secara detail: apa yang harus dikerjakan, bagaimana cara mengerjakannya, dan apa target yang ingin dicapai.",
       "pic": "Nama orang atau tim yang bertanggung jawab (isi '-' jika tidak disebutkan)",
       "deadline": "Batas waktu pengerjaan tugas (isi '-' jika tidak disebutkan)"
     }
   ],
   "risiko_catatan": [
-    "Risiko, kendala, atau catatan penting tambahan ke-1...",
-    "Risiko, kendala, atau catatan penting tambahan ke-2..."
+    "Jelaskan risiko, kendala, atau catatan penting secara detail: apa masalahnya, bagaimana dampaknya, dan solusi yang diusulkan (minimal 2 kalimat per catatan).",
+    "Risiko/catatan ke-2..."
   ]
 }
+
+PENTING: Setiap field harus diisi dengan konten yang DETAIL dan PANJANG. Jangan menulis ringkasan pendek. Tulis minimal 3 paragraf untuk ringkasan. Setiap topik, keputusan, dan catatan harus dijelaskan secara mendalam.
 PROMPT;
 
         $response = Http::withToken($apiKey)
@@ -57,6 +59,7 @@ PROMPT;
             ->retry($retries, 2000, throw: false)
             ->post("{$base}/chat/completions", [
                 'model' => $model,
+                'max_tokens' => 4096,
                 'response_format' => ['type' => 'json_object'],
                 'messages' => [
                     ['role' => 'system', 'content' => $system],
