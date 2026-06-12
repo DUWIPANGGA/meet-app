@@ -130,6 +130,12 @@ Route::middleware(['auth'])->group(function () {
         ->middleware(['user.permission:AccessUserNotulensi', 'throttle:120,1'])
         ->name('meeting.pipeline.status');
 
+    // ======================== AI SUMMARIZE (frontend audio page) ========================
+    Route::middleware('user.permission:CreateUserAudio')->group(function () {
+        Route::post('/summarize', [\App\Http\Controllers\AiSummarizeController::class, 'summarize'])
+            ->name('ai.summarize');
+    });
+
     // ======================== AUDIO NOTULENSI ========================
     Route::middleware('user.permission:AccessUserAudio')->group(function () {
         Route::get('/audio', [AudioController::class, 'index'])->name('audio.index');

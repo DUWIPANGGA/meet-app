@@ -7,7 +7,7 @@ namespace App\Jobs\Meeting;
 use App\Enums\MeetingPipelineStage;
 use App\Models\Meeting;
 use App\Models\Notulensi;
-use App\Services\OpenAINotulensiSummarizerService;
+use App\Services\NotulensiSummarizerService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -26,7 +26,7 @@ class SummarizeTranscriptToNotulensiJob implements ShouldQueue
 
     public function __construct(public int $meetingId) {}
 
-    public function handle(OpenAINotulensiSummarizerService $summarizer): void
+    public function handle(NotulensiSummarizerService $summarizer): void
     {
         $meeting = Meeting::query()->findOrFail($this->meetingId);
         Log::info('meeting_pipeline.summarize.start', [
@@ -47,7 +47,7 @@ class SummarizeTranscriptToNotulensiJob implements ShouldQueue
                 'ringkasan' => $result['ringkasan'],
                 'structured_summary' => $result['structured'],
                 'openai_model' => $result['model'],
-                'prompt_version' => OpenAINotulensiSummarizerService::PROMPT_VERSION,
+                'prompt_version' => NotulensiSummarizerService::PROMPT_VERSION,
                 'openai_usage' => $result['usage'],
                 'tanggal_generate' => now()->toDateString(),
             ]

@@ -7,8 +7,8 @@ use App\Enums\MeetingPipelineStatus;
 use App\Models\Meeting;
 use App\Models\MeetingParticipant;
 use App\Models\RekamanAudio;
-use App\Services\GeminiNotulensiSummarizerService;
 use App\Services\MeetingAiPipelineDispatcher;
+use App\Services\NotulensiSummarizerService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
@@ -242,7 +242,7 @@ class MeetingController extends Controller
         ]);
     }
 
-    public function generateLiveNotulensi(Request $request, Meeting $meeting, GeminiNotulensiSummarizerService $summarizer)
+    public function generateLiveNotulensi(Request $request, Meeting $meeting, NotulensiSummarizerService $summarizer)
     {
         $this->assertActiveParticipant($meeting);
 
@@ -275,7 +275,7 @@ class MeetingController extends Controller
                     'ringkasan' => $result['ringkasan'],
                     'structured_summary' => $result['structured'],
                     'openai_model' => $result['model'],
-                    'prompt_version' => GeminiNotulensiSummarizerService::PROMPT_VERSION,
+                    'prompt_version' => NotulensiSummarizerService::PROMPT_VERSION,
                     'openai_usage' => $result['usage'],
                     'tanggal_generate' => now()->toDateString(),
                 ]

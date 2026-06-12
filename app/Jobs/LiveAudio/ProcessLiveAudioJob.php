@@ -3,7 +3,7 @@
 namespace App\Jobs\LiveAudio;
 
 use App\Models\LiveAudio;
-use App\Services\GeminiNotulensiSummarizerService;
+use App\Services\NotulensiSummarizerService;
 use App\Services\OpenAITranscriptionService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -27,7 +27,7 @@ class ProcessLiveAudioJob implements ShouldQueue
 
     public function handle(
         OpenAITranscriptionService $transcriptionService,
-        GeminiNotulensiSummarizerService $summarizerService
+        NotulensiSummarizerService $summarizerService
     ): void {
         $liveAudio = LiveAudio::query()->findOrFail($this->liveAudioId);
 
