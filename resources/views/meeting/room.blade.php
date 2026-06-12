@@ -545,29 +545,31 @@
             </div>
 
             <!-- Rekam Layar -->
-            <button id="recordScreenBtn" class="flex flex-col items-center text-white hover:text-gray-200 transition toolbar-btn relative">
-                <div class="h-12 flex items-center justify-center">
-                    <svg id="recordIconDefault" class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4zM14 13h-3v3H9v-3H6v-2h3V8h2v3h3v2z"/></svg>
-                    <svg id="recordIconActive" class="hidden w-10 h-10 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/><rect x="6" y="9" width="8" height="6" rx="1" fill="#ef4444"/></svg>
-                </div>
-                <span class="text-sm font-semibold mt-1">Rekam</span>
-                <span id="recordActiveDot" class="hidden absolute -top-0.5 right-1 w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse"></span>
-                <div id="recordingPopup" class="hidden absolute bottom-full left-1/2 -translate-x-1/2 mb-3 z-[60] opacity-0 transition-opacity duration-300 min-w-[260px]">
-                    <div class="flex items-start gap-3 bg-gray-900/95 border border-red-500/50 rounded-xl px-4 py-3 shadow-2xl backdrop-blur-sm">
-                        <span class="flex h-2.5 w-2.5 relative mt-1 shrink-0">
+            <div class="relative flex flex-col items-center">
+                <button id="recordScreenBtn" class="flex flex-col items-center text-white hover:text-gray-200 transition toolbar-btn relative">
+                    <div class="h-12 flex items-center justify-center">
+                        <svg id="recordIconDefault" class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4zM14 13h-3v3H9v-3H6v-2h3V8h2v3h3v2z"/></svg>
+                        <svg id="recordIconActive" class="hidden w-10 h-10 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/><rect x="6" y="9" width="8" height="6" rx="1" fill="#ef4444"/></svg>
+                    </div>
+                    <span class="text-sm font-semibold mt-1">Rekam</span>
+                    <span id="recordActiveDot" class="hidden absolute -top-0.5 right-1 w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse"></span>
+                </button>
+                <div id="recordingPopup" class="hidden absolute bottom-full mb-4 left-1/2 -translate-x-1/2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 p-4 text-gray-800 z-50 transition-opacity opacity-0">
+                    <div class="flex items-start gap-3">
+                        <span class="flex h-3 w-3 relative mt-0.5 shrink-0">
                             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+                            <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
                         </span>
                         <div class="flex-1 min-w-0">
-                            <p class="text-sm font-semibold text-white">Meeting sedang direkam</p>
-                            <p id="recordingByName" class="text-xs text-gray-400 truncate">oleh Anda</p>
+                            <p class="font-semibold text-sm text-gray-900">Meeting sedang direkam</p>
+                            <p id="recordingByName" class="text-xs text-gray-500 mt-0.5">oleh Anda</p>
                         </div>
-                        <button id="recordingPopupClose" class="text-gray-500 hover:text-white transition shrink-0 -mr-1">
+                        <button id="recordingPopupClose" class="text-gray-400 hover:text-gray-600 transition shrink-0 -mr-1 -mt-1 p-1">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                         </button>
                     </div>
                 </div>
-            </button>
+            </div>
             
             <!-- Akhiri -->
             <button id="leaveBtn" class="flex flex-col items-center transition toolbar-btn ml-8">
