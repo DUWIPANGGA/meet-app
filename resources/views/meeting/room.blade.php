@@ -212,6 +212,8 @@
         :root .meeting-bg { color: var(--page-color); }
         :root .meeting-bg .toolbar-btn { color: var(--toolbar-icon); }
         :root .meeting-bg .toolbar-btn:hover { color: var(--toolbar-icon-hover); }
+        :root .meeting-bg .toolbar-btn.text-white { color: #fff; }
+        :root .meeting-bg .toolbar-btn.text-red-400 { color: #f87171; }
         :root .sidebar-item { background: var(--hover-bg); border-color: var(--card-border); }
         :root .top-bar h1 { color: var(--page-color); }
         :root .top-bar .text-white { color: var(--page-color); }
