@@ -21,18 +21,18 @@
             --toolbar-border: #e2e8f0;
             --sidebar-bg: rgba(255,255,255,0.92);
             --sidebar-border: #e2e8f0;
-            --text-primary: #0f172a;
-            --text-secondary: #334155;
-            --text-muted: #64748b;
+            --text-primary: #000000;
+            --text-secondary: #1f2937;
+            --text-muted: #4b5563;
             --name-label-bg: rgba(0,0,0,0.5);
             --rec-bg: linear-gradient(135deg, #ef4444, #dc2626);
             --meeting-container-bg: rgba(0,0,0,0.03);
             --hover-bg: rgba(0,0,0,0.05);
-            --icon-color: #334155;
-            --icon-hover: #0f172a;
-            --toolbar-icon: #334155;
-            --toolbar-icon-hover: #0f172a;
-            --page-color: #0f172a;
+            --icon-color: #000000;
+            --icon-hover: #000000;
+            --toolbar-icon: #000000;
+            --toolbar-icon-hover: #000000;
+            --page-color: #000000;
         }
         :root.dark, .dark {
             --meeting-bg: radial-gradient(ellipse 80% 60% at 20% 80%, rgba(139,92,246,0.12) 0%, transparent 60%),
@@ -212,7 +212,7 @@
         :root .meeting-bg { color: var(--page-color); }
         :root .meeting-bg .toolbar-btn { color: var(--toolbar-icon); }
         :root .meeting-bg .toolbar-btn:hover { color: var(--toolbar-icon-hover); }
-        :root .meeting-bg .toolbar-btn.text-white { color: #fff; }
+        :root .meeting-bg .toolbar-btn.text-white { color: var(--toolbar-icon); }
         :root .meeting-bg .toolbar-btn.text-red-400 { color: #f87171; }
         :root .sidebar-item { background: var(--hover-bg); border-color: var(--card-border); }
         :root .top-bar h1 { color: var(--page-color); }
@@ -416,7 +416,7 @@
                 <div id="videoGridMain" class="min-w-0 relative z-0" style="flex:1">
                     <!-- Local Video -->
                     <div id="localVideoContainer" class="relative bg-black rounded-lg overflow-hidden h-full video-card m-1">
-                        <video id="localVideo" autoplay muted playsinline class="w-full h-full object-cover"></video>
+                        <video id="localVideo" autoplay muted playsinline class="w-full h-full object-cover" style="transform: scaleX(-1)"></video>
                         <div id="localAvatar" class="absolute inset-0 bg-gray-900/80 flex items-center justify-center hidden z-10">
                             <div class="relative">
                                 <div id="localAvatarCircle" style="width:112px;height:112px;border-radius:50%;background:#374151;display:flex;align-items:center;justify-content:center;transition:all 0.3s">
