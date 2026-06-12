@@ -54,13 +54,18 @@ Struktur JSON yang WAJIB kamu ikuti:
 PENTING: Setiap field harus diisi dengan konten yang DETAIL dan PANJANG. Jangan menulis ringkasan pendek. Tulis minimal 3 paragraf untuk ringkasan. Setiap topik, keputusan, dan catatan harus dijelaskan secara mendalam.
 PROMPT;
 
+        Log::info('DeepSeek request', [
+            'url' => "{$base}/chat/completions",
+            'model' => $model,
+            'transcript_length' => strlen($transcript),
+        ]);
+
         $response = Http::withToken($apiKey)
             ->timeout($timeout)
             ->retry($retries, 2000, throw: false)
             ->post("{$base}/chat/completions", [
                 'model' => $model,
                 'max_tokens' => 4096,
-                'response_format' => ['type' => 'json_object'],
                 'messages' => [
                     ['role' => 'system', 'content' => $system],
                     ['role' => 'user', 'content' => $transcript],
