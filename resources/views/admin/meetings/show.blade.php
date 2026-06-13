@@ -78,7 +78,7 @@
                             </div>
                             <span class="text-sm" style="color:var(--text-secondary)">{{ $rek->created_at->translatedFormat('d M Y H:i') }}</span>
                         </div>
-                        <span class="text-xs" style="color:var(--text-muted)">{{ number_format($rek->durasi ?? 0, 0) }}s</span>
+                        <span class="text-xs" style="color:var(--text-muted)">{{ number_format((int) ($rek->durasi ?? 0), 0) }}s</span>
                     </div>
                     @endforeach
                 </div>
