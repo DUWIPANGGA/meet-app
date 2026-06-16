@@ -2,11 +2,11 @@
 @section('title', 'Buat Rapat')
 
 @section('content')
-<div class="max-w-2xl">
+<div>
     <div class="page-header">
         <a href="{{ route('admin.meetings.index') }}" class="inline-flex items-center gap-1.5 text-sm font-medium mb-3 transition hover:opacity-70" style="color:var(--text-muted)">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5m7-7l-7 7 7 7"/></svg>
-            Kembali
+            Kembali ke Daftar Rapat
         </a>
         <h1>Buat Rapat Baru</h1>
         <p>Isi detail rapat yang akan dibuat</p>

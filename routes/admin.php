@@ -74,6 +74,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::middleware('user.permission:AdminAccessMeetings')->group(function () {
         Route::get('notulensis', [NotulensiController::class, 'index'])->name('notulensis.index');
         Route::get('notulensis/{notulensi}', [NotulensiController::class, 'show'])->name('notulensis.show');
+        Route::get('notulensis/{notulensi}/edit', [NotulensiController::class, 'edit'])->name('notulensis.edit');
+        Route::put('notulensis/{notulensi}', [NotulensiController::class, 'update'])->name('notulensis.update');
         Route::delete('notulensis/{notulensi}', [NotulensiController::class, 'destroy'])->name('notulensis.destroy');
     });
 

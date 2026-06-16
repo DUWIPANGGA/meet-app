@@ -23,6 +23,44 @@ class NotulensiController extends Controller
         return view('admin.notulensis.show', compact('notulensi'));
     }
 
+    public function edit(Notulensi $notulensi)
+    {
+        $notulensi->load(['meeting', 'liveAudio']);
+        return view('admin.notulensis.edit', compact('notulensi'));
+    }
+
+    public function update(Request $request, Notulensi $notulensi)
+    {
+        $validated = $request->validate([
+            'ringkasan' => 'nullable|string',
+            'structured_summary' => 'nullable|array',
+        ]);
+
+        if (isset($validated['structured_summary'])) {
+            $s = $validated['structured_summary'];
+
+            if (isset($s['topik_dibahas'])) {
+                $s['topik_dibahas'] = array_values(array_filter($s['topik_dibahas'], fn($v) => !is_null($v) && $v !== ''));
+            }
+            if (isset($s['keputusan'])) {
+                $s['keputusan'] = array_values(array_filter($s['keputusan'], fn($v) => !is_null($v) && $v !== ''));
+            }
+            if (isset($s['action_items'])) {
+                $s['action_items'] = array_values(array_filter($s['action_items'], fn($row) => !empty($row['task']) || !empty($row['pic']) || !empty($row['deadline'])));
+            }
+            if (isset($s['risiko_catatan'])) {
+                $s['risiko_catatan'] = array_values(array_filter($s['risiko_catatan'], fn($v) => !is_null($v) && $v !== ''));
+            }
+
+            $validated['structured_summary'] = $s;
+        }
+
+        $notulensi->update($validated);
+
+        return redirect()->route('admin.notulensis.show', $notulensi)
+            ->with('success', 'Notulensi berhasil diperbarui.');
+    }
+
     public function destroy(Notulensi $notulensi)
     {
         $notulensi->delete();

@@ -68,7 +68,7 @@
                 </div>
                 <h4 class="text-xl font-medium mb-1" style="color:var(--text-primary)" x-text="selectedEvent.title"></h4>
                 <p class="text-sm mb-4" style="color:var(--text-muted)" x-text="selectedEvent.time"></p>
-                <div class="bg-slate-50 rounded-lg p-3 mb-6">
+                <div class="rounded-lg p-3 mb-6" style="background:var(--surface-bg)">
                     <div class="flex items-center justify-between">
                         <span class="text-sm" style="color:var(--text-muted)">Status</span>
                         <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-xs font-medium border"
@@ -114,9 +114,8 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
-            <form method="POST" action="{{ route('meeting.create') }}" class="p-6 space-y-5">
+            <form method="POST" action="{{ route('admin.meetings.store') }}" class="p-6 space-y-5">
                 @csrf
-                <input type="hidden" name="waktu_rapat" value="scheduled">
                 <div>
                     <label class="block text-sm font-semibold mb-1.5" style="color:var(--text-secondary)">Nama Agenda <span class="text-red-400">*</span></label>
                     <input type="text" name="nama_rapat" required placeholder="Contoh: Rapat Koordinasi Bulanan"
@@ -126,7 +125,7 @@
                     <label class="block text-sm font-semibold mb-2" style="color:var(--text-secondary)">Jenis Agenda</label>
                     <div class="grid grid-cols-2 gap-3">
                         <label class="cursor-pointer">
-                            <input type="radio" name="jenis_rapat" value="online" x-model="createJenis" class="peer sr-only">
+                            <input type="radio" name="tipe_rapat" value="Online" x-model="createJenis" class="peer sr-only">
                             <div class="rounded-xl border-2 px-4 py-3 text-center hover:border-violet-300 peer-checked:border-violet-500 peer-checked:bg-violet-500/10 transition" style="border-color:var(--card-border);color:var(--text-secondary)">
                                 <div class="flex justify-center mb-1">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
@@ -136,7 +135,7 @@
                             </div>
                         </label>
                         <label class="cursor-pointer">
-                            <input type="radio" name="jenis_rapat" value="offline" x-model="createJenis" class="peer sr-only">
+                            <input type="radio" name="tipe_rapat" value="Offline" x-model="createJenis" class="peer sr-only">
                             <div class="rounded-xl border-2 px-4 py-3 text-center hover:border-violet-300 peer-checked:border-violet-500 peer-checked:bg-violet-500/10 transition" style="border-color:var(--card-border);color:var(--text-secondary)">
                                 <div class="flex justify-center mb-1">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
@@ -159,16 +158,16 @@
                                class="w-full px-3 py-2.5 input-theme rounded-xl outline-none transition text-sm">
                     </div>
                 </div>
-                <div x-show="createJenis === 'online'" style="display: none;">
+                <div x-show="createJenis === 'Online'" style="display: none;">
                     <div class="surface-card rounded-xl p-3 flex items-start gap-3 text-xs" style="border:1px solid rgba(139,92,246,0.2)">
                         <svg class="w-4 h-4 mt-0.5 text-violet-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         <span style="color:var(--text-muted)">Link meeting akan otomatis tergenerate untuk rapat online.</span>
                     </div>
                 </div>
-                <div x-show="createJenis === 'offline'" style="display: none;">
+                <div x-show="createJenis === 'Offline'" style="display: none;">
                     <div>
-                        <label class="block text-sm font-semibold mb-1.5" style="color:var(--text-secondary)">Keterangan (opsional)</label>
-                        <textarea name="keterangan" rows="3" placeholder="Lokasi, agenda, dll."
+                        <label class="block text-sm font-semibold mb-1.5" style="color:var(--text-secondary)">Deskripsi (opsional)</label>
+                        <textarea name="deskripsi_rapat" rows="3" placeholder="Lokasi, agenda, dll."
                                   class="w-full px-4 py-2.5 input-theme rounded-xl outline-none transition text-sm resize-none"></textarea>
                     </div>
                 </div>
@@ -276,7 +275,7 @@ document.addEventListener('alpine:init', () => {
         showEventModal: false,
         showCreateModal: false,
         showEditModal: false,
-        createJenis: 'online',
+        createJenis: 'Online',
         editId: null,
         editForm: {
             nama_rapat: '',

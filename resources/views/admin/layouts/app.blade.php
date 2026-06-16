@@ -570,6 +570,17 @@
             box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.12);
         }
 
+        .input-theme {
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            color: var(--text-primary);
+        }
+
+        .input-theme:focus {
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        }
+
         .label {
             display: block;
             font-size: 12px;

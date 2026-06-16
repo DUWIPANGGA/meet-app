@@ -33,11 +33,14 @@
                     </td>
                     <td>{{ $n->tanggal_generate ? \Carbon\Carbon::parse($n->tanggal_generate)->translatedFormat('d M Y') : $n->created_at->translatedFormat('d M Y') }}</td>
                     <td><span class="badge" style="background:rgba(16,185,129,0.1);color:#10b981">{{ $n->openai_model ?? 'Gemini' }}</span></td>
-                    <td class="max-w-xs truncate" style="color:var(--text-secondary)">{{ \Illuminate\Support\Str::limit($n->ringkasan, 80) }}</td>
+                    <td class="max-w-xs" style="color:var(--text-secondary)"><span class="line-clamp-2">{{ $n->ringkasan }}</span></td>
                     <td>
                         <div class="flex items-center justify-end gap-2">
                             <a href="{{ route('admin.notulensis.show', $n) }}" class="p-2 rounded-lg hover:bg-[var(--nav-link-hover)] transition" title="Detail">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:#6366f1"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                            </a>
+                            <a href="{{ route('admin.notulensis.edit', $n) }}" class="p-2 rounded-lg hover:bg-[var(--nav-link-hover)] transition" title="Edit">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:#f59e0b"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                             </a>
                             @if($n->file_pdf)
                             <a href="{{ asset('storage/'.$n->file_pdf) }}" target="_blank" class="p-2 rounded-lg hover:bg-[var(--nav-link-hover)] transition" title="Download PDF">
