@@ -930,11 +930,14 @@
                 </div>
             </div>
 
-            <!-- Akhiri -->
+            <!-- Akhiri / Keluar -->
+            @php
+                $canEnd = $isCreator || $isAdmin;
+            @endphp
             <button id="leaveBtn" class="flex flex-col items-center transition toolbar-btn ml-8">
                 <div class="h-12 flex items-center justify-center">
-                    <div class="btn-danger text-white font-bold rounded-xl px-5 py-2.5 shadow-lg tracking-wide">
-                        Akhiri
+                    <div class="{{ $canEnd ? 'btn-danger' : 'bg-gray-600 hover:bg-gray-500' }} text-white font-bold rounded-xl px-5 py-2.5 shadow-lg tracking-wide">
+                        {{ $canEnd ? 'Akhiri' : 'Keluar' }}
                     </div>
                 </div>
             </button>
@@ -1138,6 +1141,9 @@
         const livekitTokenUrl = baseUrl + '/livekit-token';
         const broadcastUrl = baseUrl + '/broadcast';
         const leaveUrl = baseUrl + '/leave';
+        const endUrl = baseUrl + '/end';
+        const isCreator = @json($isCreator);
+        const isAdmin = @json($isAdmin);
         const saveLiveTranscriptUrl = baseUrl + '/save-live-transcript';
         const notulensiPdfUrl = baseUrl + '/notulensi-pdf';
         const whisperWsUrl = 'ws://127.0.0.1:8001/ws/transcribe';
@@ -1425,7 +1431,8 @@
                 await room.disconnect();
                 room = null;
             }
-            fetch(leaveUrl, {
+            const url = (isCreator || isAdmin) ? endUrl : leaveUrl;
+            fetch(url, {
                 method: 'POST',
                 keepalive: true,
                 headers: {

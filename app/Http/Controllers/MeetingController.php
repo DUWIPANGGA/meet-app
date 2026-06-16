@@ -99,17 +99,42 @@ class MeetingController extends Controller
                 ]);
         }
 
+        if ($meeting->status_rapat === 'Menunggu') {
+            $meeting->update(['status_rapat' => 'Berlangsung']);
+        }
+
         $host = request()->getHost();
         $liveKitPort = parse_url(config('livekit.server_url'), PHP_URL_PORT) ?: '7880';
         $liveKitUrl = "ws://{$host}:{$liveKitPort}";
 
-        return view('meeting.room', compact('meeting', 'liveKitUrl'));
+        $isCreator = (int) $meeting->dibuat_oleh === (int) $userId;
+        $isAdmin = auth()->user()->hasAnyRole(['super_admin', 'admin']);
+
+        return view('meeting.room', compact('meeting', 'liveKitUrl', 'isCreator', 'isAdmin'));
     }
 
     public function leave(Meeting $meeting)
     {
         $meeting->participants()
             ->where('user_id', auth()->id())
+            ->whereNull('left_at')
+            ->update(['left_at' => now()]);
+
+        return response()->noContent(Response::HTTP_NO_CONTENT);
+    }
+
+    public function end(Meeting $meeting)
+    {
+        $userId = auth()->id();
+        $isCreator = (int) $meeting->dibuat_oleh === (int) $userId;
+        $isAdmin = auth()->user()->hasAnyRole(['super_admin', 'admin']);
+
+        abort_unless($isCreator || $isAdmin, 403, 'Hanya pembuat rapat atau admin yang dapat mengakhiri rapat.');
+
+        $meeting->update(['status_rapat' => 'Selesai']);
+
+        $meeting->participants()
+            ->where('user_id', $userId)
             ->whereNull('left_at')
             ->update(['left_at' => now()]);
 

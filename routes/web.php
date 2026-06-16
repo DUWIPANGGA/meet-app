@@ -73,6 +73,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/meeting/{meeting}/leave', [MeetingController::class, 'leave'])
             ->name('meeting.leave');
 
+        Route::post('/meeting/{meeting}/end', [MeetingController::class, 'end'])
+            ->name('meeting.end');
+
         Route::post('/meeting/{meeting}/livekit-token', [MeetingController::class, 'getLiveKitToken'])
             ->name('meeting.livekit-token');
     });

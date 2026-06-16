@@ -77,18 +77,19 @@
                         </span>
                     </div>
                 </div>
-                <template x-if="selectedEvent.tipe === 'online'">
-                    <a :href="selectedEvent.url" target="_blank" class="w-full flex items-center justify-center gap-2 font-medium py-2.5 px-4 rounded-lg text-white" style="background:linear-gradient(135deg,#7c3aed,#4f46e5)">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-                        Gabung Rapat
-                    </a>
-                </template>
-                <template x-if="selectedEvent.tipe === 'offline'">
-                    <div class="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm" style="color:var(--text-muted);background:var(--surface-bg)">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                        Kegiatan Offline
-                    </div>
-                </template>
+                <div class="flex items-center gap-2">
+                    <button @click="openEditModal()" type="button" class="flex-1 btn-secondary text-center justify-center">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                        Edit
+                    </button>
+                    <form method="POST" x-bind:action="deleteUrl(selectedEvent.id)" onsubmit="return confirm('Yakin ingin menghapus agenda ini?');" class="flex-1">
+                        @csrf @method('DELETE')
+                        <button type="submit" class="w-full btn-danger justify-center">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                            Hapus
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -184,6 +185,89 @@
             </form>
         </div>
     </div>
+
+    <!-- ===================== Edit Agenda Modal ===================== -->
+    <div x-show="showEditModal" style="display:none;"
+         class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
+        <div @click.away="showEditModal = false" x-show="showEditModal"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 scale-95"
+             x-transition:enter-end="opacity-100 scale-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100 scale-100"
+             x-transition:leave-end="opacity-0 scale-95"
+             class="card w-full max-w-md overflow-hidden">
+            <div class="px-6 py-5 border-b flex items-center justify-between" style="border-color:var(--divider)">
+                <div>
+                    <h3 class="text-lg font-semibold" style="color:var(--text-primary)">Edit Agenda</h3>
+                    <p class="text-xs mt-0.5" style="color:var(--text-muted)">Perbarui detail agenda</p>
+                </div>
+                <button @click="showEditModal = false" class="p-1.5 hover:bg-white/10 rounded-full transition" style="color:var(--text-muted)">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <form method="POST" x-bind:action="updateUrl(editId)" class="p-6 space-y-5">
+                @csrf @method('PUT')
+                <div>
+                    <label class="block text-sm font-semibold mb-1.5" style="color:var(--text-secondary)">Nama Agenda <span class="text-red-400">*</span></label>
+                    <input type="text" name="nama_rapat" x-model="editForm.nama_rapat" required
+                           class="w-full px-4 py-2.5 input-theme rounded-xl outline-none transition text-sm">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-sm font-semibold mb-1.5" style="color:var(--text-secondary)">Tanggal <span class="text-red-400">*</span></label>
+                        <input type="date" name="tanggal" x-model="editForm.tanggal" required
+                               class="w-full px-3 py-2.5 input-theme rounded-xl outline-none transition text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold mb-1.5" style="color:var(--text-secondary)">Waktu <span class="text-red-400">*</span></label>
+                        <input type="time" name="waktu" x-model="editForm.waktu" required
+                               class="w-full px-3 py-2.5 input-theme rounded-xl outline-none transition text-sm">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-2" style="color:var(--text-secondary)">Tipe</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="tipe_rapat" value="Online" x-model="editForm.tipe_rapat" class="peer sr-only">
+                            <div class="rounded-xl border-2 px-4 py-3 text-center hover:border-violet-300 peer-checked:border-violet-500 peer-checked:bg-violet-500/10 transition" style="border-color:var(--card-border);color:var(--text-secondary)">
+                                <div class="font-semibold text-sm" style="color:var(--text-primary)">Online</div>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="tipe_rapat" value="Offline" x-model="editForm.tipe_rapat" class="peer sr-only">
+                            <div class="rounded-xl border-2 px-4 py-3 text-center hover:border-violet-300 peer-checked:border-violet-500 peer-checked:bg-violet-500/10 transition" style="border-color:var(--card-border);color:var(--text-secondary)">
+                                <div class="font-semibold text-sm" style="color:var(--text-primary)">Offline</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1.5" style="color:var(--text-secondary)">Deskripsi</label>
+                    <textarea name="deskripsi_rapat" x-model="editForm.deskripsi" rows="3"
+                              class="w-full px-4 py-2.5 input-theme rounded-xl outline-none transition text-sm resize-none"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1.5" style="color:var(--text-secondary)">Status</label>
+                    <select name="status_rapat" x-model="editForm.status" class="w-full px-4 py-2.5 input-theme rounded-xl outline-none transition text-sm">
+                        <option value="Menunggu">Menunggu</option>
+                        <option value="Berlangsung">Berlangsung</option>
+                        <option value="Selesai">Selesai</option>
+                    </select>
+                </div>
+                <div class="flex gap-3 pt-1">
+                    <button type="button" @click="showEditModal = false"
+                            class="flex-1 px-4 py-2.5 rounded-xl font-medium transition text-sm" style="border:1px solid var(--card-border);color:var(--text-secondary);background:var(--surface-bg)">
+                        Batal
+                    </button>
+                    <button type="submit"
+                            class="flex-1 px-4 py-2.5 rounded-xl text-white font-semibold transition text-sm shadow-lg shadow-violet-500/20" style="background:linear-gradient(135deg, #7c3aed, #4f46e5)">
+                        Simpan Perubahan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -191,17 +275,28 @@ document.addEventListener('alpine:init', () => {
     Alpine.data('adminAgendaCalendar', () => ({
         showEventModal: false,
         showCreateModal: false,
+        showEditModal: false,
         createJenis: 'online',
+        editId: null,
+        editForm: {
+            nama_rapat: '',
+            tanggal: '',
+            waktu: '',
+            tipe_rapat: 'Online',
+            deskripsi: '',
+            status: 'Menunggu'
+        },
         selectedEvent: {
             title:'', time:'', status:'', url:'#', tipe:'online', tipeLabel:'Rapat Online',
-            badgeBg:'rgba(139,92,246,0.1)', badgeBorder:'rgba(139,92,246,0.3)', badgeText:'#7c3aed'
+            badgeBg:'rgba(139,92,246,0.1)', badgeBorder:'rgba(139,92,246,0.3)', badgeText:'#7c3aed',
+            id: null, tanggal:'', waktu:'', deskripsi:''
         },
         init() {
             var el = document.getElementById('admin-agenda-calendar');
             if (!el || typeof FullCalendar === 'undefined') return;
             var events = [
                 @foreach($meetings as $m)
-                { id:'m-{{ $m->id }}', title:@json($m->nama_rapat), start:'{{ \Carbon\Carbon::parse($m->tanggal)->format("Y-m-d") }}T{{ $m->waktu ?? "00:00" }}', extendedProps:{ status:'{{ $m->status_rapat }}', tipe:'{{ $m->tipe_rapat === "Offline" ? "offline" : "online" }}', url:'{{ $m->tipe_rapat === "Offline" ? "#" : route("meeting.room", $m->id) }}', displayTime:'{{ \Carbon\Carbon::parse($m->tanggal)->translatedFormat("d M Y") }} - {{ $m->waktu ?? "Sepanjang Hari" }}' }, backgroundColor:'{{ $m->tipe_rapat === "Offline" ? "#F59E0B" : ($m->status_rapat === "Berlangsung" ? "#10B981" : "#7c3aed") }}' },
+                { id:'m-{{ $m->id }}', title:@json($m->nama_rapat), start:'{{ \Carbon\Carbon::parse($m->tanggal)->format("Y-m-d") }}T{{ $m->waktu ?? "00:00" }}', extendedProps:{ status:'{{ $m->status_rapat }}', tipe:'{{ $m->tipe_rapat === "Offline" ? "offline" : "online" }}', url:'{{ $m->tipe_rapat === "Offline" ? "#" : route("meeting.room", $m->id) }}', displayTime:'{{ \Carbon\Carbon::parse($m->tanggal)->translatedFormat("d M Y") }} - {{ $m->waktu ?? "Sepanjang Hari" }}', deskripsi:@json($m->deskripsi_rapat ?? ''), nama_rapat:@json($m->nama_rapat), tanggal:'{{ $m->tanggal }}', waktu:'{{ $m->waktu }}', tipe_db:'{{ $m->tipe_rapat }}' }, backgroundColor:'{{ $m->tipe_rapat === "Offline" ? "#F59E0B" : ($m->status_rapat === "Berlangsung" ? "#10B981" : "#7c3aed") }}' },
                 @endforeach
             ];
             var cal = new FullCalendar.Calendar(el, {
@@ -211,19 +306,51 @@ document.addEventListener('alpine:init', () => {
                 eventClick:(info) => {
                     info.jsEvent.preventDefault();
                     var p = info.event.extendedProps, off = p.tipe === 'offline';
-                    this.selectedEvent.title = info.event.title;
-                    this.selectedEvent.time = p.displayTime;
-                    this.selectedEvent.status = p.status;
-                    this.selectedEvent.url = p.url;
-                    this.selectedEvent.tipe = p.tipe;
-                    this.selectedEvent.tipeLabel = off ? 'Kegiatan' : 'Rapat Online';
-                    this.selectedEvent.badgeBg = off ? 'rgba(245,158,11,0.1)' : 'rgba(139,92,246,0.1)';
-                    this.selectedEvent.badgeBorder = off ? 'rgba(245,158,11,0.3)' : 'rgba(139,92,246,0.3)';
-                    this.selectedEvent.badgeText = off ? '#D97706' : '#7c3aed';
+                    this.selectedEvent = {
+                        ...this.selectedEvent,
+                        title: info.event.title,
+                        time: p.displayTime,
+                        status: p.status,
+                        url: p.url,
+                        tipe: p.tipe,
+                        tipeLabel: off ? 'Kegiatan' : 'Rapat Online',
+                        badgeBg: off ? 'rgba(245,158,11,0.1)' : 'rgba(139,92,246,0.1)',
+                        badgeBorder: off ? 'rgba(245,158,11,0.3)' : 'rgba(139,92,246,0.3)',
+                        badgeText: off ? '#D97706' : '#7c3aed',
+                        id: info.event.id,
+                        tanggal: p.tanggal,
+                        waktu: p.waktu,
+                        deskripsi: p.deskripsi
+                    };
                     this.showEventModal = true;
                 }
             });
             cal.render();
+        },
+        deleteUrl(id) {
+            if (!id) return '#';
+            var meetingId = id.replace('m-', '');
+            return '/admin/agendas/' + meetingId;
+        },
+        updateUrl(id) {
+            if (!id) return '#';
+            return '/admin/agendas/' + id;
+        },
+        openEditModal() {
+            var id = this.selectedEvent.id;
+            if (!id) return;
+            this.editId = id.replace('m-', '');
+            var p = this.selectedEvent;
+            this.editForm = {
+                nama_rapat: p.title,
+                tanggal: p.tanggal || '',
+                waktu: p.waktu || '',
+                tipe_rapat: p.tipe === 'offline' ? 'Offline' : 'Online',
+                deskripsi: p.deskripsi || '',
+                status: p.status
+            };
+            this.showEventModal = false;
+            this.showEditModal = true;
         }
     }));
 });
