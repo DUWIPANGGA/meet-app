@@ -28,8 +28,8 @@
             </div>
 
             <div>
-                <label class="block text-sm font-semibold mb-1.5" style="color:var(--text-secondary)">Notulensi (opsional)</label>
-                <select name="notulensi_id" class="w-full px-4 py-2.5 input-theme rounded-xl outline-none transition text-sm">
+                <label class="block text-sm font-semibold mb-1.5" style="color:var(--text-secondary)">Notulensi <span class="text-red-400">*</span></label>
+                <select name="notulensi_id" required class="w-full px-4 py-2.5 input-theme rounded-xl outline-none transition text-sm">
                     <option value="">-- Pilih Notulensi --</option>
                     @foreach($notulensis as $n)
                     <option value="{{ $n->id }}" {{ old('notulensi_id') == $n->id ? 'selected' : '' }}>Notulensi #{{ $n->id }} - {{ $n->meeting?->nama_rapat ?? '-' }} ({{ $n->tanggal_generate }})</option>

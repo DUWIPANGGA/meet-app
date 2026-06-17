@@ -14,16 +14,22 @@
 
         {{-- Avatar Header --}}
         <div class="bg-gradient-to-r from-violet-600 to-indigo-600 px-8 py-8 flex items-center gap-6">
+            @if($user->photo)
+            <div class="w-20 h-20 rounded-full border-2 border-white/40 overflow-hidden flex-shrink-0">
+                <img src="{{ asset('storage/'.$user->photo) }}" alt="{{ $user->name }}" class="w-full h-full object-cover">
+            </div>
+            @else
             <div class="w-20 h-20 rounded-full bg-white/20 border-2 border-white/40 flex items-center justify-center text-white text-3xl font-bold select-none flex-shrink-0">
                 {{ strtoupper(substr($user->name, 0, 1)) }}
             </div>
+            @endif
             <div>
                 <h2 class="text-2xl font-bold text-white">{{ $user->name }}</h2>
                 <p class="text-violet-100 text-sm mt-0.5">{{ $user->email }}</p>
                 <div class="mt-2 flex items-center gap-2">
                     <span class="inline-flex items-center gap-1.5 bg-white/20 text-white text-xs font-medium px-3 py-1 rounded-full border border-white/30">
                         <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                        {{ $user->getRawOriginal('jabatan') ?? 'Belum diisi' }}
+                        {{ $user->jabatan?->nama_jabatan ?? 'Belum diisi' }}
                     </span>
                     <span class="inline-flex items-center gap-1.5 bg-green-400/30 text-green-100 text-xs font-medium px-3 py-1 rounded-full border border-green-300/40">
                         ● Aktif
@@ -67,7 +73,7 @@
             </div>
             @endif
 
-            <form action="{{ route('profile.update') }}" method="POST" class="px-8 py-7 space-y-6">
+            <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data" class="px-8 py-7 space-y-6">
                 @csrf
                 @method('PUT')
 
@@ -101,18 +107,26 @@
                     @error('email')<p class="mt-1.5 text-xs text-red-500">{{ $message }}</p>@enderror
                 </div>
 
-                {{-- Jabatan --}}
+                {{-- Photo --}}
                 <div>
-                    <label class="block text-sm font-semibold mb-1.5" style="color:var(--text-secondary)">Jabatan</label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none" style="color:var(--text-muted)">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    <label class="block text-sm font-semibold mb-1.5" style="color:var(--text-secondary)">Foto Profil</label>
+                    <div class="flex items-center gap-4">
+                        @if($user->photo)
+                        <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-violet-300 flex-shrink-0">
+                            <img src="{{ asset('storage/'.$user->photo) }}" alt="" class="w-full h-full object-cover">
                         </div>
-                        <input type="text" name="jabatan" id="jabatan"
-                               value="{{ old('jabatan', $user->getRawOriginal('jabatan')) }}"
-                               class="w-full pl-10 pr-4 py-2.5 rounded-xl input-theme outline-none text-sm transition"
-                               placeholder="Contoh: Staf Statistisi, Kepala Seksi...">
+                        @else
+                        <div class="w-16 h-16 rounded-full avatar-circle text-white flex items-center justify-center font-bold text-xl select-none flex-shrink-0">
+                            {{ strtoupper(substr($user->name, 0, 1)) }}
+                        </div>
+                        @endif
+                        <div class="flex-1">
+                            <input type="file" name="photo" id="photo" accept="image/jpeg,image/png,image/webp"
+                                   class="w-full text-sm file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-violet-500/10 file:text-violet-600 hover:file:bg-violet-500/20 transition">
+                            <p class="mt-1 text-xs" style="color:var(--text-muted)">Format: JPG, PNG, WebP. Maks 2MB.</p>
+                        </div>
                     </div>
+                    @error('photo')<p class="mt-1.5 text-xs text-red-500">{{ $message }}</p>@enderror
                 </div>
 
                 {{-- Role (read-only) --}}

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\Password;
 
 class ProfileController extends Controller
@@ -19,19 +20,27 @@ class ProfileController extends Controller
     {
         $user = auth()->user();
 
-        $request->validate([
-            'name'    => ['required', 'string', 'max:255'],
-            'email'   => ['required', 'email', 'max:255', 'unique:users,email,' . $user->id],
-            'jabatan' => ['nullable', 'string', 'max:255'],
-        ]);
+$request->validate([
+    'name'    => ['required', 'string', 'max:255'],
+    'email'   => ['required', 'email', 'max:255', 'unique:users,email,' . $user->id],
+    'photo'   => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+]);
 
-        $user->update([
-            'name'    => $request->name,
-            'email'   => $request->email,
-            'jabatan' => $request->jabatan,
-        ]);
+$data = [
+    'name'    => $request->name,
+    'email'   => $request->email,
+];
 
-        return back()->with('success_profile', 'Profil berhasil diperbarui!');
+        if ($request->hasFile('photo')) {
+            if ($user->photo) {
+                Storage::disk('public')->delete($user->photo);
+            }
+            $data['photo'] = $request->file('photo')->store('avatars', 'public');
+        }
+
+        $user->update($data);
+
+        return redirect()->route('profile.show')->with('success_profile', 'Profil berhasil diperbarui!');
     }
 
     public function updatePassword(Request $request)
@@ -51,6 +60,6 @@ class ProfileController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        return back()->with('success_password', 'Password berhasil diperbarui!')->with('tab', 'password');
+        return redirect()->route('profile.show')->with('success_password', 'Password berhasil diperbarui!')->with('tab', 'password');
     }
 }

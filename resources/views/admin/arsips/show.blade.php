@@ -2,7 +2,7 @@
 @section('title', 'Detail Arsip')
 
 @section('content')
-<div class="max-w-3xl">
+<div class="max-w-4xl">
     <div class="page-header">
         <a href="{{ route('admin.arsips.index') }}" class="inline-flex items-center gap-1.5 text-sm font-medium mb-3 transition hover:opacity-70" style="color:var(--text-muted)">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5m7-7l-7 7 7 7"/></svg>
@@ -28,18 +28,102 @@
             </div>
             <div>
                 <p class="text-xs font-medium uppercase tracking-wider mb-1" style="color:var(--text-muted)">Notulensi</p>
-                <p style="color:var(--text-primary)">{{ $arsip->notulensi ? 'Notulensi #'.$arsip->notulensi->id : '-' }}</p>
+                <p style="color:var(--text-primary)">{{ $arsip->notulensi ? 'Notulensi #'.$arsip->notulensi->id : 'Tidak ada' }}</p>
             </div>
         </div>
 
         @if($arsip->notulensi && $arsip->notulensi->file_pdf)
         <hr class="my-6" style="border-color:var(--divider)">
-        <div>
-            <a href="{{ asset('storage/'.$arsip->notulensi->file_pdf) }}" target="_blank" class="btn-primary">
+        <div class="flex items-center gap-3">
+            <a href="{{ route('admin.arsips.pdf', $arsip) }}" target="_blank" class="btn-primary">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 Unduh PDF Notulensi
             </a>
         </div>
+        @endif
+
+        @if($arsip->notulensi && $arsip->notulensi->ringkasan)
+        <hr class="my-6" style="border-color:var(--divider)">
+        <div>
+            <h3 class="text-sm font-semibold uppercase tracking-wider mb-3" style="color:var(--text-muted)">Ringkasan Notulensi</h3>
+            <p style="color:var(--text-secondary);line-height:1.8" class="whitespace-pre-line">{{ $arsip->notulensi->ringkasan }}</p>
+        </div>
+
+        @php($s = $arsip->notulensi->structured_summary ?? [])
+
+        @if(!empty($s['topik_dibahas']) && is_array($s['topik_dibahas']))
+        <hr class="my-6" style="border-color:var(--divider)">
+        <div>
+            <h3 class="text-sm font-semibold uppercase tracking-wider mb-3" style="color:var(--text-muted)">Topik Dibahas</h3>
+            <ul class="space-y-2">
+                @foreach($s['topik_dibahas'] as $item)
+                <li class="flex items-start gap-2 text-sm" style="color:var(--text-secondary)">
+                    <span style="color:#10b981">•</span>
+                    <span>{{ $item }}</span>
+                </li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+
+        @if(!empty($s['keputusan']) && is_array($s['keputusan']))
+        <hr class="my-6" style="border-color:var(--divider)">
+        <div>
+            <h3 class="text-sm font-semibold uppercase tracking-wider mb-3" style="color:var(--text-muted)">Keputusan Penting</h3>
+            <ul class="space-y-2">
+                @foreach($s['keputusan'] as $item)
+                <li class="flex items-start gap-2 text-sm" style="color:var(--text-secondary)">
+                    <span style="color:#f59e0b">•</span>
+                    <span>{{ $item }}</span>
+                </li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+
+        @if(!empty($s['action_items']) && is_array($s['action_items']))
+        <hr class="my-6" style="border-color:var(--divider)">
+        <div>
+            <h3 class="text-sm font-semibold uppercase tracking-wider mb-3" style="color:var(--text-muted)">Action Items</h3>
+            <div class="overflow-x-auto rounded-xl border" style="border-color:var(--card-border)">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tugas</th>
+                            <th>PIC</th>
+                            <th>Deadline</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($s['action_items'] as $row)
+                        @if(is_array($row))
+                        <tr>
+                            <td>{{ $row['task'] ?? '' }}</td>
+                            <td>{{ $row['pic'] ?? '' }}</td>
+                            <td>{{ $row['deadline'] ?? '' }}</td>
+                        </tr>
+                        @endif
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        @endif
+
+        @if(!empty($s['risiko_catatan']) && is_array($s['risiko_catatan']))
+        <hr class="my-6" style="border-color:var(--divider)">
+        <div>
+            <h3 class="text-sm font-semibold uppercase tracking-wider mb-3" style="color:var(--text-muted)">Risiko / Catatan</h3>
+            <ul class="space-y-2">
+                @foreach($s['risiko_catatan'] as $item)
+                <li class="flex items-start gap-2 text-sm" style="color:var(--text-secondary)">
+                    <span style="color:#ef4444">•</span>
+                    <span>{{ $item }}</span>
+                </li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
         @endif
 
         <div class="flex items-center gap-3 mt-8 pt-6 border-t" style="border-color:var(--divider)">

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 
 class NotulensiSummarizerService
 {
-    public const PROMPT_VERSION = 'fallback-notulensi-v1';
+    public const PROMPT_VERSION = 'fallback-notulensi-v2';
 
     private DeepSeekNotulensiSummarizerService $deepseek;
     private GeminiNotulensiSummarizerService $gemini;
@@ -21,13 +21,16 @@ class NotulensiSummarizerService
         $this->gemini = $gemini;
     }
 
-    public function summarize(string $transcript): array
+    public function summarize(string $transcript, ?string $meetingName = null): array
     {
+        $context = $meetingName ? "Rapat: {$meetingName}\n\n" : '';
+        $fullTranscript = $context . $transcript;
+
         $errors = [];
 
         try {
             Log::info('NotulensiSummarizer: trying DeepSeek');
-            return $this->deepseek->summarize($transcript);
+            return $this->deepseek->summarize($fullTranscript);
         } catch (\Throwable $e) {
             Log::warning('NotulensiSummarizer: DeepSeek failed, falling back to Gemini', [
                 'error' => $e->getMessage(),
@@ -37,7 +40,7 @@ class NotulensiSummarizerService
 
         try {
             Log::info('NotulensiSummarizer: trying Gemini (free)');
-            return $this->gemini->summarize($transcript);
+            return $this->gemini->summarize($fullTranscript);
         } catch (\Throwable $e) {
             Log::error('NotulensiSummarizer: Gemini also failed', [
                 'error' => $e->getMessage(),

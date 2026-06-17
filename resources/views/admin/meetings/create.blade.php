@@ -12,7 +12,7 @@
         <p>Isi detail rapat yang akan dibuat</p>
     </div>
 
-    <div class="card p-6">
+    <div class="card p-6" x-data="{ meetingType: '{{ old('tipe_rapat', 'terjadwal') }}' }">
         <form method="POST" action="{{ route('admin.meetings.store') }}" class="space-y-5">
             @csrf
 
@@ -30,16 +30,19 @@
                 @error('deskripsi_rapat') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
 
-            <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-2 gap-3" x-show="meetingType === 'terjadwal'" style="display: none;">
                 <div>
                     <label class="block text-sm font-semibold mb-1.5" style="color:var(--text-secondary)">Tanggal <span class="text-red-400">*</span></label>
-                    <input type="date" name="tanggal" value="{{ old('tanggal', date('Y-m-d')) }}" required
+                    <input type="date" name="tanggal" value="{{ old('tanggal', date('Y-m-d')) }}"
+                           min="{{ date('Y-m-d') }}"
+                           :required="meetingType === 'terjadwal'"
                            class="w-full px-3 py-2.5 input-theme rounded-xl outline-none transition text-sm">
                     @error('tanggal') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
                     <label class="block text-sm font-semibold mb-1.5" style="color:var(--text-secondary)">Waktu <span class="text-red-400">*</span></label>
-                    <input type="time" name="waktu" value="{{ old('waktu', date('H:i')) }}" required
+                    <input type="time" name="waktu" value="{{ old('waktu', date('H:i')) }}"
+                           :required="meetingType === 'terjadwal'"
                            class="w-full px-3 py-2.5 input-theme rounded-xl outline-none transition text-sm">
                     @error('waktu') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
@@ -49,26 +52,26 @@
                 <label class="block text-sm font-semibold mb-2" style="color:var(--text-secondary)">Tipe Rapat <span class="text-red-400">*</span></label>
                 <div class="grid grid-cols-2 gap-3">
                     <label class="cursor-pointer">
-                        <input type="radio" name="tipe_rapat" value="Online" {{ old('tipe_rapat', 'Online') === 'Online' ? 'checked' : '' }} class="peer sr-only">
+                        <input type="radio" name="tipe_rapat" value="instan" x-model="meetingType" class="peer sr-only">
                         <div class="rounded-xl border-2 px-4 py-3 text-center hover:border-violet-300 peer-checked:border-violet-500 peer-checked:bg-violet-500/10 transition" style="border-color:var(--card-border);color:var(--text-secondary)">
-                            <div class="flex justify-center mb-1">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                            </div>
-                            <div class="font-semibold text-sm" style="color:var(--text-primary)">Online</div>
+                            <div class="text-lg mb-0.5">⚡</div>
+                            <div class="font-semibold text-sm" style="color:var(--text-primary)">Instan</div>
+                            <div class="text-xs mt-0.5" style="color:var(--text-muted)">Mulai sekarang</div>
                         </div>
                     </label>
                     <label class="cursor-pointer">
-                        <input type="radio" name="tipe_rapat" value="Offline" {{ old('tipe_rapat') === 'Offline' ? 'checked' : '' }} class="peer sr-only">
+                        <input type="radio" name="tipe_rapat" value="terjadwal" x-model="meetingType" class="peer sr-only">
                         <div class="rounded-xl border-2 px-4 py-3 text-center hover:border-violet-300 peer-checked:border-violet-500 peer-checked:bg-violet-500/10 transition" style="border-color:var(--card-border);color:var(--text-secondary)">
-                            <div class="flex justify-center mb-1">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                            </div>
-                            <div class="font-semibold text-sm" style="color:var(--text-primary)">Offline</div>
+                            <div class="text-lg mb-0.5">📅</div>
+                            <div class="font-semibold text-sm" style="color:var(--text-primary)">Terjadwal</div>
+                            <div class="text-xs mt-0.5" style="color:var(--text-muted)">Atur jadwal</div>
                         </div>
                     </label>
                 </div>
                 @error('tipe_rapat') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
+
+            <input type="hidden" name="jenis_rapat" value="Online">
 
             <div>
                 <label class="block text-sm font-semibold mb-1.5" style="color:var(--text-secondary)">Status</label>

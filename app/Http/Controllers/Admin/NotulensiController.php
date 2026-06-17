@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Notulensi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class NotulensiController extends Controller
 {
@@ -27,6 +28,18 @@ class NotulensiController extends Controller
     {
         $notulensi->load(['meeting', 'liveAudio']);
         return view('admin.notulensis.edit', compact('notulensi'));
+    }
+
+    public function downloadPdf(Notulensi $notulensi)
+    {
+        abort_if(blank($notulensi->file_pdf), 404, 'PDF notulensi belum tersedia.');
+
+        $disk = Storage::disk('local');
+        abort_unless($disk->exists($notulensi->file_pdf), 404, 'File PDF tidak ditemukan.');
+
+        $filename = 'notulensi-'.$notulensi->id.'.pdf';
+
+        return response()->download($disk->path($notulensi->file_pdf), $filename);
     }
 
     public function update(Request $request, Notulensi $notulensi)

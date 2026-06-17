@@ -287,7 +287,7 @@ class MeetingController extends Controller
                 'pipeline_started_at' => now(),
             ]);
 
-            $result = $summarizer->summarize($transkrip->hasil_transkrip);
+            $result = $summarizer->summarize($transkrip->hasil_transkrip, $meeting->nama_rapat);
 
             Log::info('generateLiveNotulensi: saving notulensi', [
                 'meeting_id' => $meeting->id,

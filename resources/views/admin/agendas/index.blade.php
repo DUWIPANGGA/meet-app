@@ -116,6 +116,7 @@
             </div>
             <form method="POST" action="{{ route('admin.meetings.store') }}" class="p-6 space-y-5">
                 @csrf
+                <input type="hidden" name="tipe_rapat" value="terjadwal">
                 <div>
                     <label class="block text-sm font-semibold mb-1.5" style="color:var(--text-secondary)">Nama Agenda <span class="text-red-400">*</span></label>
                     <input type="text" name="nama_rapat" required placeholder="Contoh: Rapat Koordinasi Bulanan"
@@ -125,7 +126,7 @@
                     <label class="block text-sm font-semibold mb-2" style="color:var(--text-secondary)">Jenis Agenda</label>
                     <div class="grid grid-cols-2 gap-3">
                         <label class="cursor-pointer">
-                            <input type="radio" name="tipe_rapat" value="Online" x-model="createJenis" class="peer sr-only">
+                            <input type="radio" name="jenis_rapat" value="Online" x-model="createJenis" class="peer sr-only">
                             <div class="rounded-xl border-2 px-4 py-3 text-center hover:border-violet-300 peer-checked:border-violet-500 peer-checked:bg-violet-500/10 transition" style="border-color:var(--card-border);color:var(--text-secondary)">
                                 <div class="flex justify-center mb-1">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
@@ -135,7 +136,7 @@
                             </div>
                         </label>
                         <label class="cursor-pointer">
-                            <input type="radio" name="tipe_rapat" value="Offline" x-model="createJenis" class="peer sr-only">
+                            <input type="radio" name="jenis_rapat" value="Offline" x-model="createJenis" class="peer sr-only">
                             <div class="rounded-xl border-2 px-4 py-3 text-center hover:border-violet-300 peer-checked:border-violet-500 peer-checked:bg-violet-500/10 transition" style="border-color:var(--card-border);color:var(--text-secondary)">
                                 <div class="flex justify-center mb-1">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>

@@ -51,6 +51,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::get('arsips/create', [ArsipController::class, 'create'])->name('arsips.create');
         Route::post('arsips', [ArsipController::class, 'store'])->name('arsips.store');
         Route::get('arsips/{arsip}', [ArsipController::class, 'show'])->name('arsips.show');
+        Route::get('arsips/{arsip}/pdf', [ArsipController::class, 'downloadPdf'])->name('arsips.pdf');
         Route::get('arsips/{arsip}/edit', [ArsipController::class, 'edit'])->name('arsips.edit');
         Route::put('arsips/{arsip}', [ArsipController::class, 'update'])->name('arsips.update');
         Route::delete('arsips/{arsip}', [ArsipController::class, 'destroy'])->name('arsips.destroy');
@@ -74,9 +75,15 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::middleware('user.permission:AdminAccessMeetings')->group(function () {
         Route::get('notulensis', [NotulensiController::class, 'index'])->name('notulensis.index');
         Route::get('notulensis/{notulensi}', [NotulensiController::class, 'show'])->name('notulensis.show');
+        Route::get('notulensis/{notulensi}/pdf', [NotulensiController::class, 'downloadPdf'])->name('notulensis.pdf');
         Route::get('notulensis/{notulensi}/edit', [NotulensiController::class, 'edit'])->name('notulensis.edit');
         Route::put('notulensis/{notulensi}', [NotulensiController::class, 'update'])->name('notulensis.update');
         Route::delete('notulensis/{notulensi}', [NotulensiController::class, 'destroy'])->name('notulensis.destroy');
     });
+
+    // Profile (tetap di layout admin)
+    Route::get('profile', [AdminController::class, 'profile'])->name('profile');
+    Route::put('profile', [AdminController::class, 'updateProfile'])->name('profile.update');
+    Route::put('profile/password', [AdminController::class, 'updatePassword'])->name('profile.password');
 
 });

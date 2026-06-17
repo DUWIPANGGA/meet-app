@@ -7,6 +7,7 @@ use App\Models\Arsip;
 use App\Models\Meeting;
 use App\Models\Notulensi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ArsipController extends Controller
 {
@@ -26,8 +27,8 @@ class ArsipController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'meeting_id' => 'required|exists:meetings,id',
-            'notulensi_id' => 'nullable|exists:notulensis,id',
+            'meeting_id'    => 'required|exists:meetings,id',
+            'notulensi_id'  => 'required|exists:notulensis,id',
             'tanggal_arsip' => 'required|date',
         ]);
 
@@ -63,6 +64,20 @@ class ArsipController extends Controller
 
         return redirect()->route('admin.arsips.index')
             ->with('success', 'Arsip berhasil diperbarui.');
+    }
+
+    public function downloadPdf(Arsip $arsip)
+    {
+        $arsip->load('notulensi');
+
+        abort_if(!$arsip->notulensi || blank($arsip->notulensi->file_pdf), 404, 'PDF notulensi belum tersedia.');
+
+        $disk = Storage::disk('local');
+        abort_unless($disk->exists($arsip->notulensi->file_pdf), 404, 'File PDF tidak ditemukan.');
+
+        $filename = 'notulensi-arsip-'.$arsip->id.'.pdf';
+
+        return response()->download($disk->path($arsip->notulensi->file_pdf), $filename);
     }
 
     public function destroy(Arsip $arsip)

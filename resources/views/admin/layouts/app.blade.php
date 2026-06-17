@@ -720,11 +720,18 @@
 
             {{-- User Dropdown --}}
             <div class="relative" style="position:relative" x-data="{ open: false }">
+                @php $u = auth()->user(); @endphp
                 <button @click="open = !open" @keydown.escape.window="open = false"
                     class="user-avatar-btn focus:outline-none focus:ring-2 focus:ring-violet-400">
-                    <div class="avatar-circle">
-                        {{ strtoupper(substr(auth()->user()?->name ?? 'A', 0, 1)) }}
+                    @if($u && $u->photo)
+                    <div class="w-9 h-9 rounded-full overflow-hidden border-2 border-white/30">
+                        <img src="{{ asset('storage/'.$u->photo) }}" alt="" class="w-full h-full object-cover">
                     </div>
+                    @else
+                    <div class="avatar-circle">
+                        {{ strtoupper(substr($u?->name ?? 'A', 0, 1)) }}
+                    </div>
+                    @endif
                 </button>
 
                 <div x-show="open" x-cloak x-transition:enter="transition ease-out duration-150"
@@ -738,13 +745,19 @@
                     {{-- User Info Header --}}
                     <div class="px-5 py-4 border-b border-[var(--divider)]">
                         <div class="flex items-center gap-3">
-                            <div class="avatar-circle" style="width:44px;height:44px;font-size:16px;flex-shrink:0">
-                                {{ strtoupper(substr(auth()->user()?->name ?? 'A', 0, 1)) }}
+                            @if($u && $u->photo)
+                            <div class="w-11 h-11 rounded-full overflow-hidden flex-shrink-0 border-2 border-violet-300" style="width:44px;height:44px;">
+                                <img src="{{ asset('storage/'.$u->photo) }}" alt="" class="w-full h-full object-cover">
                             </div>
+                            @else
+                            <div class="avatar-circle" style="width:44px;height:44px;font-size:16px;flex-shrink:0">
+                                {{ strtoupper(substr($u?->name ?? 'A', 0, 1)) }}
+                            </div>
+                            @endif
                             <div class="min-w-0">
                                 <div class="font-semibold text-[var(--text-primary)] text-sm truncate">
-                                    {{ auth()->user()?->name }}</div>
-                                <div class="text-xs text-[var(--text-muted)] truncate">{{ auth()->user()?->email }}
+                                    {{ $u?->name }}</div>
+                                <div class="text-xs text-[var(--text-muted)] truncate">{{ $u?->email }}
                                 </div>
                             </div>
                         </div>
@@ -752,7 +765,7 @@
 
                     {{-- Menu Items --}}
                     <div class="py-2 px-2">
-                        <a href="{{ route('profile.show') }}" class="dropdown-item">
+                        <a href="{{ route('admin.profile') }}" class="dropdown-item">
                             <div
                                 class="w-8 h-8 rounded-full bg-[var(--nav-link-hover)] flex items-center justify-center flex-shrink-0">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"

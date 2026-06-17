@@ -327,10 +327,17 @@
                 <div class="relative" x-data="{ open: false }">
                     <button @click="open = !open" @keydown.escape.window="open = false"
                         class="flex items-center gap-2 p-1 rounded-full hover:bg-[var(--nav-link-hover)] transition focus:outline-none focus:ring-2 focus:ring-violet-400">
+                        @php $u = auth()->user(); @endphp
+                        @if($u && $u->photo)
+                        <div class="w-9 h-9 rounded-full overflow-hidden border-2 border-white/30">
+                            <img src="{{ asset('storage/'.$u->photo) }}" alt="" class="w-full h-full object-cover">
+                        </div>
+                        @else
                         <div
                             class="w-9 h-9 rounded-full avatar-circle text-white flex items-center justify-center font-bold text-sm select-none">
-                            {{ strtoupper(substr(auth()->user()?->name ?? 'U', 0, 1)) }}
+                            {{ strtoupper(substr($u?->name ?? 'U', 0, 1)) }}
                         </div>
+                        @endif
                     </button>
 
                     <!-- Dropdown Panel -->
@@ -345,14 +352,20 @@
                         <!-- User Info Header -->
                         <div class="px-5 py-4 border-b" style="border-color:var(--divider)">
                             <div class="flex items-center gap-3">
+                                @if($u && $u->photo)
+                                <div class="w-11 h-11 rounded-full overflow-hidden flex-shrink-0 border-2 border-violet-300">
+                                    <img src="{{ asset('storage/'.$u->photo) }}" alt="" class="w-full h-full object-cover">
+                                </div>
+                                @else
                                 <div
                                     class="w-11 h-11 rounded-full avatar-circle text-white flex items-center justify-center font-bold text-base flex-shrink-0">
-                                    {{ strtoupper(substr(auth()->user()?->name ?? 'U', 0, 1)) }}
+                                    {{ strtoupper(substr($u?->name ?? 'U', 0, 1)) }}
                                 </div>
+                                @endif
                                 <div class="min-w-0">
                                     <p class="font-semibold text-[var(--text-primary)] text-sm truncate">
-                                        {{ auth()->user()?->name }}</p>
-                                    <p class="text-xs text-[var(--text-muted)] truncate">{{ auth()->user()?->email }}
+                                        {{ $u?->name }}</p>
+                                    <p class="text-xs text-[var(--text-muted)] truncate">{{ $u?->email }}
                                     </p>
                                 </div>
                             </div>
