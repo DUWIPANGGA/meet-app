@@ -33,7 +33,9 @@ if os.path.exists(".env"):
 # =========================
 # KONFIGURASI
 # =========================
-WHISPER_LANGUAGE = os.getenv("WHISPER_LANGUAGE", "id")
+_lang = os.getenv("WHISPER_LANGUAGE", "id")
+WHISPER_LANGUAGE = None if _lang.lower() in ("auto", "none", "") else _lang
+INITIAL_PROMPT = "Ini adalah transkripsi rapat meeting dalam Bahasa Indonesia dan Inggris."
 WHISPER_MODEL_SIZE = os.getenv("WHISPER_MODEL_SIZE", "base")
 DEVICE = os.getenv("WHISPER_DEVICE", "cpu")
 COMPUTE_TYPE = os.getenv("WHISPER_COMPUTE_TYPE", "int8")
@@ -187,10 +189,11 @@ async def transcribe(file: UploadFile = File(...)):
             target,
             language=WHISPER_LANGUAGE,
             vad_filter=True,
-            beam_size=1,
-            temperature=0,
-            condition_on_previous_text=False,
-            no_speech_threshold=0.6
+            beam_size=5,
+            no_speech_threshold=0.4,
+            initial_prompt=INITIAL_PROMPT,
+            temperature=[0.0, 0.2, 0.4],
+            condition_on_previous_text=False
         )
         text = " ".join([s.text for s in segments]).strip()
         logging.info(f"[HTTP] Raw whisper text: {text!r}")
@@ -232,11 +235,12 @@ async def ws_transcribe(ws: WebSocket):
                 segments, info = model.transcribe(
                     wav_path,
                     language=WHISPER_LANGUAGE,
-                    vad_filter=True, # Gunakan Silero VAD bawaan untuk memfilter noise/hening
-                    beam_size=1,
-                    temperature=0,
-                    condition_on_previous_text=False,
-                    no_speech_threshold=0.6
+                    vad_filter=True,
+                    beam_size=5,
+                    no_speech_threshold=0.4,
+                    initial_prompt=INITIAL_PROMPT,
+                    temperature=[0.0, 0.2, 0.4],
+                    condition_on_previous_text=False
                 )
                 return " ".join([s.text for s in segments]).strip()
 

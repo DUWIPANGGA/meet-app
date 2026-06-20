@@ -85,9 +85,12 @@
 
         #transcriptSidebar.collapsed {
             width: 0px !important;
+            min-width: 0 !important;
             border-left-width: 0px !important;
             opacity: 0;
             pointer-events: none;
+            padding: 0;
+            overflow: hidden;
         }
 
         /* ── Animated background ── */
@@ -674,7 +677,7 @@
                         <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
                     </div>
                     <button id="pinScreenShareBtn"
-                        class="absolute top-3 right-3 pin-btn text-xs px-2 py-1.5 z-30">📌</button>
+                        class="absolute top-3 right-3 pin-btn text-xs px-2 py-1.5 z-30"><svg class="w-4 h-4 inline" fill="currentColor" viewBox="0 0 24 24"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/></svg></button>
                     <button id="stopScreenShareBtn"
                         class="absolute top-3 right-14 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg z-30 hidden shadow-lg shadow-red-600/20">Stop
                         Sharing</button>
@@ -966,17 +969,43 @@
             </div>
             <div id="contextMenu" class="hidden fixed z-50 context-menu py-1 min-w-[140px]">
                 <button id="contextPinBtn"
-                    class="w-full text-left px-4 py-2.5 text-sm text-gray-200 hover:text-white flex items-center gap-2">📌
+                    class="w-full text-left px-4 py-2.5 text-sm text-gray-200 hover:text-white flex items-center gap-2"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/></svg>
                     Pin</button>
             </div>
         </div>
 
-        <div id="transcriptSidebar" class="hidden"></div>
+        <!-- Transcript Sidebar -->
+        <div id="transcriptSidebar" class="collapsed absolute top-0 right-0 h-full w-96 z-40 flex flex-col border-l border-white/5 bg-gray-900/90 backdrop-blur-xl transform transition-all duration-300">
+            <div class="p-4 border-b border-white/5 flex items-center justify-between shrink-0">
+                <div class="flex items-center gap-2">
+                    <span id="sidebarStatusIndicator" class="relative inline-flex rounded-full h-2 w-2 bg-gray-500">
+                        <span id="sidebarPulse" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-gray-400 opacity-75"></span>
+                    </span>
+                    <h3 class="text-sm font-bold text-white">Transkrip Rapat</h3>
+                </div>
+                <div class="flex items-center gap-1">
+                    <button id="toggleSidebarBtn" title="Sembunyikan transkrip" class="text-gray-400 hover:text-white hover:bg-white/10 rounded-lg p-1.5 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="px-4 py-2 border-b border-white/5 shrink-0">
+                <span id="transcribeStatus" class="text-gray-500 font-semibold uppercase tracking-wider text-xs">Nonaktif</span>
+            </div>
+            <div id="transcriptMessages" class="flex-1 min-h-0 overflow-y-auto p-3 space-y-3 custom-scrollbar">
+                <div id="emptyTranscriptMsg" class="text-gray-500 text-center py-8 italic text-xs">Belum ada transkrip aktif.</div>
+            </div>
+        </div>
+
+        <button id="openSidebarBtn" class="hidden fixed right-4 top-1/2 -translate-y-1/2 z-50 bg-gray-800/90 hover:bg-gray-700 border border-white/10 text-white p-3 rounded-l-xl shadow-xl transition-all">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+            <span id="sidebarActiveDot" class="absolute -top-1 -left-1 w-3 h-3 bg-emerald-500 rounded-full animate-pulse hidden"></span>
+        </button>
+
         <button id="startRecordBtn" class="hidden"></button>
         <button id="stopUploadBtn" class="hidden"></button>
         <a id="showNotulensiBtn" class="hidden"></a>
         <a id="pdfBtn" class="hidden"></a>
-        <div id="transcriptMessages" class="hidden"></div>
 
         <!-- Hidden canvas for screen recording -->
         <canvas id="recordingCanvas" class="hidden" width="1920" height="1080"></canvas>
@@ -1255,7 +1284,6 @@
             }
             if (localAvatarCircle) localAvatarCircle.classList.remove('speaking-ring');
         }
-        const clearTranscriptBtn = document.getElementById('clearTranscriptBtn');
         const sidebarPulse = document.getElementById('sidebarPulse');
         const sidebarStatusIndicator = document.getElementById('sidebarStatusIndicator');
         const transcribeStatusEl = document.getElementById('transcribeStatus');
@@ -1374,15 +1402,26 @@
                 minute: '2-digit'
             });
             const isMe = Number(userId) === currentUserId;
-            const nameColors = ['text-indigo-400', 'text-emerald-400', 'text-amber-400', 'text-pink-400', 'text-sky-400',
-                'text-purple-400'
-            ];
+            const nameColors = ['text-indigo-400', 'text-emerald-400', 'text-amber-400', 'text-pink-400', 'text-sky-400', 'text-purple-400'];
+            const avatarBgColors = ['bg-indigo-500/20', 'bg-emerald-500/20', 'bg-amber-500/20', 'bg-pink-500/20', 'bg-sky-500/20', 'bg-purple-500/20'];
             const colorIndex = Number(userId) % nameColors.length;
-            const nameStyle = isMe ? 'text-violet-400 font-bold' : nameColors[colorIndex] + ' font-semibold';
+            const nameColor = isMe ? 'text-violet-400' : nameColors[colorIndex];
+            const avatarBg = isMe ? 'bg-violet-500/20' : avatarBgColors[colorIndex];
+            const avatarTextColor = isMe ? 'text-violet-400' : nameColors[colorIndex];
+            const initial = (name || '?').charAt(0).toUpperCase();
+
             const div = document.createElement('div');
-            div.className = 'hover:bg-gray-800/35 px-2.5 py-1.5 rounded-lg transition-colors text-xs';
-            div.innerHTML =
-                `<span class="text-[9px] text-gray-500 font-mono mr-1.5">[${time}]</span><strong class="${nameStyle} mr-1.5">${escapeHtml(name)}:</strong><span class="transcript-text text-gray-300">${escapeHtml(text)}</span>`;
+            div.className = 'flex gap-2.5 items-start';
+            div.innerHTML = `
+                <div class="w-8 h-8 rounded-full ${avatarBg} flex items-center justify-center ${avatarTextColor} text-xs font-bold shrink-0 mt-0.5">${initial}</div>
+                <div class="min-w-0 flex-1">
+                    <div class="flex items-baseline gap-2 mb-0.5">
+                        <span class="${nameColor} font-semibold text-xs">${escapeHtml(name)}</span>
+                        <span class="text-gray-600 text-[10px] font-mono">${time}</span>
+                    </div>
+                    <div class="bg-white/5 rounded-lg rounded-tl-none px-3 py-2 text-gray-300 text-xs leading-relaxed transcript-text">${escapeHtml(text)}</div>
+                </div>
+            `;
             transcriptMessages.appendChild(div);
             transcriptMessages.scrollTop = transcriptMessages.scrollHeight;
             lastSpeakerId = userId;
@@ -1439,7 +1478,12 @@
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 }
             }).finally(() => {
-                window.location.href = '/join';
+                const ref = document.referrer || '';
+                let redirectUrl = '/join';
+                if (ref.includes('/admin')) {
+                    redirectUrl = '{{ route("admin.meetings.index") }}';
+                }
+                window.location.href = redirectUrl;
             });
         }
 
@@ -1486,7 +1530,7 @@
             pinBtn.id = `pin-btn-${safeKey}`;
             pinBtn.dataset.identity = identity;
             pinBtn.className = 'absolute top-2 right-2 pin-btn text-xs px-1.5 py-0.5 z-20 transition-colors';
-            pinBtn.textContent = '📌';
+            pinBtn.innerHTML = '<svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/></svg>';
             pinBtn.onclick = (e) => {
                 e.stopPropagation();
                 togglePin(identity);
@@ -2114,9 +2158,9 @@
             const pinBtn = document.getElementById('contextPinBtn');
             if (pinBtn) {
                 if (isPinned(identity)) {
-                    pinBtn.innerHTML = '📌 Unpin ' + escapeHtml(displayName);
+                    pinBtn.innerHTML = '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/></svg> Unpin ' + escapeHtml(displayName);
                 } else {
-                    pinBtn.innerHTML = '📌 Pin ' + escapeHtml(displayName);
+                    pinBtn.innerHTML = '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/></svg> Pin ' + escapeHtml(displayName);
                 }
                 pinBtn.onclick = () => {
                     togglePin(identity);
@@ -2246,13 +2290,15 @@
                     return;
                 }
                 if (data.type === 'start-recording-broadcast') {
-                    if (transcriptMessages) transcriptMessages.innerHTML = '';
+                    if (transcriptMessages) transcriptMessages.innerHTML = '<div id="emptyTranscriptMsg" class="text-gray-500 text-center py-8 italic text-xs">Belum ada transkrip aktif.</div>';
                     if (showNotulensiBtn) showNotulensiBtn.classList.add('hidden');
                     if (pdfBtn) pdfBtn.classList.add('opacity-40', 'pointer-events-none');
                     if (!liveTranscriptionActive) {
                         liveTranscriptionActive = true;
                         updateSidebarStatus('Menerima transkrip...', 'text-emerald-400', 'bg-emerald-500');
                     }
+                    if (transcriptSidebar) transcriptSidebar.classList.remove('collapsed');
+                    if (openSidebarBtn) openSidebarBtn.classList.add('hidden');
                     const dot = document.getElementById('aiNotulenActiveDot');
                     if (dot) dot.classList.remove('hidden');
                     return;
@@ -3179,6 +3225,8 @@
                             type: 'start-recording-broadcast'
                         });
                         if (aiNotulenActiveDot) aiNotulenActiveDot.classList.remove('hidden');
+                        if (transcriptSidebar) transcriptSidebar.classList.remove('collapsed');
+                        if (openSidebarBtn) openSidebarBtn.classList.add('hidden');
                     } catch (err) {
                         alert('Gagal memulai notulensi: ' + err.message);
                     }
@@ -3208,15 +3256,15 @@
         if (toggleSidebarBtn) toggleSidebarBtn.addEventListener('click', () => {
             transcriptSidebar.classList.add('collapsed');
             openSidebarBtn.classList.remove('hidden');
+            const activeDot = document.getElementById('sidebarActiveDot');
+            if (activeDot && liveTranscriptionActive) activeDot.classList.remove('hidden');
         });
         if (openSidebarBtn) openSidebarBtn.addEventListener('click', () => {
             transcriptSidebar.classList.remove('collapsed');
             openSidebarBtn.classList.add('hidden');
+            const activeDot = document.getElementById('sidebarActiveDot');
+            if (activeDot) activeDot.classList.add('hidden');
             transcriptMessages.scrollTop = transcriptMessages.scrollHeight;
-        });
-        if (clearTranscriptBtn) clearTranscriptBtn.addEventListener('click', () => {
-            if (confirm('Bersihkan transkrip?')) transcriptMessages.innerHTML =
-                '<div id="emptyTranscriptMsg" class="text-gray-500 text-center py-8 italic text-xs">Belum ada transkripsi aktif.</div>';
         });
 
         const closeModalBtns = [document.getElementById('closeNotulensiModalBtn'), document.getElementById(

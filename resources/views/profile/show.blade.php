@@ -1,6 +1,25 @@
 @extends('layouts.app')
 
 @section('content')
+<style>
+    .profile-header {
+        background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+        border-radius: 20px 20px 0 0;
+    }
+    .profile-name { color: #0f172a; }
+    .profile-email { color: #475569; }
+    .profile-header .avatar-circle { background: #94a3b8; border-color: #cbd5e1; }
+    .profile-header .badge { background: rgba(0,0,0,0.08); color: #475569; border-color: rgba(0,0,0,0.1); }
+    .profile-header .badge-active { background: rgba(22,163,74,0.12); color: #16a34a; border-color: rgba(22,163,74,0.2); }
+    .dark .profile-header {
+        background: linear-gradient(to right, #7c3aed, #4f46e5);
+    }
+    .dark .profile-name { color: #ffffff; }
+    .dark .profile-email { color: #c4b5fd; }
+    .dark .profile-header .avatar-circle { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.4); }
+    .dark .profile-header .badge { background: rgba(255,255,255,0.2); color: #ffffff; border-color: rgba(255,255,255,0.3); }
+    .dark .profile-header .badge-active { background: rgba(74,222,128,0.3); color: #86efac; border-color: rgba(74,222,128,0.4); }
+</style>
 <div class="p-6 w-full max-w-4xl mx-auto" x-data="{ tab: '{{ session('tab', 'profile') }}' }">
 
     {{-- Header --}}
@@ -13,25 +32,25 @@
     <div class="page-card overflow-hidden mb-6">
 
         {{-- Avatar Header --}}
-        <div class="bg-gradient-to-r from-violet-600 to-indigo-600 px-8 py-8 flex items-center gap-6">
+        <div class="profile-header px-8 py-8 flex items-center gap-6">
             @if($user->photo)
-            <div class="w-20 h-20 rounded-full border-2 border-white/40 overflow-hidden flex-shrink-0">
+            <div class="w-20 h-20 rounded-full border-2 overflow-hidden flex-shrink-0" style="border-color:var(--card-border)">
                 <img src="{{ asset('storage/'.$user->photo) }}" alt="{{ $user->name }}" class="w-full h-full object-cover">
             </div>
             @else
-            <div class="w-20 h-20 rounded-full bg-white/20 border-2 border-white/40 flex items-center justify-center text-white text-3xl font-bold select-none flex-shrink-0">
+            <div class="w-20 h-20 rounded-full border-2 flex items-center justify-center text-white text-3xl font-bold select-none flex-shrink-0" style="background:var(--accent);border-color:var(--card-border)">
                 {{ strtoupper(substr($user->name, 0, 1)) }}
             </div>
             @endif
             <div>
-                <h2 class="text-2xl font-bold text-white">{{ $user->name }}</h2>
-                <p class="text-violet-100 text-sm mt-0.5">{{ $user->email }}</p>
+                <h2 class="profile-name text-2xl font-bold">{{ $user->name }}</h2>
+                <p class="profile-email text-sm mt-0.5">{{ $user->email }}</p>
                 <div class="mt-2 flex items-center gap-2">
-                    <span class="inline-flex items-center gap-1.5 bg-white/20 text-white text-xs font-medium px-3 py-1 rounded-full border border-white/30">
+                    <span class="inline-flex items-center gap-1.5 badge text-xs font-medium px-3 py-1 rounded-full">
                         <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                         {{ $user->jabatan?->nama_jabatan ?? 'Belum diisi' }}
                     </span>
-                    <span class="inline-flex items-center gap-1.5 bg-green-400/30 text-green-100 text-xs font-medium px-3 py-1 rounded-full border border-green-300/40">
+                    <span class="inline-flex items-center gap-1.5 badge-active text-xs font-medium px-3 py-1 rounded-full">
                         ● Aktif
                     </span>
                 </div>

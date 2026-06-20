@@ -18,8 +18,12 @@ HALLUCINATIONS = [
     "terima kasih banyak",
     "thank you",
     "thank you for watching",
+    "subscribe",
+    "like and subscribe",
     "nonton",
-    "menonton"
+    "menonton",
+    "like subscribe",
+    "please subscribe"
 ]
 
 

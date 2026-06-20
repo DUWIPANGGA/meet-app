@@ -347,7 +347,7 @@
                         x-transition:leave="transition ease-in duration-100"
                         x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
                         @click.outside="open = false" style="display:none;"
-                        class="absolute right-0 top-full mt-2 w-64 glass-dropdown rounded-2xl z-50 overflow-hidden">
+                        class="absolute right-0 top-full mt-2 w-64 glass-dropdown rounded-2xl z-50 overflow-hidden" style="color:var(--text-primary)">
 
                         <!-- User Info Header -->
                         <div class="px-5 py-4 border-b" style="border-color:var(--divider)">
@@ -363,9 +363,9 @@
                                 </div>
                                 @endif
                                 <div class="min-w-0">
-                                    <p class="font-semibold text-[var(--text-primary)] text-sm truncate">
+                                    <p class="font-semibold text-sm truncate" style="color:var(--text-primary)">
                                         {{ $u?->name }}</p>
-                                    <p class="text-xs text-[var(--text-muted)] truncate">{{ $u?->email }}
+                                    <p class="text-xs truncate" style="color:var(--text-primary);opacity:0.7">{{ $u?->email }}
                                     </p>
                                 </div>
                             </div>
