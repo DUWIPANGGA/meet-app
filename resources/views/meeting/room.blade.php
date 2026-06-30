@@ -1177,13 +1177,14 @@
         const notulensiPdfUrl = baseUrl + '/notulensi-pdf';
         const whisperWsUrl = 'ws://127.0.0.1:8001/ws/transcribe';
 
-        // Dynamic Reverb config for LAN access (overrides VITE_* env if accessed via IP)
+        // Dynamic Reverb config — connects via WSS through Nginx proxy (/app/)
         const wsHost = window.location.hostname;
+        const isHttps = window.location.protocol === 'https:';
         window._REVERB_CONFIG = {
             host: wsHost,
-            wsPort: 8080,
-            wssPort: 8080,
-            scheme: 'http',
+            wsPort: isHttps ? 443 : 8080,
+            wssPort: 443,
+            scheme: isHttps ? 'https' : 'http',
             key: '{{ env('REVERB_APP_KEY') }}',
             authEndpoint: '/broadcasting/auth',
         };
@@ -1817,13 +1818,28 @@
             list.innerHTML = html;
         }
 
-        async function waitForLiveKit(timeout = 10000) {
+        async function waitForLiveKit(timeout = 15000) {
             const start = Date.now();
-            while (typeof LiveKit === 'undefined') {
+            while (typeof window.LiveKit === 'undefined') {
                 if (Date.now() - start > timeout) {
-                    throw new Error('LiveKit library gagal dimuat.');
+                    // Fallback: inject LiveKit from CDN if bundled version failed
+                    try {
+                        await new Promise((resolve, reject) => {
+                            const s = document.createElement('script');
+                            s.src = 'https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js';
+                            s.onload = () => {
+                                if (window.LiveKit) resolve();
+                                else reject(new Error('LiveKit CDN load failed'));
+                            };
+                            s.onerror = reject;
+                            document.head.appendChild(s);
+                        });
+                        return;
+                    } catch (e) {
+                        throw new Error('LiveKit library gagal dimuat.');
+                    }
                 }
-                await new Promise(r => setTimeout(r, 50));
+                await new Promise(r => setTimeout(r, 100));
             }
         }
 

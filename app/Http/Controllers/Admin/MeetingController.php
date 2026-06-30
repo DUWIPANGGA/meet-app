@@ -30,13 +30,21 @@ class MeetingController extends Controller
         $validated = $request->validate([
             'nama_rapat' => 'required|string|max:255',
             'deskripsi_rapat' => 'nullable|string|max:5000',
-            'tanggal' => 'nullable|date',
+            'tanggal' => 'nullable|date|after_or_equal:today',
             'waktu' => 'nullable|date_format:H:i',
             'tipe_rapat' => 'required|in:instan,terjadwal',
             'jenis_rapat' => 'nullable|in:Online,Offline',
             'link_meeting' => 'nullable|string|max:255',
             'status_rapat' => 'nullable|string|max:50',
         ]);
+
+        if (($validated['tipe_rapat'] ?? '') !== 'instan') {
+            $tanggal = $validated['tanggal'] ?? null;
+            $waktu = $validated['waktu'] ?? null;
+            if ($tanggal && $waktu && \Carbon\Carbon::parse($tanggal . ' ' . $waktu)->isPast()) {
+                return back()->withErrors(['waktu' => 'Tanggal dan waktu tidak boleh di masa lalu.'])->withInput();
+            }
+        }
 
         $isInstant = $validated['tipe_rapat'] === 'instan';
         $tipeRapatDb = $validated['jenis_rapat'];
@@ -66,12 +74,18 @@ class MeetingController extends Controller
         $validated = $request->validate([
             'nama_rapat' => 'required|string|max:255',
             'deskripsi_rapat' => 'nullable|string|max:5000',
-            'tanggal' => 'required|date',
+            'tanggal' => 'required|date|after_or_equal:today',
             'waktu' => 'required|date_format:H:i',
             'jenis_rapat' => 'required|in:Online,Offline',
             'link_meeting' => 'nullable|string|max:255',
             'status_rapat' => 'required|string|max:50',
         ]);
+
+        $tanggal = $validated['tanggal'];
+        $waktu = $validated['waktu'];
+        if (\Carbon\Carbon::parse($tanggal . ' ' . $waktu)->isPast()) {
+            return back()->withErrors(['waktu' => 'Tanggal dan waktu tidak boleh di masa lalu.'])->withInput();
+        }
 
         $validated['tipe_rapat'] = $validated['jenis_rapat'];
         unset($validated['jenis_rapat']);

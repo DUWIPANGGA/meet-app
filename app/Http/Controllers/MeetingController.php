@@ -49,6 +49,14 @@ class MeetingController extends Controller
         $waktuRapat = $validated['waktu_rapat'] ?? $validated['tipe_rapat'] ?? 'instant';
         $jenisRapat = $validated['jenis_rapat'] ?? 'online';
         $isInstant = $waktuRapat === 'instant';
+
+        if (! $isInstant) {
+            $tanggal = $validated['tanggal'] ?? null;
+            $waktu = $validated['waktu'] ?? null;
+            if ($tanggal && $waktu && \Carbon\Carbon::parse($tanggal . ' ' . $waktu)->isPast()) {
+                return back()->withErrors(['waktu' => 'Tanggal dan waktu tidak boleh di masa lalu.'])->withInput();
+            }
+        }
         $tipeRapatDb = $jenisRapat === 'online' ? 'Online' : 'Offline';
 
         $meeting = Meeting::create([
@@ -105,7 +113,7 @@ class MeetingController extends Controller
 
         $host = request()->getHost();
         $liveKitPort = parse_url(config('livekit.server_url'), PHP_URL_PORT) ?: '7880';
-        $liveKitUrl = "ws://{$host}:{$liveKitPort}";
+        $liveKitUrl = "wss://{$host}";
 
         $isCreator = (int) $meeting->dibuat_oleh === (int) $userId;
         $isAdmin = auth()->user()->hasAnyRole(['super_admin', 'admin']);
@@ -460,7 +468,7 @@ class MeetingController extends Controller
             }
         }
 
-        $serverUrl = "ws://{$host}:{$liveKitPort}";
+        $serverUrl = "wss://{$host}";
 
         $header = self::base64UrlEncode(json_encode([
             'typ' => 'JWT',

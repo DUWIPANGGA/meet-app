@@ -152,11 +152,13 @@
                         <label class="block text-sm font-semibold mb-1.5" style="color:var(--text-secondary)">Tanggal <span class="text-red-400">*</span></label>
                         <input type="date" name="tanggal" required min="{{ date('Y-m-d') }}"
                                class="w-full px-3 py-2.5 input-theme rounded-xl outline-none transition text-sm">
+                        @error('tanggal') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-semibold mb-1.5" style="color:var(--text-secondary)">Waktu <span class="text-red-400">*</span></label>
                         <input type="time" name="waktu" required
                                class="w-full px-3 py-2.5 input-theme rounded-xl outline-none transition text-sm">
+                        @error('waktu') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                 </div>
                 <div x-show="createJenis === 'Online'" style="display: none;">
@@ -216,7 +218,7 @@
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-sm font-semibold mb-1.5" style="color:var(--text-secondary)">Tanggal <span class="text-red-400">*</span></label>
-                        <input type="date" name="tanggal" x-model="editForm.tanggal" required
+                        <input type="date" name="tanggal" x-model="editForm.tanggal" required min="{{ date('Y-m-d') }}"
                                class="w-full px-3 py-2.5 input-theme rounded-xl outline-none transition text-sm">
                     </div>
                     <div>

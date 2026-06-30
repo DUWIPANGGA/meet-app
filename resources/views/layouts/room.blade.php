@@ -11,6 +11,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    {{-- Fallback: load LiveKit from CDN --}}
+    <script src="https://cdn.jsdelivr.net/npm/livekit-client@2.19.1/dist/livekit-client.umd.min.js" defer></script>
 </head>
 
 <body class="bg-gray-900 text-white h-screen overflow-hidden" style="font-family:'Inter',system-ui,sans-serif">
