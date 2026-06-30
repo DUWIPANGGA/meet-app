@@ -1175,7 +1175,7 @@
         const isAdmin = @json($isAdmin);
         const saveLiveTranscriptUrl = baseUrl + '/save-live-transcript';
         const notulensiPdfUrl = baseUrl + '/notulensi-pdf';
-        const whisperWsUrl = 'ws://127.0.0.1:8001/ws/transcribe';
+        const whisperWsUrl = (isHttps ? 'wss://' : 'ws://') + wsHost + '/ws/transcribe';
 
         // Dynamic Reverb config — connects via WSS through Nginx proxy (/app/)
         const wsHost = window.location.hostname;
