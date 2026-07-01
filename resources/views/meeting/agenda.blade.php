@@ -209,6 +209,13 @@
     /* FullCalendar theme override */
     .fc {
         font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+        background: transparent;
+    }
+    .fc .fc-toolbar {
+        background: transparent;
+    }
+    .fc .fc-toolbar-title {
+        background: transparent;
     }
     .fc-theme-standard th {
         border-color: var(--divider);
@@ -218,6 +225,12 @@
     }
     .fc-theme-standard td, .fc-theme-standard th {
         border-color: var(--divider);
+    }
+    .fc-theme-standard .fc-scrollgrid {
+        background: transparent;
+    }
+    .fc .fc-view-harness {
+        background: transparent;
     }
     .fc .fc-button-primary {
         background: var(--surface-bg);
