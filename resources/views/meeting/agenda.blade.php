@@ -4,15 +4,15 @@
 <!-- FullCalendar JS -->
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
 
-<div class="p-6 w-full max-w-7xl mx-auto flex flex-col h-full" x-data="agendaCalendar()">
-    <div class="flex items-center justify-between mb-6 shrink-0">
+<div class="p-4 sm:p-6 w-full max-w-7xl mx-auto flex flex-col h-full" x-data="agendaCalendar()">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 shrink-0 gap-3">
         <div>
-            <h1 class="text-3xl font-medium tracking-tight" style="color:var(--text-primary)">Agenda</h1>
-            <p class="mt-2" style="color:var(--text-secondary)">Jadwal rapat dan kegiatan.</p>
+            <h1 class="text-2xl sm:text-3xl font-medium tracking-tight" style="color:var(--text-primary)">Agenda</h1>
+            <p class="mt-1 sm:mt-2 text-sm sm:text-base" style="color:var(--text-secondary)">Jadwal rapat dan kegiatan.</p>
         </div>
         @can('CreateUserMeeting')
         <button @click="showCreateModal = true" type="button"
-                class="shrink-0 flex items-center gap-2 font-semibold py-2.5 px-5 rounded-xl transition shadow-lg shadow-violet-500/20 h-[44px]" style="background:linear-gradient(135deg, #7c3aed, #4f46e5);color:#fff">
+                class="shrink-0 flex items-center justify-center gap-2 font-semibold py-2.5 px-5 rounded-xl transition shadow-lg shadow-violet-500/20 h-[44px] w-full sm:w-auto text-sm" style="background:linear-gradient(135deg, #7c3aed, #4f46e5);color:#fff">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
             </svg>
@@ -28,7 +28,7 @@
         </div>
     @endif
 
-    <div class="page-card overflow-hidden flex-1 p-5 relative z-0 flex flex-col min-h-[600px]">
+    <div class="page-card overflow-hidden flex-1 p-3 sm:p-5 relative z-0 flex flex-col min-h-[400px] sm:min-h-[600px]">
         <div id="calendar" class="flex-1"></div>
     </div>
 
@@ -224,6 +224,8 @@
         border-color: var(--card-border);
         color: var(--text-secondary);
         text-transform: capitalize;
+        font-size: 0.8rem !important;
+        padding: 4px 8px !important;
     }
     .fc .fc-button-primary:not(:disabled):active,
     .fc .fc-button-primary:not(:disabled).fc-button-active,
@@ -243,9 +245,11 @@
     }
     .fc .fc-daygrid-day-number {
         color: var(--text-primary);
+        font-size: 0.85rem;
     }
     .fc .fc-col-header-cell-cushion {
         color: var(--text-secondary);
+        font-size: 0.75rem;
     }
     .fc .fc-daygrid-more-link {
         color: #7c3aed;
@@ -253,8 +257,8 @@
     .fc-event {
         cursor: pointer;
         border-radius: 4px;
-        padding: 3px 6px;
-        font-size: 0.85em;
+        padding: 2px 4px;
+        font-size: 0.75em;
         border: none;
         transition: transform 0.1s;
     }
@@ -262,8 +266,8 @@
         transform: scale(1.02);
     }
     .fc-toolbar-title {
-        font-size: 1.25rem !important;
-        font-weight: 500 !important;
+        font-size: 1rem !important;
+        font-weight: 600 !important;
         color: var(--text-primary);
     }
     .fc .fc-day-other .fc-daygrid-day-number {
@@ -285,6 +289,39 @@
     }
     .fc .fc-popover-header {
         background: var(--surface-bg);
+    }
+    .fc .fc-toolbar {
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+    .fc .fc-toolbar-chunk {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .fc .fc-button-group {
+        gap: 2px;
+    }
+    @media (max-width: 639px) {
+        .fc .fc-toolbar-title {
+            font-size: 0.9rem !important;
+        }
+        .fc .fc-button-primary {
+            font-size: 0.7rem !important;
+            padding: 3px 6px !important;
+        }
+        .fc .fc-daygrid-day-number {
+            font-size: 0.75rem;
+        }
+        .fc .fc-col-header-cell-cushion {
+            font-size: 0.65rem;
+        }
+        .fc .fc-toolbar {
+            gap: 4px;
+        }
+        .fc .fc-header-toolbar {
+            margin-bottom: 8px !important;
+        }
     }
 </style>
 
@@ -326,15 +363,16 @@
                     @endforeach
                 ];
 
+                var isMobile = window.innerWidth < 640;
                 var calendar = new FullCalendar.Calendar(calendarEl, {
-                    initialView: 'dayGridMonth',
+                    initialView: isMobile ? 'timeGridDay' : 'dayGridMonth',
                     headerToolbar: {
-                        left: 'prev,next today',
+                        left: isMobile ? 'prev,next' : 'prev,next today',
                         center: 'title',
-                        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                        right: isMobile ? 'timeGridDay,dayGridMonth' : 'dayGridMonth,timeGridWeek,timeGridDay'
                     },
                     events: events,
-                    height: '100%',
+                    height: 'auto',
                     eventClick: (info) => {
                         info.jsEvent.preventDefault();
 
