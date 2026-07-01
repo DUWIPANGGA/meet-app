@@ -939,7 +939,7 @@
             @endphp
             <button id="leaveBtn" class="flex flex-col items-center transition toolbar-btn ml-8">
                 <div class="h-12 flex items-center justify-center">
-                    <div class="{{ $canEnd ? 'btn-danger' : 'bg-gray-600 hover:bg-gray-500' }} text-white font-bold rounded-xl px-5 py-2.5 shadow-lg tracking-wide">
+                    <div class="btn-danger text-white font-bold rounded-xl px-5 py-2.5 shadow-lg tracking-wide">
                         {{ $canEnd ? 'Akhiri' : 'Keluar' }}
                     </div>
                 </div>
@@ -2011,6 +2011,7 @@
                 updateParticipantUI();
                 if (isCameraOff) startAudioMonitor();
                 if (@json($meeting->pipeline_status ?? 'idle') === 'processing') startPipelinePolling();
+                setTimeout(() => startLiveTranscription(), 1500);
             } catch (error) {
                 console.error(error);
                 setConnectionStatus('LiveKit: gagal', 'text-red-400');

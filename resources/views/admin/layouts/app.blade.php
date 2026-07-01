@@ -777,18 +777,6 @@
                             <span class="font-medium">Profil Saya</span>
                         </a>
 
-                        <a href="{{ route('meeting.join.form') }}" class="dropdown-item">
-                            <div
-                                class="w-8 h-8 rounded-full bg-[var(--nav-link-hover)] flex items-center justify-center flex-shrink-0">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                                </svg>
-                            </div>
-                            <span class="font-medium">Ke Halaman User</span>
-                        </a>
-
                         <div class="dd-sep"></div>
 
                         <a href="{{ route('logout') }}" class="dropdown-item danger">
