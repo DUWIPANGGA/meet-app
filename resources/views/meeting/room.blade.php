@@ -691,10 +691,10 @@
                         <div id="localAvatar"
                             class="absolute inset-0 bg-gray-900/80 flex items-center justify-center hidden z-10">
                             <div class="relative">
-                                <div id="localAvatarCircle"
-                                    style="width:112px;height:112px;border-radius:50%;background:#374151;display:flex;align-items:center;justify-content:center;transition:all 0.3s">
-                                    <span id="localAvatarText"
-                                        style="font-size:3rem;color:#fff;font-weight:700;text-transform:uppercase"></span>
+<div id="localAvatarCircle"
+    style="width:80px;height:80px;border-radius:50%;background:#374151;display:flex;align-items:center;justify-content:center;transition:all 0.3s">
+    <span id="localAvatarText"
+        style="font-size:2.25rem;color:#fff;font-weight:700;text-transform:uppercase"></span>
                                 </div>
                             </div>
                         </div>

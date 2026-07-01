@@ -111,9 +111,10 @@ class MeetingController extends Controller
             $meeting->update(['status_rapat' => 'Berlangsung']);
         }
 
-        $host = request()->getHost();
-        $liveKitPort = parse_url(config('livekit.server_url'), PHP_URL_PORT) ?: '7880';
-        $liveKitUrl = "wss://{$host}";
+        $liveKitUrl = config('livekit.server_url');
+        if (request()->isSecure()) {
+            $liveKitUrl = preg_replace('/^ws:/i', 'wss:', $liveKitUrl);
+        }
 
         $isCreator = (int) $meeting->dibuat_oleh === (int) $userId;
         $isAdmin = auth()->user()->hasAnyRole(['super_admin', 'admin']);
@@ -458,17 +459,11 @@ class MeetingController extends Controller
         $user = auth()->user();
         $apiKey = config('livekit.api_key');
         $apiSecret = config('livekit.api_secret');
-        $host = request()->getHost();
-        $liveKitPort = parse_url(config('livekit.server_url'), PHP_URL_PORT) ?: '7880';
 
-        if (filter_var($host, FILTER_VALIDATE_IP) !== false) {
-            $ip = ip2long($host);
-            if ($ip !== false && ($ip & 0xFF000000) === 0x7F000000) {
-                $host = '127.0.0.1';
-            }
+        $serverUrl = config('livekit.server_url');
+        if (request()->isSecure()) {
+            $serverUrl = preg_replace('/^ws:/i', 'wss:', $serverUrl);
         }
-
-        $serverUrl = "wss://{$host}";
 
         $header = self::base64UrlEncode(json_encode([
             'typ' => 'JWT',
