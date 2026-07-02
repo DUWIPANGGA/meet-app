@@ -32,6 +32,47 @@
             </div>
         </div>
 
+        {{-- Audio Player --}}
+        @php($rek = $arsip->meeting?->rekamanAudio->first())
+        @if($rek && ($rek->extracted_audio_path || $rek->raw_recording_path))
+        <hr class="my-6" style="border-color:var(--divider)">
+        <div>
+            <h3 class="text-sm font-semibold uppercase tracking-wider mb-3" style="color:var(--text-muted)">Rekaman Audio</h3>
+            <div class="flex items-center gap-3 mb-3">
+                @if($rek->durasi)<span class="text-xs" style="color:var(--text-muted)">Durasi: {{ $rek->durasi }}</span>@endif
+                @if($rek->language)<span class="text-xs" style="color:var(--text-muted)">Bahasa: {{ $rek->language }}</span>@endif
+            </div>
+            <audio controls preload="metadata" style="width:100%;height:40px;border-radius:8px">
+                <source src="{{ route('admin.rekaman-audio.play', $rek) }}" type="{{ $rek->mime_type ?: 'audio/mpeg' }}">
+            </audio>
+        </div>
+        @endif
+
+        {{-- Transcript --}}
+        @php($trans = $arsip->meeting?->transkrip)
+        @if($trans && $trans->hasil_transkrip)
+        <hr class="my-6" style="border-color:var(--divider)">
+        <div x-data="{ expanded: false }">
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm font-semibold uppercase tracking-wider" style="color:var(--text-muted)">Hasil Transkrip</h3>
+                @if(strlen($trans->hasil_transkrip) > 500)
+                <button @click="expanded = !expanded" class="text-xs font-medium transition hover:opacity-70" style="color:#7c3aed">
+                    <span x-show="!expanded">Lihat Lengkap</span>
+                    <span x-show="expanded">Sembunyikan</span>
+                </button>
+                @endif
+            </div>
+            <div class="text-sm leading-relaxed whitespace-pre-line" style="color:var(--text-secondary);line-height:1.8"
+                 :class="expanded ? '' : 'line-clamp-6'"
+                 x-bind:style="expanded ? '' : 'display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;overflow:hidden'">
+                {{ $trans->hasil_transkrip }}
+            </div>
+            @if($trans->openai_model)
+            <p class="text-xs mt-2" style="color:var(--text-muted)">Model: {{ $trans->openai_model }} &middot; {{ $trans->tanggal_generate ? \Carbon\Carbon::parse($trans->tanggal_generate)->translatedFormat('d M Y') : '' }}</p>
+            @endif
+        </div>
+        @endif
+
         @if($arsip->notulensi && $arsip->notulensi->file_pdf)
         <hr class="my-6" style="border-color:var(--divider)">
         <div class="flex items-center gap-3">

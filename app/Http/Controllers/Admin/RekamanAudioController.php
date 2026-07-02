@@ -48,6 +48,19 @@ class RekamanAudioController extends Controller
         ]);
     }
 
+    public function play(RekamanAudio $rekaman)
+    {
+        $disk = Storage::disk('local');
+        $path = $rekaman->extracted_audio_path ?? $rekaman->raw_recording_path;
+
+        abort_if(!$path || !$disk->exists($path), 404, 'File audio tidak ditemukan.');
+
+        $mime = $rekaman->mime_type ?: 'audio/mpeg';
+        $fullPath = $disk->path($path);
+
+        return response()->file($fullPath, ['Content-Type' => $mime]);
+    }
+
     public function download(RekamanAudio $rekaman)
     {
         if ($rekaman->tipe_rekaman !== 'video') {

@@ -4,7 +4,7 @@
 <!-- FullCalendar JS -->
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
 
-<div class="p-4 sm:p-6 w-full max-w-7xl mx-auto flex flex-col h-full" x-data="agendaCalendar()">
+<div class="p-4 sm:p-6 w-full max-w-7xl mx-auto" x-data="agendaCalendar()">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 shrink-0 gap-3">
         <div>
             <h1 class="text-2xl sm:text-3xl font-medium tracking-tight" style="color:var(--text-primary)">Agenda</h1>
@@ -28,8 +28,8 @@
         </div>
     @endif
 
-    <div class="page-card overflow-hidden flex-1 p-3 sm:p-5 relative z-0 flex flex-col min-h-[400px] sm:min-h-[600px]">
-        <div id="calendar" class="flex-1"></div>
+    <div class="page-card overflow-hidden p-3 sm:p-5 relative z-0">
+        <div id="calendar" class="w-full"></div>
     </div>
 
     <!-- ===================== Event Detail Modal ===================== -->
@@ -222,6 +222,18 @@
         padding: 8px 0;
         font-weight: 500;
         color: var(--text-secondary);
+        background: var(--surface-bg) !important;
+    }
+    .fc .fc-header-toolbar {
+        background: var(--surface-bg);
+        padding: 8px 12px;
+        border-radius: 12px;
+        margin-bottom: 12px !important;
+    }
+    .fc .fc-popover {
+        background: var(--card-bg);
+        border-color: var(--card-border);
+        box-shadow: var(--card-shadow);
     }
     .fc-theme-standard td, .fc-theme-standard th {
         border-color: var(--divider);
@@ -386,6 +398,7 @@
                     },
                     events: events,
                     height: 'auto',
+                    contentHeight: 'auto',
                     eventClick: (info) => {
                         info.jsEvent.preventDefault();
 

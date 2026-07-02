@@ -40,7 +40,7 @@ class ArsipController extends Controller
 
     public function show(Arsip $arsip)
     {
-        $arsip->load(['meeting', 'notulensi']);
+        $arsip->load(['meeting.transkrip', 'meeting.rekamanAudio', 'notulensi']);
         return view('admin.arsips.show', compact('arsip'));
     }
 

@@ -49,7 +49,7 @@
         </div>
 
         {{-- RIGHT: Neon backdrop + mascot image + floating icons (all inside one container) --}}
-        <div style="position:absolute;right:0;bottom:0;top:0;width:52%;z-index:1;overflow:visible;">
+        <div class="hero-right-decor" style="position:absolute;right:0;bottom:0;top:0;width:52%;z-index:1;overflow:visible;">
 
             {{-- ── Neon backdrop layers (z-index 0, behind image) ── --}}
 
@@ -440,6 +440,7 @@
         </div>
 
         @if ($recentMeetings->count())
+            <div style="overflow-x:auto">
             <table>
                 <thead>
                     <tr>
@@ -452,7 +453,7 @@
                 <tbody>
                     @foreach ($recentMeetings as $m)
                         <tr>
-                            <td style="font-weight:600;color:var(--text-primary)">{{ $m->nama_rapat }}</td>
+                            <td style="font-weight:600;color:var(--text-primary);white-space:nowrap">{{ $m->nama_rapat }}</td>
                             <td>
                                 <span class="badge"
                                     style="
@@ -460,7 +461,7 @@
                         color:{{ $m->tipe_rapat === 'Online' ? '#2563eb' : '#d97706' }};
                     ">{{ $m->tipe_rapat }}</span>
                             </td>
-                            <td>{{ \Carbon\Carbon::parse($m->tanggal)->translatedFormat('d M Y') }}
+                            <td style="white-space:nowrap">{{ \Carbon\Carbon::parse($m->tanggal)->translatedFormat('d M Y') }}
                                 {{ $m->waktu ? '· ' . substr($m->waktu, 0, 5) : '' }}</td>
                             <td>
                                 <span class="badge"
@@ -473,6 +474,7 @@
                     @endforeach
                 </tbody>
             </table>
+            </div>
         @else
             <div style="padding:48px;text-align:center">
                 <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5"
@@ -501,6 +503,12 @@
         :root:not(.dark) .hero-banner {
             background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 30%, #7dd3fc 60%, #38bdf8 100%);
         }
+        @media (max-width: 768px) {
+            .hero-right-decor { display: none !important; }
+            .hero-banner { min-height: auto; }
+            .hero-title br { display: none; }
+        }
+
         :root:not(.dark) .hero-badge {
             display: inline-flex;
             align-items: center;
@@ -597,6 +605,12 @@
             position: relative;
             z-index: 2;
             max-width: 55%;
+        }
+        @media (max-width: 768px) {
+            .hero-text {
+                max-width: 100%;
+                padding: 24px 20px;
+            }
         }
 
         .hero-sparkles { position:absolute;inset:0;pointer-events:none;overflow:hidden; }

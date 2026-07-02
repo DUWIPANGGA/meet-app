@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\AgendaController;
 use App\Http\Controllers\Admin\ArsipController;
 use App\Http\Controllers\Admin\NotulensiController;
 use App\Http\Controllers\Admin\RekamanAudioController;
+use App\Http\Controllers\Admin\TranskripController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -57,9 +58,21 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::delete('arsips/{arsip}', [ArsipController::class, 'destroy'])->name('arsips.destroy');
     });
 
+    // Transkrip (CRUD)
+    Route::middleware('user.permission:AdminAccessArsips')->group(function () {
+        Route::get('transkrips', [TranskripController::class, 'index'])->name('transkrips.index');
+        Route::get('transkrips/create', [TranskripController::class, 'create'])->name('transkrips.create');
+        Route::post('transkrips', [TranskripController::class, 'store'])->name('transkrips.store');
+        Route::get('transkrips/{transkrip}', [TranskripController::class, 'show'])->name('transkrips.show');
+        Route::get('transkrips/{transkrip}/edit', [TranskripController::class, 'edit'])->name('transkrips.edit');
+        Route::put('transkrips/{transkrip}', [TranskripController::class, 'update'])->name('transkrips.update');
+        Route::delete('transkrips/{transkrip}', [TranskripController::class, 'destroy'])->name('transkrips.destroy');
+    });
+
     // Rekaman Audio
     Route::middleware('user.permission:AdminAccessRekamanAudio')->group(function () {
         Route::get('rekaman-audio', [RekamanAudioController::class, 'index'])->name('rekaman-audio.index');
+        Route::get('rekaman-audio/{rekaman}/play', [RekamanAudioController::class, 'play'])->name('rekaman-audio.play');
         Route::delete('rekaman-audio/{rekaman}', [RekamanAudioController::class, 'destroy'])->name('rekaman-audio.destroy');
     });
 
