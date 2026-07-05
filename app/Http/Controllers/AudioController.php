@@ -251,6 +251,14 @@ class AudioController extends Controller
             'notulensi_teks' => $request->notulensi_teks,
         ]);
 
+        if (auth()->user()?->hasAnyRole(['super_admin', 'admin'])) {
+            $notulensi = Notulensi::where('live_audio_id', $liveAudio->id)->first();
+            if ($notulensi) {
+                return redirect()->route('admin.notulensis.show', $notulensi)
+                    ->with('success', 'Notulensi berhasil diperbarui!');
+            }
+        }
+
         return redirect()->route('audio.show', $liveAudio->id)
             ->with('success', 'Notulensi berhasil diperbarui!');
     }
@@ -297,6 +305,10 @@ class AudioController extends Controller
         Notulensi::where('live_audio_id', $liveAudio->id)->delete();
 
         $liveAudio->delete();
+
+        if (auth()->user()?->hasAnyRole(['super_admin', 'admin'])) {
+            return redirect()->route('admin.notulensis.index')->with('success', 'Riwayat notulensi berhasil dihapus.');
+        }
 
         return redirect()->route('audio.history')->with('success', 'Riwayat notulensi berhasil dihapus.');
     }
