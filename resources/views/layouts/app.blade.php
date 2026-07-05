@@ -386,22 +386,6 @@
                                 <span class="font-medium">Profil Saya</span>
                             </a>
 
-                            @if (auth()->user()
-                                    ?->hasAnyRole(['super_admin', 'admin']))
-                                <a href="{{ route('admin.dashboard') }}"
-                                    class="dropdown-item flex items-center gap-3 px-3 py-2.5 text-sm group">
-                                    <div
-                                        class="w-8 h-8 rounded-full bg-[var(--nav-link-hover)] flex items-center justify-center flex-shrink-0 group-hover:bg-violet-500/20 transition">
-                                        <svg class="w-4 h-4 text-[var(--text-secondary)] group-hover:text-violet-400"
-                                            fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
-                                        </svg>
-                                    </div>
-                                    <span class="font-medium">Halaman Admin</span>
-                                </a>
-                            @endif
-
                             <div class="border-t my-2 mx-1" style="border-color:var(--divider)"></div>
 
                             <a href="{{ route('logout') }}"

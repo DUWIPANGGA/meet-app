@@ -123,7 +123,7 @@ class AudioController extends Controller
         }
 
         // Simpan juga ke tabel notulensis agar tampil di admin/notulensis
-        Notulensi::updateOrCreate(
+        $notulensi = Notulensi::updateOrCreate(
             ['live_audio_id' => $liveAudio->id],
             [
                 'meeting_id'         => null,
@@ -135,10 +135,14 @@ class AudioController extends Controller
             ]
         );
 
+        $redirectUrl = auth()->user()?->hasAnyRole(['super_admin', 'admin'])
+            ? route('admin.notulensis.show', $notulensi)
+            : route('audio.show', $liveAudio->id);
+
         return response()->json([
             'status'       => 'success',
             'message'      => 'Notulensi berhasil disimpan!',
-            'redirect_url' => route('audio.show', $liveAudio->id),
+            'redirect_url' => $redirectUrl,
         ]);
     }
 

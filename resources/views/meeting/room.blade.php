@@ -627,6 +627,249 @@
         .sidebar-item {
             animation: fadeInUp 0.3s ease-out both;
         }
+
+        /* ── Mobile More Dropdown ── */
+        #mobileMoreBtn {
+            display: none;
+        }
+        #mobileMoreDropdown {
+            display: none;
+        }
+
+        /* ── Mobile Responsive ── */
+        @media (max-width: 767px) {
+            #videoGridMain.layout-grid {
+                gap: 4px !important;
+            }
+            #videoGridMain.layout-grid.grid-cols-3,
+            #videoGridMain.layout-grid.grid-cols-4 {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            }
+            .top-bar {
+                padding: 10px 12px !important;
+            }
+            .top-bar h1 {
+                font-size: 14px !important;
+            }
+            .top-bar > div:first-child svg {
+                width: 20px !important;
+                height: 20px !important;
+            }
+            #roomThemeToggle {
+                padding: 6px !important;
+            }
+            #roomThemeToggle svg {
+                width: 18px !important;
+                height: 18px !important;
+            }
+
+            .video-grid-container {
+                margin: 4px !important;
+                border-radius: 16px !important;
+            }
+            .video-card {
+                border-radius: 12px !important;
+            }
+            #videoGridMain .video-card.m-1 {
+                margin: 2px !important;
+            }
+            #localAvatarCircle {
+                width: 48px !important;
+                height: 48px !important;
+            }
+            #localAvatarCircle span {
+                font-size: 1.5rem !important;
+            }
+            #localAvatarText {
+                font-size: 1.25rem !important;
+            }
+            [id^="remote-avatar-circle-"] {
+                width: 64px !important;
+                height: 64px !important;
+            }
+            [id^="remote-avatar-circle-"] span {
+                font-size: 2rem !important;
+            }
+
+            .bottom-toolbar {
+                padding: 6px 4px !important;
+                gap: 12px !important;
+                overflow: visible !important;
+                flex-wrap: nowrap !important;
+                justify-content: center !important;
+            }
+            .bottom-toolbar .toolbar-btn {
+                flex-shrink: 0;
+                min-width: 0;
+                padding: 0 6px;
+            }
+            .bottom-toolbar .toolbar-btn .h-12 {
+                height: 28px !important;
+            }
+            .bottom-toolbar .toolbar-btn svg {
+                width: 20px !important;
+                height: 20px !important;
+            }
+            .bottom-toolbar .toolbar-btn span:last-child {
+                font-size: 8px !important;
+                margin-top: 0 !important;
+            }
+            .bottom-toolbar #leaveBtn {
+                margin-left: 2px !important;
+            }
+            .bottom-toolbar #leaveBtn .btn-danger {
+                padding: 4px 8px !important;
+                font-size: 10px !important;
+                border-radius: 6px !important;
+            }
+            #participantBadge {
+                font-size: 7px !important;
+                padding: 1px 3px !important;
+                top: -4px !important;
+                right: -4px !important;
+            }
+            .bottom-toolbar .ml-8 {
+                margin-left: 2px !important;
+            }
+
+            .mobile-hide {
+                display: none !important;
+            }
+            #mobileMoreBtn {
+                display: flex !important;
+            }
+            #mobileMoreDropdown {
+                position: fixed;
+                bottom: 70px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: calc(100vw - 16px);
+                max-width: 340px;
+                background: var(--toolbar-bg);
+                backdrop-filter: blur(20px) saturate(1.4);
+                border: 1px solid var(--toolbar-border);
+                border-radius: 16px;
+                box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.5);
+                z-index: 100;
+                padding: 12px;
+            }
+            #mobileMoreDropdown .more-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+            #mobileMoreDropdown .more-grid button {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 4px;
+                padding: 10px 4px;
+                border-radius: 12px;
+                background: transparent;
+                color: var(--toolbar-icon);
+                transition: background 0.2s;
+                font-size: 10px;
+                border: none;
+                cursor: pointer;
+                min-width: 0;
+            }
+            #mobileMoreDropdown .more-grid button:hover {
+                background: var(--hover-bg);
+            }
+            #mobileMoreDropdown .more-grid button svg {
+                width: 22px !important;
+                height: 22px !important;
+            }
+            #mobileMoreDropdown .more-grid button .h-12 {
+                height: 28px !important;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            #mobileMoreDropdown .more-grid button span {
+                font-size: 9px !important;
+                font-weight: 600;
+            }
+
+            #participantSidebar {
+                width: 100vw !important;
+            }
+            #transcriptSidebar {
+                width: 100vw !important;
+            }
+            #transcriptSidebar .p-4 {
+                padding: 10px 12px !important;
+            }
+
+            #openSidebarBtn {
+                right: 8px !important;
+                padding: 8px !important;
+            }
+            #openSidebarBtn svg {
+                width: 18px !important;
+                height: 18px !important;
+            }
+
+            #sharePopup,
+            #recordingPopup,
+            #aiLoadingOverlay {
+                width: 260px !important;
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+            }
+
+            #notulensiModal > div {
+                width: 95% !important;
+                height: 92vh !important;
+                border-radius: 16px !important;
+            }
+            #notulensiModal .p-6 {
+                padding: 14px !important;
+            }
+            #notulensiModal .grid-cols-1.md\:grid-cols-2 {
+                grid-template-columns: 1fr !important;
+            }
+            #notulensiModal .text-lg {
+                font-size: 15px !important;
+            }
+            #notulensiModal table {
+                font-size: 12px !important;
+            }
+            #notulensiModal th,
+            #notulensiModal td {
+                padding: 6px 8px !important;
+            }
+
+            .speaker-strip {
+                height: 80px !important;
+            }
+            .speaker-strip .video-card {
+                min-width: 100px !important;
+                height: 72px !important;
+            }
+            .sidebar-vertical-strip {
+                width: 80px !important;
+            }
+            .sidebar-vertical-strip .video-card {
+                min-height: 60px !important;
+            }
+            .spotlight-overlay {
+                width: 100px !important;
+                height: 70px !important;
+            }
+
+            #confirmNotulenModal > div {
+                padding: 20px !important;
+                width: 90% !important;
+            }
+            #confirmNotulenModal h2 {
+                font-size: 18px !important;
+            }
+            #confirmNotulenModal button {
+                font-size: 15px !important;
+                padding: 8px 20px !important;
+            }
+        }
     </style>
 
     <div class="h-screen flex flex-col relative meeting-bg text-white overflow-hidden font-sans">
@@ -665,8 +908,8 @@
         </div>
 
         <!-- Video Grid Area -->
-        <div class="flex-1 w-full h-full p-2 pb-24 relative flex flex-col">
-            <div id="videoGridWrapper" class="flex-1 overflow-hidden relative flex flex-row video-grid-container m-2">
+        <div class="flex-1 w-full h-full p-1 md:p-2 pb-24 relative flex flex-col">
+            <div id="videoGridWrapper" class="flex-1 overflow-hidden relative flex flex-row video-grid-container m-1 md:m-2">
                 <!-- Screen Share Display -->
                 <div id="screenShareContainer" class="hidden flex-1 min-w-0 relative screen-share-container m-2"
                     style="background:#111">
@@ -707,7 +950,7 @@
                 </div>
             </div>
             <!-- Pagination Dots -->
-            <div id="paginationDots" class="flex justify-center items-center gap-2 py-2 flex-shrink-0" style="display:none">
+            <div id="paginationDots" class="flex justify-center items-center gap-1 md:gap-2 py-1 md:py-2 flex-shrink-0" style="display:none">
             </div>
 
             <!-- "Simpan Notulen Rapat?" Confirmation Modal -->
@@ -727,7 +970,7 @@
 
         <!-- Bottom Toolbar -->
         <div
-            class="absolute bottom-0 left-0 right-0 bottom-toolbar border-t border-gray-700/50 py-3 px-6 flex justify-between md:justify-center md:gap-16 items-center z-50 shadow-[0_-8px_30px_rgba(0,0,0,0.6)]">
+            class="absolute bottom-0 left-0 right-0 bottom-toolbar border-t border-gray-700/50 py-3 px-6 flex justify-between md:justify-center md:gap-16 items-center z-50 shadow-[0_-8px_30px_rgba(0,0,0,0.6)] overflow-x-auto overflow-y-hidden md:overflow-x-visible">
             <!-- Kamera -->
             <button id="cameraBtn" class="flex flex-col items-center text-white hover:text-gray-200 transition toolbar-btn">
                 <div class="h-12 flex items-center justify-center">
@@ -759,7 +1002,7 @@
             </button>
 
             <!-- AI Notulen -->
-            <div class="relative flex flex-col items-center">
+            <div class="relative flex flex-col items-center mobile-hide">
                 <button id="aiNotulenTriggerBtn"
                     class="flex flex-col items-center text-white hover:text-gray-200 transition toolbar-btn relative">
                     <div class="h-12 flex items-center justify-center">
@@ -790,7 +1033,7 @@
                 <button id="shareBtn"
                     class="flex flex-col items-center text-white hover:text-gray-200 transition toolbar-btn">
                     <div class="h-12 flex items-center justify-center">
-                        <svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="1.5"
+                        <svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-width="1.5"
                             viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z">
@@ -831,7 +1074,7 @@
 
             <!-- Partisipan -->
             <button id="participantBtn"
-                class="flex flex-col items-center text-white hover:text-gray-200 transition toolbar-btn relative">
+                class="flex flex-col items-center text-white hover:text-gray-200 transition toolbar-btn relative mobile-hide">
                 <div class="h-12 flex items-center justify-center relative">
                     <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24">
                         <path
@@ -845,7 +1088,7 @@
 
             <!-- Share Screen -->
             <button id="screenShareBtn"
-                class="flex flex-col items-center text-white hover:text-gray-200 transition toolbar-btn relative">
+                class="flex flex-col items-center text-white hover:text-gray-200 transition toolbar-btn relative mobile-hide">
                 <div class="h-12 flex items-center justify-center">
                     <svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -857,8 +1100,24 @@
                     class="hidden absolute -top-0.5 right-1 w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse"></span>
             </button>
 
+            <!-- More (mobile) -->
+            <button id="mobileMoreBtn"
+                class="flex flex-col items-center text-white hover:text-gray-200 transition toolbar-btn">
+                <div class="h-12 flex items-center justify-center">
+                    <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24">
+                        <circle cx="12" cy="5" r="2"/>
+                        <circle cx="12" cy="12" r="2"/>
+                        <circle cx="12" cy="19" r="2"/>
+                    </svg>
+                </div>
+                <span class="text-sm font-semibold mt-1">Lainnya</span>
+            </button>
+            <div id="mobileMoreDropdown">
+                <div class="more-grid"></div>
+            </div>
+
             <!-- Layout Selector -->
-            <div class="relative flex flex-col items-center">
+            <div class="relative flex flex-col items-center mobile-hide">
                 <button id="layoutBtn"
                     class="flex flex-col items-center text-white hover:text-gray-200 transition toolbar-btn">
                     <div class="h-12 flex items-center justify-center">
@@ -891,7 +1150,7 @@
             </div>
 
             <!-- Rekam Layar -->
-            <div class="relative flex flex-col items-center">
+            <div class="relative flex flex-col items-center mobile-hide">
                 <button id="recordScreenBtn"
                     class="flex flex-col items-center text-white hover:text-gray-200 transition toolbar-btn relative">
                     <div class="h-12 flex items-center justify-center">
@@ -948,7 +1207,7 @@
 
         <!-- Participant Sidebar -->
         <div id="participantSidebar"
-            class="absolute top-0 right-0 h-full w-80 participant-sidebar z-40 transform translate-x-full transition-transform duration-300 flex flex-col">
+            class="absolute top-0 right-0 h-full w-80 max-w-[85vw] participant-sidebar z-40 transform translate-x-full transition-transform duration-300 flex flex-col">
             <div class="p-4 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
                 <h2 class="text-lg font-bold text-white flex items-center gap-2"><svg class="w-5 h-5 text-violet-400"
                         fill="currentColor" viewBox="0 0 24 24">
@@ -975,7 +1234,7 @@
         </div>
 
         <!-- Transcript Sidebar -->
-        <div id="transcriptSidebar" class="collapsed absolute top-0 right-0 h-full w-96 z-40 flex flex-col border-l border-white/5 bg-gray-900/90 backdrop-blur-xl transform transition-all duration-300">
+        <div id="transcriptSidebar" class="collapsed absolute top-0 right-0 h-full w-96 max-w-[90vw] z-40 flex flex-col border-l border-white/5 bg-gray-900/90 backdrop-blur-xl transform transition-all duration-300">
             <div class="p-4 border-b border-white/5 flex items-center justify-between shrink-0">
                 <div class="flex items-center gap-2">
                     <span id="sidebarStatusIndicator" class="relative inline-flex rounded-full h-2 w-2 bg-gray-500">
@@ -1021,7 +1280,7 @@
     <div id="notulensiModal"
         class="fixed inset-0 bg-black/75 backdrop-blur-md flex items-center justify-center z-50 hidden opacity-0 transition-opacity duration-300">
         <div
-            class="bg-gray-900/90 border border-gray-700/80 rounded-2xl w-11/12 max-w-4xl h-[85vh] flex flex-col shadow-2xl scale-95 transition-transform duration-300 overflow-hidden">
+            class="bg-gray-900/90 border border-gray-700/80 rounded-2xl w-11/12 max-w-4xl h-[85vh] max-h-[92vh] md:h-[85vh] flex flex-col shadow-2xl scale-95 transition-transform duration-300 overflow-hidden">
             <div class="p-6 border-b border-gray-800 flex justify-between items-center bg-gray-950/40">
                 <div class="flex items-center gap-3"><span class="flex h-3 w-3 relative"><span
                             class="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75"></span><span
@@ -1479,11 +1738,9 @@
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 }
             }).finally(() => {
-                const ref = document.referrer || '';
-                let redirectUrl = '/join';
-                if (ref.includes('/admin')) {
-                    redirectUrl = '{{ route("admin.meetings.index") }}';
-                }
+                const redirectUrl = isAdmin
+                    ? '{{ route("admin.meetings.index") }}'
+                    : '/join';
                 window.location.href = redirectUrl;
             });
         }
@@ -2011,7 +2268,6 @@
                 updateParticipantUI();
                 if (isCameraOff) startAudioMonitor();
                 if (@json($meeting->pipeline_status ?? 'idle') === 'processing') startPipelinePolling();
-                setTimeout(() => startLiveTranscription(), 1500);
             } catch (error) {
                 console.error(error);
                 setConnectionStatus('LiveKit: gagal', 'text-red-400');
@@ -3047,10 +3303,29 @@
         function showAiLoading(show) {
             const overlay = document.getElementById('aiLoadingOverlay');
             if (!overlay) return;
+            const isMobile = window.innerWidth <= 767;
             if (show) {
+                if (isMobile) {
+                    overlay.style.position = 'fixed';
+                    overlay.style.bottom = '80px';
+                    overlay.style.left = '50%';
+                    overlay.style.transform = 'translateX(-50%)';
+                    overlay.style.zIndex = '200';
+                } else {
+                    overlay.style.position = '';
+                    overlay.style.bottom = '';
+                    overlay.style.left = '';
+                    overlay.style.transform = '';
+                    overlay.style.zIndex = '';
+                }
                 overlay.classList.remove('hidden');
                 setTimeout(() => overlay.classList.add('opacity-100'), 50);
             } else {
+                overlay.style.position = '';
+                overlay.style.bottom = '';
+                overlay.style.left = '';
+                overlay.style.transform = '';
+                overlay.style.zIndex = '';
                 overlay.classList.remove('opacity-100');
                 setTimeout(() => overlay.classList.add('hidden'), 300);
             }
@@ -3062,10 +3337,29 @@
             const nameEl = document.getElementById('recordingByName');
             if (nameEl && name) nameEl.textContent = 'oleh ' + name;
             if (nameEl && !name) nameEl.textContent = 'oleh Anda';
+            const isMobile = window.innerWidth <= 767;
             if (show) {
+                if (isMobile) {
+                    popup.style.position = 'fixed';
+                    popup.style.bottom = '80px';
+                    popup.style.left = '50%';
+                    popup.style.transform = 'translateX(-50%)';
+                    popup.style.zIndex = '200';
+                } else {
+                    popup.style.position = '';
+                    popup.style.bottom = '';
+                    popup.style.left = '';
+                    popup.style.transform = '';
+                    popup.style.zIndex = '';
+                }
                 popup.classList.remove('hidden');
                 setTimeout(() => popup.classList.add('opacity-100'), 50);
             } else {
+                popup.style.position = '';
+                popup.style.bottom = '';
+                popup.style.left = '';
+                popup.style.transform = '';
+                popup.style.zIndex = '';
                 popup.classList.remove('opacity-100');
                 setTimeout(() => popup.classList.add('hidden'), 300);
             }
@@ -3299,6 +3593,12 @@
         const sharePopup = document.getElementById('sharePopup');
         if (shareBtn && sharePopup) {
             shareBtn.addEventListener('click', () => {
+                // Reset to absolute positioning when opened from desktop
+                sharePopup.style.position = '';
+                sharePopup.style.bottom = '';
+                sharePopup.style.left = '';
+                sharePopup.style.transform = '';
+                sharePopup.style.zIndex = '';
                 sharePopup.classList.toggle('hidden');
                 setTimeout(() => {
                     sharePopup.classList.toggle('opacity-0');
@@ -3311,6 +3611,78 @@
                     setTimeout(() => {
                         sharePopup.classList.add('hidden');
                     }, 300);
+                }
+            });
+        }
+
+        // ======================== MOBILE MORE DROPDOWN ========================
+        const mobileMoreBtn = document.getElementById('mobileMoreBtn');
+        const mobileMoreDropdown = document.getElementById('mobileMoreDropdown');
+        const moreGrid = mobileMoreDropdown?.querySelector('.more-grid');
+
+        const mobileHiddenButtons = [
+            { id: 'participantBtn', label: 'Partisipan', icon: '<svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>' },
+            { id: 'screenShareBtn', label: 'Share Screen', icon: '<svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25A2.25 2.25 0 015.25 3h13.5A2.25 2.25 0 0121 5.25z"/></svg>' },
+            { id: 'layoutBtn', label: 'Layout', icon: '<svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>' },
+            { id: 'recordScreenBtn', label: 'Rekam', icon: '<svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4zM14 13h-3v3H9v-3H6v-2h3V8h2v3h3v2z"/></svg>' },
+        ];
+
+        if (moreGrid && mobileMoreBtn && mobileMoreDropdown) {
+            function closeMobileMoreDropdown() {
+                mobileMoreDropdown.style.display = 'none';
+            }
+
+            mobileHiddenButtons.unshift({ id: 'aiNotulenTriggerBtn', label: 'AI Notulen', icon: '<svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24"><path d="M7.5 5.6L10 7 8.6 4.5 10 2 7.5 3.4 5 2l1.4 2.5L5 7zm12 9.8L17 14l1.4 2.5L17 19l2.5-1.4L22 19l-1.4-2.5L22 14zM22 2l-2.5 1.4L17 2l1.4 2.5L17 7l2.5-1.4L22 7l-1.4-2.5zm-7.63 5.29c-.39-.39-1.02-.39-1.41 0L1.29 18.96c-.39.39-.39 1.02 0 1.41l2.34 2.34c.39.39 1.02.39 1.41 0L16.7 11.05c.39-.39.39-1.02 0-1.41l-2.33-2.35zm-1.03 5.49l-2.12-2.12 2.44-2.44 2.12 2.12-2.44 2.44z"/></svg>' });
+
+            mobileHiddenButtons.forEach(function(item) {
+                const btn = document.createElement('button');
+                btn.setAttribute('data-target', item.id);
+                btn.innerHTML = '<div class="h-12 flex items-center justify-center">' + item.icon + '</div><span>' + item.label + '</span>';
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    closeMobileMoreDropdown();
+                    if (item.id === 'shareBtn') {
+                        const popup = document.getElementById('sharePopup');
+                        if (popup) {
+                            popup.style.position = 'fixed';
+                            popup.style.bottom = '80px';
+                            popup.style.left = '50%';
+                            popup.style.transform = 'translateX(-50%)';
+                            popup.style.zIndex = '200';
+                            popup.classList.remove('hidden');
+                            setTimeout(function() { popup.classList.remove('opacity-0'); }, 10);
+                        }
+                    } else if (item.id === 'layoutBtn') {
+                        const layouts = ['grid', 'speaker', 'sidebar', 'spotlight'];
+                        const currentIdx = layouts.indexOf(currentLayout);
+                        const nextLayout = layouts[(currentIdx + 1) % layouts.length];
+                        applyLayout(nextLayout);
+                    } else {
+                        const target = document.getElementById(item.id);
+                        if (target) target.click();
+                    }
+                });
+                moreGrid.appendChild(btn);
+            });
+
+            mobileMoreBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (mobileMoreDropdown.style.display === 'none' || !mobileMoreDropdown.style.display) {
+                    mobileMoreDropdown.style.display = 'block';
+                } else {
+                    mobileMoreDropdown.style.display = 'none';
+                }
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!mobileMoreBtn.contains(e.target) && !mobileMoreDropdown.contains(e.target)) {
+                    mobileMoreDropdown.style.display = 'none';
+                }
+                // Close share popup if mobile more is clicked
+                const sharePopup = document.getElementById('sharePopup');
+                if (sharePopup && !sharePopup.classList.contains('hidden') && mobileMoreBtn && mobileMoreBtn.contains(e.target)) {
+                    sharePopup.classList.add('opacity-0');
+                    setTimeout(function() { sharePopup.classList.add('hidden'); }, 300);
                 }
             });
         }

@@ -47,6 +47,7 @@ class NotulensiController extends Controller
         $validated = $request->validate([
             'ringkasan' => 'nullable|string',
             'structured_summary' => 'nullable|array',
+            'nama_rapat' => 'nullable|string|max:255',
         ]);
 
         if (isset($validated['structured_summary'])) {
@@ -69,6 +70,10 @@ class NotulensiController extends Controller
         }
 
         $notulensi->update($validated);
+
+        if ($request->filled('nama_rapat') && $notulensi->meeting) {
+            $notulensi->meeting->update(['nama_rapat' => $request->nama_rapat]);
+        }
 
         return redirect()->route('admin.notulensis.show', $notulensi)
             ->with('success', 'Notulensi berhasil diperbarui.');

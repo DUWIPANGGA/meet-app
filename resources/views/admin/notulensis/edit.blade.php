@@ -23,6 +23,16 @@ $risikoCatatan = old('structured_summary.risiko_catatan', $s['risiko_catatan'] ?
     @csrf @method('PUT')
 
     <div class="card p-6 space-y-8">
+        {{-- Nama Meeting --}}
+        @if ($notulensi->meeting && blank($notulensi->meeting->nama_rapat))
+        <div>
+            <label for="nama_rapat" class="block text-sm font-semibold mb-2" style="color:var(--text-primary)">Nama Rapat</label>
+            <input type="text" name="nama_rapat" id="nama_rapat" value="{{ old('nama_rapat', $notulensi->meeting?->nama_rapat ?? '') }}" placeholder="Masukkan nama rapat..." class="w-full rounded-xl px-4 py-3 text-sm border transition focus:outline-none focus:ring-2 focus:ring-violet-500/40" style="background:var(--card-bg);border-color:var(--card-border);color:var(--text-primary)">
+            @error('nama_rapat')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+        </div>
+        <hr style="border-color:var(--divider)">
+        @endif
+
         {{-- Ringkasan --}}
         <div>
             <label for="ringkasan" class="block text-sm font-semibold mb-2" style="color:var(--text-primary)">Ringkasan</label>
