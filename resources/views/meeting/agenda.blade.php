@@ -173,7 +173,13 @@
                 </div>
 
                 <div x-show="createJenis === 'online'" style="display: none;">
-                    <div class="surface-card rounded-xl p-3 flex items-start gap-3 text-xs" style="border:1px solid rgba(139,92,246,0.2)">
+                    <div>
+                        <label class="block text-sm font-semibold mb-1.5" style="color:var(--text-secondary)">Deskripsi (opsional)</label>
+                        <textarea name="deskripsi_rapat" rows="3"
+                                  placeholder="Topik bahasan, agenda, dll."
+                                  class="w-full px-4 py-2.5 input-theme rounded-xl outline-none transition text-sm resize-none"></textarea>
+                    </div>
+                    <div class="surface-card rounded-xl p-3 flex items-start gap-3 text-xs mt-3" style="border:1px solid rgba(139,92,246,0.2)">
                         <svg class="w-4 h-4 mt-0.5 text-violet-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         <span style="color:var(--text-muted)">Link meeting akan otomatis tergenerate untuk rapat online.</span>
                     </div>
@@ -394,7 +400,7 @@
                     headerToolbar: {
                         left: isMobile ? 'prev,next' : 'prev,next today',
                         center: 'title',
-                        right: isMobile ? 'timeGridDay,dayGridMonth' : 'dayGridMonth,timeGridWeek,timeGridDay'
+                        right: isMobile ? 'timeGridDay,timeGridWeek,dayGridMonth' : 'dayGridMonth,timeGridWeek,timeGridDay'
                     },
                     events: events,
                     height: 'auto',
