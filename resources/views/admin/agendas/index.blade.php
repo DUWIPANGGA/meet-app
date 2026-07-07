@@ -150,13 +150,6 @@
 @section('content')
 <div x-data="adminAgendaCalendar()" class="flex flex-col gap-6">
 
-    @if (session('success'))
-    <div class="rounded-xl px-4 py-3 flex items-center gap-3 text-sm" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);color:#10b981">
-        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-        {{ session('success') }}
-    </div>
-    @endif
-
     @if (session('error'))
     <div class="rounded-xl px-4 py-3 flex items-center gap-3 text-sm" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);color:#ef4444">
         <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
