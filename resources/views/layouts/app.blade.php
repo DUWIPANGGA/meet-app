@@ -1,3 +1,9 @@
+@php
+    if (auth()->check() && auth()->user()->hasAnyRole(['super_admin', 'admin'])) {
+        header('Location: ' . route('admin.dashboard'));
+        exit;
+    }
+@endphp
 <!DOCTYPE html>
 <html lang="id" class="dark">
 

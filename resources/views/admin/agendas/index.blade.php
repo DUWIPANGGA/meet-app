@@ -149,6 +149,35 @@
 
 @section('content')
 <div x-data="adminAgendaCalendar()" class="flex flex-col gap-6">
+
+    @if (session('success'))
+    <div class="rounded-xl px-4 py-3 flex items-center gap-3 text-sm" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);color:#10b981">
+        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+        {{ session('success') }}
+    </div>
+    @endif
+
+    @if (session('error'))
+    <div class="rounded-xl px-4 py-3 flex items-center gap-3 text-sm" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);color:#ef4444">
+        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        {{ session('error') }}
+    </div>
+    @endif
+
+    @if ($errors->any())
+    <div class="rounded-xl px-4 py-3 text-sm" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);color:#ef4444">
+        <div class="flex items-center gap-3 mb-1">
+            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+            <span class="font-semibold">Terjadi kesalahan:</span>
+        </div>
+        <ul class="list-disc list-inside space-y-0.5 pl-8">
+            @foreach ($errors->all() as $err)
+            <li>{{ $err }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
+
     <div class="page-header flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
             <h1>Agenda</h1>
@@ -251,6 +280,7 @@
                     <label class="block text-sm font-semibold mb-1.5" style="color:var(--text-secondary)">Nama Agenda <span class="text-red-400">*</span></label>
                     <input type="text" name="nama_rapat" required placeholder="Contoh: Rapat Koordinasi Bulanan"
                            class="w-full px-4 py-2.5 input-theme rounded-xl outline-none transition text-sm">
+                    @error('nama_rapat') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
                     <label class="block text-sm font-semibold mb-2" style="color:var(--text-secondary)">Jenis Agenda</label>
@@ -276,6 +306,7 @@
                             </div>
                         </label>
                     </div>
+                    @error('jenis_rapat') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
@@ -295,6 +326,7 @@
                     <label class="block text-sm font-semibold mb-1.5" style="color:var(--text-secondary)">Deskripsi (opsional)</label>
                     <textarea name="deskripsi_rapat" rows="3" placeholder="Topik bahasan, agenda, lokasi, dll."
                               class="w-full px-4 py-2.5 input-theme rounded-xl outline-none transition text-sm resize-none"></textarea>
+                    @error('deskripsi_rapat') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div x-show="createJenis === 'Online'" style="display: none;">
                     <div class="surface-card rounded-xl p-3 flex items-start gap-3 text-xs" style="border:1px solid rgba(139,92,246,0.2)">
@@ -338,21 +370,25 @@
             </div>
             <form method="POST" x-bind:action="updateUrl(editId)" class="p-6 space-y-5">
                 @csrf @method('PUT')
+                <input type="hidden" name="_edit_id" :value="editId">
                 <div>
                     <label class="block text-sm font-semibold mb-1.5" style="color:var(--text-secondary)">Nama Agenda <span class="text-red-400">*</span></label>
                     <input type="text" name="nama_rapat" x-model="editForm.nama_rapat" required
                            class="w-full px-4 py-2.5 input-theme rounded-xl outline-none transition text-sm">
+                    @error('nama_rapat') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-sm font-semibold mb-1.5" style="color:var(--text-secondary)">Tanggal <span class="text-red-400">*</span></label>
                         <input type="date" name="tanggal" x-model="editForm.tanggal" required min="{{ date('Y-m-d') }}"
                                class="w-full px-3 py-2.5 input-theme rounded-xl outline-none transition text-sm">
+                        @error('tanggal') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-semibold mb-1.5" style="color:var(--text-secondary)">Waktu <span class="text-red-400">*</span></label>
                         <input type="time" name="waktu" x-model="editForm.waktu" required
                                class="w-full px-3 py-2.5 input-theme rounded-xl outline-none transition text-sm">
+                        @error('waktu') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                 </div>
                 <div>
@@ -371,11 +407,13 @@
                             </div>
                         </label>
                     </div>
+                    @error('tipe_rapat') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
                     <label class="block text-sm font-semibold mb-1.5" style="color:var(--text-secondary)">Deskripsi</label>
                     <textarea name="deskripsi_rapat" x-model="editForm.deskripsi" rows="3"
                               class="w-full px-4 py-2.5 input-theme rounded-xl outline-none transition text-sm resize-none"></textarea>
+                    @error('deskripsi_rapat') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
                     <label class="block text-sm font-semibold mb-1.5" style="color:var(--text-secondary)">Status</label>
@@ -384,6 +422,7 @@
                         <option value="Berlangsung">Berlangsung</option>
                         <option value="Selesai">Selesai</option>
                     </select>
+                    @error('status_rapat') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div class="flex gap-3 pt-1">
                     <button type="button" @click="showEditModal = false"
@@ -423,6 +462,20 @@ document.addEventListener('alpine:init', () => {
                 nama_rapat:''
             },
         init() {
+            @if (old('_edit_id'))
+            this.editId = @json(old('_edit_id'));
+            this.editForm = {
+                nama_rapat: @json(old('nama_rapat', '')),
+                tanggal: @json(old('tanggal', '')),
+                waktu: @json(old('waktu', '')),
+                tipe_rapat: @json(old('tipe_rapat', 'Online')),
+                deskripsi: @json(old('deskripsi_rapat', '')),
+                status: @json(old('status_rapat', 'Menunggu'))
+            };
+            this.showEditModal = true;
+            @elseif ($errors->any())
+            this.showCreateModal = true;
+            @endif
             var el = document.getElementById('admin-agenda-calendar');
             if (!el || typeof FullCalendar === 'undefined') return;
             var events = [

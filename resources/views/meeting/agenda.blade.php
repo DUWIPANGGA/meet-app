@@ -28,6 +28,27 @@
         </div>
     @endif
 
+    @if (session('error'))
+    <div class="rounded-xl px-4 py-3 mb-6 flex items-center gap-3 text-sm" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);color:#ef4444">
+        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        {{ session('error') }}
+    </div>
+    @endif
+
+    @if ($errors->any())
+    <div class="rounded-xl px-4 py-3 mb-6 text-sm" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);color:#ef4444">
+        <div class="flex items-center gap-3 mb-1">
+            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+            <span class="font-semibold">Terjadi kesalahan:</span>
+        </div>
+        <ul class="list-disc list-inside space-y-0.5 pl-8">
+            @foreach ($errors->all() as $err)
+            <li>{{ $err }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
+
     <div class="page-card overflow-hidden p-3 sm:p-5 relative z-0">
         <div id="calendar" class="w-full"></div>
     </div>
@@ -135,6 +156,7 @@
                     <input type="text" name="nama_rapat" required
                            placeholder="Contoh: Rapat Koordinasi Bulanan"
                            class="w-full px-4 py-2.5 input-theme rounded-xl outline-none transition text-sm">
+                    @error('nama_rapat') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
 
                 <!-- Jenis Agenda: Online / Offline -->
@@ -162,6 +184,7 @@
                             </div>
                         </label>
                     </div>
+                    @error('jenis_rapat') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
 
                 <!-- Tanggal & Waktu -->
@@ -171,11 +194,13 @@
                         <input type="date" name="tanggal" required
                                min="{{ date('Y-m-d') }}"
                                class="w-full px-3 py-2.5 input-theme rounded-xl outline-none transition text-sm">
+                        @error('tanggal') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-semibold mb-1.5" style="color:var(--text-secondary)">Waktu <span class="text-red-400">*</span></label>
                         <input type="time" name="waktu" required
                                class="w-full px-3 py-2.5 input-theme rounded-xl outline-none transition text-sm">
+                        @error('waktu') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                 </div>
 
@@ -184,6 +209,7 @@
                     <textarea name="deskripsi_rapat" rows="3"
                               placeholder="Topik bahasan, agenda, lokasi, dll."
                               class="w-full px-4 py-2.5 input-theme rounded-xl outline-none transition text-sm resize-none"></textarea>
+                    @error('deskripsi_rapat') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
 
                 <div x-show="createJenis === 'online'" style="display: none;">
@@ -375,6 +401,9 @@
             },
 
             init() {
+                @if ($errors->any())
+                this.showCreateModal = true;
+                @endif
                 var calendarEl = document.getElementById('calendar');
 
                 var events = [

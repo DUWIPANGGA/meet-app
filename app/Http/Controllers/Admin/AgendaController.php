@@ -32,7 +32,7 @@ class AgendaController extends Controller
         $tanggal = $validated['tanggal'];
         $waktu = $validated['waktu'];
         if (\Carbon\Carbon::parse($tanggal . ' ' . $waktu)->isPast()) {
-            return back()->withErrors(['waktu' => 'Tanggal dan waktu tidak boleh di masa lalu.'])->withInput();
+            return back()->withErrors(['waktu' => 'Tanggal dan waktu tidak boleh di masa lalu.'])->withInput()->with('edit_id', $meeting->id);
         }
 
         $meeting->update($validated);

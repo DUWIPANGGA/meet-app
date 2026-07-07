@@ -971,6 +971,11 @@
                 <h1 class="text-xl font-semibold">{{ auth()->user()?->name ?? 'Nama' }}</h1>
             </div>
             <div class="flex items-center gap-2">
+                <div id="aiNotulenHeaderIndicator"
+                    class="hidden md:hidden items-center gap-1.5 bg-red-500/10 border border-red-500/30 rounded-full px-2.5 py-1">
+                    <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                    <span class="text-[10px] font-bold text-red-400 uppercase tracking-wider">AI</span>
+                </div>
                 <button id="roomThemeToggle"
                     class="p-2 hover:bg-white/10 rounded-full transition text-white/70 hover:text-white"
                     title="Toggle tema">
@@ -2716,6 +2721,8 @@
                     if (openSidebarBtn) openSidebarBtn.classList.add('hidden');
                     const dot = document.getElementById('aiNotulenActiveDot');
                     if (dot) dot.classList.remove('hidden');
+                    const headerInd = document.getElementById('aiNotulenHeaderIndicator');
+                    if (headerInd) headerInd.classList.remove('hidden');
                     return;
                 }
                 if (data.type === 'stop-recording-broadcast') {
@@ -2724,6 +2731,8 @@
                     }
                     const dot = document.getElementById('aiNotulenActiveDot');
                     if (dot) dot.classList.add('hidden');
+                    const headerInd = document.getElementById('aiNotulenHeaderIndicator');
+                    if (headerInd) headerInd.classList.add('hidden');
                     return;
                 }
                 if (data.type === 'camera-toggle') {
@@ -3678,6 +3687,8 @@
                             type: 'start-recording-broadcast'
                         });
                         if (aiNotulenActiveDot) aiNotulenActiveDot.classList.remove('hidden');
+                        const headerInd = document.getElementById('aiNotulenHeaderIndicator');
+                        if (headerInd) headerInd.classList.remove('hidden');
                         if (transcriptSidebar) transcriptSidebar.classList.remove('collapsed');
                         if (openSidebarBtn) openSidebarBtn.classList.add('hidden');
                     } catch (err) {
@@ -3702,6 +3713,8 @@
                 });
                 stopLiveTranscription();
                 if (aiNotulenActiveDot) aiNotulenActiveDot.classList.add('hidden');
+                const headerInd = document.getElementById('aiNotulenHeaderIndicator');
+                if (headerInd) headerInd.classList.add('hidden');
                 triggerGeminiNotulensi();
             });
         }
