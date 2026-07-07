@@ -30,5 +30,5 @@ Thumbs.db
 /ffmpeg/bin/*.dll
 
 # Server credentials — DO NOT COMMIT
-server.md
+# server.md
 
