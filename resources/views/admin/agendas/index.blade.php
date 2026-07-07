@@ -239,6 +239,7 @@
             <form method="POST" action="{{ route('admin.meetings.store') }}" class="p-6 space-y-5">
                 @csrf
                 <input type="hidden" name="tipe_rapat" value="terjadwal">
+                <input type="hidden" name="_source" value="agenda">
                 <div>
                     <label class="block text-sm font-semibold mb-1.5" style="color:var(--text-secondary)">Nama Agenda <span class="text-red-400">*</span></label>
                     <input type="text" name="nama_rapat" required placeholder="Contoh: Rapat Koordinasi Bulanan"
@@ -426,7 +427,7 @@ document.addEventListener('alpine:init', () => {
             var isMobile = window.innerWidth < 640;
             var cal = new FullCalendar.Calendar(el, {
                 initialView: isMobile ? 'timeGridDay' : 'dayGridMonth',
-                headerToolbar:{ left: isMobile ? 'prev,next' : 'prev,next today', center:'title', right: isMobile ? 'timeGridDay,dayGridMonth' : 'dayGridMonth,timeGridWeek,timeGridDay' },
+                headerToolbar:{ left: isMobile ? 'prev,next' : 'prev,next today', center:'title', right: isMobile ? 'timeGridDay,timeGridWeek,dayGridMonth' : 'dayGridMonth,timeGridWeek,timeGridDay' },
                 events:events, height:'auto', contentHeight:'auto',
                 eventClick:(info) => {
                     info.jsEvent.preventDefault();
