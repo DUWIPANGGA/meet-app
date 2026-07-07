@@ -315,7 +315,7 @@
         Ringkasan Aktivitas
     </h2>
 
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px" class="stats-grid">
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:24px" class="stats-grid">
 
         {{-- Total Meeting --}}
         <div class="stat-card">
@@ -418,6 +418,30 @@
                         fill="none" opacity="0.7" />
                 </svg>
 
+            </div>
+        </div>
+
+        {{-- Arsip --}}
+        <div class="stat-card">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+                <div class="stat-icon" style="background:linear-gradient(135deg,#065f4622,#0d948022)">
+                    <svg width="20" height="20" fill="none" stroke="#34d399" stroke-width="2"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+                    </svg>
+                </div>
+            </div>
+            <div
+                style="font-size:12px;color:var(--text-secondary);font-weight:500;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em">
+                Arsip</div>
+            <div style="font-size:32px;font-weight:800;color:var(--text-primary);letter-spacing:-0.02em;line-height:1">
+                {{ $stats['total_arsips'] }}</div>
+            <div class="stat-wave" style="margin-top:12px">
+                <svg viewBox="0 0 80 20" fill="none" xmlns="http://www.w3.org/2000/svg" width="80"
+                    height="20">
+                    <path d="M0 10 Q10 4 20 10 Q30 16 40 10 Q50 4 60 10 Q70 16 80 10" stroke="#34d399" stroke-width="1.8"
+                        fill="none" opacity="0.7" />
+                </svg>
             </div>
         </div>
 

@@ -7,6 +7,7 @@ use App\Models\Meeting;
 use App\Models\Notulensi;
 use App\Models\RekamanAudio;
 use App\Models\Transkrip;
+use App\Models\Arsip;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -25,6 +26,7 @@ class AdminController extends Controller
             'total_rekaman'    => RekamanAudio::count(),
             'total_transkripsi'=> Transkrip::count(),
             'total_notulensi'  => Notulensi::count(),
+            'total_arsips'     => Arsip::count(),
         ];
 
         $recentMeetings = Meeting::latest()->take(5)->get();
