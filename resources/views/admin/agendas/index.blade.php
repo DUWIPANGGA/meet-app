@@ -190,7 +190,7 @@
                 </div>
                 <h4 class="text-xl font-medium mb-1" style="color:var(--text-primary)" x-text="selectedEvent.title"></h4>
                 <p class="text-sm mb-4" style="color:var(--text-muted)" x-text="selectedEvent.time"></p>
-                <div class="rounded-lg p-3 mb-6" style="background:var(--surface-bg)">
+                <div class="rounded-lg p-3 mb-4" style="background:var(--surface-bg)">
                     <div class="flex items-center justify-between">
                         <span class="text-sm" style="color:var(--text-muted)">Status</span>
                         <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-xs font-medium border"
@@ -199,6 +199,13 @@
                         </span>
                     </div>
                 </div>
+
+                <template x-if="selectedEvent.deskripsi">
+                <div class="rounded-lg p-3 mb-4" style="background:var(--surface-bg)">
+                    <div class="text-sm font-semibold mb-1" style="color:var(--text-muted)">Deskripsi</div>
+                    <p class="text-sm whitespace-pre-line" style="color:var(--text-primary)" x-text="selectedEvent.deskripsi"></p>
+                </div>
+                </template>
                 <div class="flex items-center gap-2">
                     <button @click="openEditModal()" type="button" class="flex-1 btn-secondary text-center justify-center">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
@@ -416,11 +423,12 @@ document.addEventListener('alpine:init', () => {
             deskripsi: '',
             status: 'Menunggu'
         },
-        selectedEvent: {
-            title:'', time:'', status:'', url:'#', tipe:'online', tipeLabel:'Rapat Online',
-            badgeBg:'rgba(139,92,246,0.1)', badgeBorder:'rgba(139,92,246,0.3)', badgeText:'#7c3aed',
-            id: null, tanggal:'', waktu:'', deskripsi:''
-        },
+            selectedEvent: {
+                title:'', time:'', status:'', url:'#', tipe:'online', tipeLabel:'Rapat Online',
+                badgeBg:'rgba(139,92,246,0.1)', badgeBorder:'rgba(139,92,246,0.3)', badgeText:'#7c3aed',
+                id: null, tanggal:'', waktu:'', deskripsi:'',
+                nama_rapat:''
+            },
         init() {
             var el = document.getElementById('admin-agenda-calendar');
             if (!el || typeof FullCalendar === 'undefined') return;

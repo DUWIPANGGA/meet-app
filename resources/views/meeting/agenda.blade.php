@@ -63,7 +63,7 @@
                 <h4 class="text-xl font-medium mb-1" style="color:var(--text-primary)" x-text="selectedEvent.title"></h4>
                 <p class="text-sm mb-4" style="color:var(--text-secondary)" x-text="selectedEvent.time"></p>
 
-                <div class="surface-card rounded-lg p-3 mb-6">
+                <div class="surface-card rounded-lg p-3 mb-4">
                     <div class="flex items-center justify-between">
                         <span class="text-sm" style="color:var(--text-secondary)">Status</span>
                         <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-xs font-medium border"
@@ -73,6 +73,13 @@
                         </span>
                     </div>
                 </div>
+
+                <template x-if="selectedEvent.deskripsi">
+                <div class="surface-card rounded-lg p-3 mb-4">
+                    <div class="text-sm font-semibold mb-1" style="color:var(--text-secondary)">Deskripsi</div>
+                    <p class="text-sm whitespace-pre-line" style="color:var(--text-primary)" x-text="selectedEvent.deskripsi"></p>
+                </div>
+                </template>
 
                 <template x-if="selectedEvent.tipe === 'online'">
                     <a :href="selectedEvent.url"
@@ -371,7 +378,8 @@
                 tipeLabel: 'Rapat Online',
                 badgeBg: 'rgba(139,92,246,0.1)',
                 badgeBorder: 'rgba(139,92,246,0.3)',
-                badgeText: '#7c3aed'
+                badgeText: '#7c3aed',
+                deskripsi: ''
             },
 
             init() {
@@ -387,7 +395,8 @@
                             status: '{{ $meeting->status_rapat }}',
                             tipe: '{{ $meeting->tipe_rapat === "Offline" ? "offline" : "online" }}',
                             url: '{{ $meeting->tipe_rapat === "Offline" ? "#" : route("meeting.room", $meeting->id) }}',
-                            displayTime: '{{ \Carbon\Carbon::parse($meeting->tanggal)->translatedFormat("d M Y") }} - {{ $meeting->waktu ?? "Sepanjang Hari" }}'
+                            displayTime: '{{ \Carbon\Carbon::parse($meeting->tanggal)->translatedFormat("d M Y") }} - {{ $meeting->waktu ?? "Sepanjang Hari" }}',
+                            deskripsi: @json($meeting->deskripsi_rapat ?? '')
                         },
                         backgroundColor: '{{ $meeting->tipe_rapat === "Offline" ? "#F59E0B" : ($meeting->status_rapat === "Berlangsung" ? "#10B981" : "#7c3aed") }}'
                     },
@@ -420,6 +429,7 @@
                         this.selectedEvent.badgeBg = isOffline ? 'rgba(245,158,11,0.1)' : 'rgba(139,92,246,0.1)';
                         this.selectedEvent.badgeBorder = isOffline ? 'rgba(245,158,11,0.3)' : 'rgba(139,92,246,0.3)';
                         this.selectedEvent.badgeText = isOffline ? '#D97706' : '#7c3aed';
+                        this.selectedEvent.deskripsi = props.deskripsi || '';
 
                         this.showEventModal = true;
                     }
