@@ -11,14 +11,14 @@ class WhisperCppService
 {
     public function transcribeChunk(string $absolutePath): string
     {
-        $whisperUrl = env('WHISPER_URL', 'http://127.0.0.1:8000/transcribe');
+        $whisperUrl = env('WHISPER_URL', 'http://127.0.0.1:8001/transcribe');
         $filename = basename($absolutePath);
 
         if (!is_file($absolutePath)) {
             throw new \InvalidArgumentException("File audio tidak ditemukan di path: {$absolutePath}");
         }
 
-        $response = Http::timeout(30)
+        $response = Http::timeout(600)
             ->attach('file', fopen($absolutePath, 'r'), $filename)
             ->post($whisperUrl);
 

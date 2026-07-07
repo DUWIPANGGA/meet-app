@@ -18,6 +18,20 @@ class CheckUserPermission
         }
 
         if ($user->hasAnyRole(['super_admin', 'admin'])) {
+            if ($request->expectsJson()) {
+                return $next($request);
+            }
+            $allowedPaths = ['meeting/', 'meeting/*', 'audio-notulensi/', 'audio-notulensi/*', 'join', 'profile'];
+            $path = $request->path();
+            foreach ($allowedPaths as $allowed) {
+                $pattern = '/^' . str_replace('\*', '.*', preg_quote($allowed, '/')) . '/';
+                if (preg_match($pattern, $path)) {
+                    return $next($request);
+                }
+            }
+            if (!Str::startsWith($path, 'admin')) {
+                return redirect('/admin');
+            }
             return $next($request);
         }
 

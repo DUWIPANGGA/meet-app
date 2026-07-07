@@ -35,7 +35,7 @@ if os.path.exists(".env"):
 # =========================
 _lang = os.getenv("WHISPER_LANGUAGE", "id")
 WHISPER_LANGUAGE = None if _lang.lower() in ("auto", "none", "") else _lang
-INITIAL_PROMPT = "Ini adalah transkripsi rapat meeting dalam Bahasa Indonesia dan Inggris."
+INITIAL_PROMPT = "Transkripsi bahasa Indonesia:"
 WHISPER_MODEL_SIZE = os.getenv("WHISPER_MODEL_SIZE", "small")
 DEVICE = os.getenv("WHISPER_DEVICE", "cpu")
 COMPUTE_TYPE = os.getenv("WHISPER_COMPUTE_TYPE", "int8")

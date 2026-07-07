@@ -10,7 +10,7 @@
             <h1 class="text-2xl sm:text-3xl font-medium tracking-tight" style="color:var(--text-primary)">Agenda</h1>
             <p class="mt-1 sm:mt-2 text-sm sm:text-base" style="color:var(--text-secondary)">Jadwal rapat dan kegiatan.</p>
         </div>
-        @can('CreateUserMeeting')
+        @can('create_meeting')
         <button @click="showCreateModal = true" type="button"
                 class="shrink-0 flex items-center justify-center gap-2 font-semibold py-2.5 px-5 rounded-xl transition shadow-lg shadow-violet-500/20 h-[44px] w-full sm:w-auto text-sm" style="background:linear-gradient(135deg, #7c3aed, #4f46e5);color:#fff">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">

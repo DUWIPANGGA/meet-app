@@ -46,6 +46,9 @@
                     <select name="role" class="input-field" required>
                         <option value="" disabled {{ !old('role') ? 'selected' : '' }}>Pilih role...</option>
                         @foreach($roles as $role)
+                            @if ($role->name === 'super_admin' && !auth()->user()->hasRole('super_admin'))
+                                @continue
+                            @endif
                             <option value="{{ $role->name }}" {{ old('role') === $role->name ? 'selected' : '' }}>{{ ucfirst($role->name) }}</option>
                         @endforeach
                     </select>

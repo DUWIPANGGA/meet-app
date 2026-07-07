@@ -3,25 +3,147 @@
 @push('head')
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
 <style>
-    .fc { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
-    .fc-theme-standard th { border-color: var(--divider); padding:8px 0; font-weight:500; color: var(--text-secondary); }
-    .fc-theme-standard td, .fc-theme-standard th { border-color: #cbd5e1; }
-    .dark .fc-theme-standard td, .dark .fc-theme-standard th { border-color: rgba(255,255,255,0.08); }
-    .fc .fc-button-primary { background: var(--surface-bg); border-color: var(--card-border); color: var(--text-secondary); text-transform:capitalize; }
+    .fc {
+        font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+        background: transparent;
+    }
+    .fc .fc-toolbar {
+        background: transparent;
+    }
+    .fc .fc-toolbar-title {
+        background: transparent;
+    }
+    .fc-theme-standard th {
+        border-color: var(--divider);
+        padding: 8px 0;
+        font-weight: 500;
+        color: var(--text-secondary);
+        background: var(--surface-bg) !important;
+    }
+    .fc .fc-header-toolbar {
+        background: var(--surface-bg);
+        padding: 8px 12px;
+        border-radius: 12px;
+        margin-bottom: 12px !important;
+    }
+    .fc .fc-popover {
+        background: var(--card-bg);
+        border-color: var(--card-border);
+        box-shadow: var(--card-shadow);
+    }
+    .fc-theme-standard td, .fc-theme-standard th {
+        border-color: var(--divider);
+    }
+    .fc-theme-standard .fc-scrollgrid {
+        background: transparent;
+    }
+    .fc .fc-view-harness {
+        background: transparent;
+    }
+    .fc .fc-button-primary {
+        background: var(--surface-bg);
+        border-color: var(--card-border);
+        color: var(--text-secondary);
+        text-transform: capitalize;
+        font-size: 0.8rem !important;
+        padding: 4px 8px !important;
+    }
     .fc .fc-button-primary:not(:disabled):active,
     .fc .fc-button-primary:not(:disabled).fc-button-active,
-    .fc .fc-button-primary:hover { background: var(--nav-link-hover); border-color: var(--card-border); color: var(--text-primary); }
-    .fc .fc-daygrid-day.fc-day-today { background:rgba(124,58,237,0.08) !important; }
-    .fc .fc-daygrid-day-number { color: var(--text-primary); }
-    .fc .fc-col-header-cell-cushion { color: var(--text-secondary); }
-    .fc-event { cursor:pointer; border-radius:4px; padding:3px 6px; font-size:0.85em; border:none; }
-    .fc-toolbar-title { font-size:1.25rem !important; font-weight:500 !important; color: var(--text-primary); }
-    .fc .fc-day-other .fc-daygrid-day-number { color: var(--text-muted); }
-    .fc .fc-scrollgrid { border-color: #cbd5e1; }
-    .dark .fc .fc-scrollgrid { border-color: rgba(255,255,255,0.08); }
-    .fc .fc-popover { background: var(--card-bg); border-color: var(--card-border); }
-    .fc .fc-popover-title { color: var(--text-primary); }
-    .fc .fc-popover-header { background: var(--surface-bg); }
+    .fc .fc-button-primary:hover {
+        background: var(--nav-link-hover);
+        border-color: var(--card-border);
+        color: var(--text-primary);
+    }
+    .fc .fc-button-primary:disabled {
+        background: var(--surface-bg);
+        border-color: var(--card-border);
+        color: var(--text-muted);
+        opacity: 0.5;
+    }
+    .fc .fc-daygrid-day.fc-day-today {
+        background: rgba(139,92,246,0.08) !important;
+    }
+    .fc .fc-daygrid-day-number {
+        color: var(--text-primary);
+        font-size: 0.85rem;
+    }
+    .fc .fc-col-header-cell-cushion {
+        color: var(--text-secondary);
+        font-size: 0.75rem;
+    }
+    .fc .fc-daygrid-more-link {
+        color: #7c3aed;
+    }
+    .fc-event {
+        cursor: pointer;
+        border-radius: 4px;
+        padding: 2px 4px;
+        font-size: 0.75em;
+        border: none;
+        transition: transform 0.1s;
+    }
+    .fc-event:hover {
+        transform: scale(1.02);
+    }
+    .fc-toolbar-title {
+        font-size: 1rem !important;
+        font-weight: 600 !important;
+        color: var(--text-primary);
+    }
+    .fc .fc-day-other .fc-daygrid-day-number {
+        color: var(--text-muted);
+    }
+    .fc .fc-non-business {
+        background: transparent;
+    }
+    .fc .fc-scrollgrid {
+        border-color: var(--divider);
+    }
+    .fc .fc-popover {
+        background: var(--card-bg);
+        border-color: var(--card-border);
+        box-shadow: var(--card-shadow);
+    }
+    .fc .fc-popover-title {
+        color: var(--text-primary);
+    }
+    .fc .fc-popover-header {
+        background: var(--surface-bg);
+    }
+    .fc .fc-toolbar {
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+    .fc .fc-toolbar-chunk {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .fc .fc-button-group {
+        gap: 2px;
+    }
+    @media (max-width: 639px) {
+        .fc .fc-toolbar-title {
+            font-size: 0.9rem !important;
+        }
+        .fc .fc-button-primary {
+            font-size: 0.7rem !important;
+            padding: 3px 6px !important;
+        }
+        .fc .fc-daygrid-day-number {
+            font-size: 0.75rem;
+        }
+        .fc .fc-col-header-cell-cushion {
+            font-size: 0.65rem;
+        }
+        .fc .fc-toolbar {
+            gap: 4px;
+        }
+        .fc .fc-header-toolbar {
+            margin-bottom: 8px !important;
+        }
+    }
 </style>
 @endpush
 
@@ -38,8 +160,8 @@
         </button>
     </div>
 
-    <div class="card" style="height:600px;overflow:hidden">
-        <div id="admin-agenda-calendar" class="h-full"></div>
+    <div class="card overflow-hidden p-3 sm:p-5">
+        <div id="admin-agenda-calendar" class="w-full"></div>
     </div>
 
     <!-- ===================== Event Detail Modal ===================== -->
@@ -301,10 +423,11 @@ document.addEventListener('alpine:init', () => {
                 { id:'m-{{ $m->id }}', title:@json($m->nama_rapat), start:'{{ \Carbon\Carbon::parse($m->tanggal)->format("Y-m-d") }}T{{ $m->waktu ?? "00:00" }}', extendedProps:{ status:'{{ $m->status_rapat }}', tipe:'{{ $m->tipe_rapat === "Offline" ? "offline" : "online" }}', url:'{{ $m->tipe_rapat === "Offline" ? "#" : route("meeting.room", $m->id) }}', displayTime:'{{ \Carbon\Carbon::parse($m->tanggal)->translatedFormat("d M Y") }} - {{ $m->waktu ?? "Sepanjang Hari" }}', deskripsi:@json($m->deskripsi_rapat ?? ''), nama_rapat:@json($m->nama_rapat), tanggal:'{{ $m->tanggal }}', waktu:'{{ $m->waktu }}', tipe_db:'{{ $m->tipe_rapat }}' }, backgroundColor:'{{ $m->tipe_rapat === "Offline" ? "#F59E0B" : ($m->status_rapat === "Berlangsung" ? "#10B981" : "#7c3aed") }}' },
                 @endforeach
             ];
+            var isMobile = window.innerWidth < 640;
             var cal = new FullCalendar.Calendar(el, {
-                initialView:'dayGridMonth',
-                headerToolbar:{ left:'prev,next today', center:'title', right:'dayGridMonth,timeGridWeek,timeGridDay' },
-                events:events, height:600,
+                initialView: isMobile ? 'timeGridDay' : 'dayGridMonth',
+                headerToolbar:{ left: isMobile ? 'prev,next' : 'prev,next today', center:'title', right: isMobile ? 'timeGridDay,dayGridMonth' : 'dayGridMonth,timeGridWeek,timeGridDay' },
+                events:events, height:'auto', contentHeight:'auto',
                 eventClick:(info) => {
                     info.jsEvent.preventDefault();
                     var p = info.event.extendedProps, off = p.tipe === 'offline';

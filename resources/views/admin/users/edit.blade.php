@@ -58,6 +58,9 @@
                         <label class="label">Role <span class="text-red-400">*</span></label>
                         <select name="role" class="input-field" required>
                             @foreach($roles as $role)
+                                @if ($role->name === 'super_admin' && !auth()->user()->hasRole('super_admin'))
+                                    @continue
+                                @endif
                                 <option value="{{ $role->name }}" {{ $user->hasRole($role->name) ? 'selected' : '' }}>{{ ucfirst($role->name) }}</option>
                             @endforeach
                         </select>

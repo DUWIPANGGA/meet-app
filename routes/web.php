@@ -162,10 +162,12 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/audio-notulensi/upload', [AudioController::class, 'upload'])->name('audio.upload');
         Route::post('/audio-notulensi/save', [AudioController::class, 'save'])->name('audio.save');
         Route::post('/audio-notulensi/save-raw', [AudioController::class, 'saveRaw'])->name('audio.save-raw');
+        Route::post('/audio-notulensi/transcribe', [AudioController::class, 'transcribe'])->name('audio.transcribe');
+        Route::get('/audio-notulensi/transcribe/{id}/status', [AudioController::class, 'transcribeStatus'])->name('audio.transcribe.status');
     });
 
     // ======================== VIDEO REKAMAN LAYAR ========================
-    Route::prefix('videos')->group(function () {
+    Route::prefix('videos')->middleware('user.permission:ManageMeetingRecording')->group(function () {
         Route::get('/', [\App\Http\Controllers\VideoController::class, 'index'])->name('video.index');
         Route::get('/{rekaman}', [\App\Http\Controllers\VideoController::class, 'show'])->name('video.show');
         Route::get('/{rekaman}/stream', [\App\Http\Controllers\VideoController::class, 'stream'])->name('video.stream');

@@ -75,6 +75,51 @@ class AudioController extends Controller
     }
 
     /**
+     * [ASYNC] Mulai transkripsi Whisper via queue job (bypass Cloudflare timeout)
+     */
+    public function transcribe(Request $request)
+    {
+        $request->validate([
+            'live_audio_id' => 'required|integer|exists:live_audios,id',
+        ]);
+
+        $liveAudio = LiveAudio::findOrFail($request->live_audio_id);
+
+        if ($liveAudio->transcript) {
+            return response()->json([
+                'status' => 'completed',
+                'transcript' => $liveAudio->transcript,
+            ]);
+        }
+
+        \App\Jobs\LiveAudio\WhisperTranscribeJob::dispatch($liveAudio->id);
+
+        return response()->json([
+            'status' => 'processing',
+            'live_audio_id' => $liveAudio->id,
+        ]);
+    }
+
+    /**
+     * [ASYNC] Polling status transkripsi Whisper
+     */
+    public function transcribeStatus(int $id)
+    {
+        $liveAudio = LiveAudio::findOrFail($id);
+
+        if ($liveAudio->transcript) {
+            return response()->json([
+                'status' => 'completed',
+                'transcript' => $liveAudio->transcript,
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'processing',
+        ]);
+    }
+
+    /**
      * [FLOW BARU] FE menyimpan hasil notulensi yang sudah diproses
      * Alur: FE kirim audio → Python/Whisper → transcript → Gemini → notulensi JSON → FE panggil endpoint ini
      *

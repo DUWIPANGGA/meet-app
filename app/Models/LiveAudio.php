@@ -18,6 +18,7 @@ class LiveAudio extends Model
         'mime_type',
         'file_size_bytes',
         'tanggal_rekam',
+        'transcript',
         'notulensi_teks',
     ];
 

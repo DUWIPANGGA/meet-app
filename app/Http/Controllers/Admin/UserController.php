@@ -37,6 +37,11 @@ class UserController extends Controller
             'password' => Hash::make($validated['password']),
         ]);
 
+        // Only super_admin can assign super_admin role
+        if ($validated['role'] === 'super_admin' && !auth()->user()->hasRole('super_admin')) {
+            return back()->with('error', 'Hanya Super Admin yang dapat memberikan peran Super Admin.')->withInput();
+        }
+
         $user->syncRoles([$validated['role']]);
 
         return redirect()->route('admin.users.index')
@@ -64,6 +69,11 @@ class UserController extends Controller
             'password' => 'nullable|string|min:8|confirmed',
             'role' => 'required|string|exists:roles,name',
         ]);
+
+        // Only super_admin can assign super_admin role
+        if ($validated['role'] === 'super_admin' && !auth()->user()->hasRole('super_admin')) {
+            return back()->with('error', 'Hanya Super Admin yang dapat memberikan peran Super Admin.')->withInput();
+        }
 
         $data = [
             'name' => $validated['name'],

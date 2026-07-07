@@ -494,6 +494,21 @@
             display: none;
         }
 
+        /* ── Alone mode: full screen when only 1 participant ── */
+        .alone-mode .video-grid-container {
+            margin: 0 !important;
+            border-radius: 0 !important;
+            border: none !important;
+        }
+
+        .alone-mode .video-grid-container .video-card {
+            border-radius: 0 !important;
+        }
+
+        .alone-mode .flex-1.min-h-0 {
+            padding: 0 !important;
+        }
+
         #videoGridMain.layout-sidebar {
             display: flex;
             flex-direction: row;
@@ -632,6 +647,7 @@
         #mobileMoreBtn {
             display: none;
         }
+
         #mobileMoreDropdown {
             display: none;
         }
@@ -641,106 +657,156 @@
             #videoGridMain.layout-grid {
                 gap: 4px !important;
             }
+
             #videoGridMain.layout-grid.grid-cols-3,
             #videoGridMain.layout-grid.grid-cols-4 {
                 grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
             }
+
             .top-bar {
-                padding: 10px 12px !important;
+                padding: 14px 16px !important;
             }
+
             .top-bar h1 {
-                font-size: 14px !important;
+                font-size: 20px !important;
+                font-weight: 700 !important;
             }
-            .top-bar > div:first-child svg {
-                width: 20px !important;
-                height: 20px !important;
+
+            .top-bar>div:first-child svg {
+                width: 34px !important;
+                height: 34px !important;
             }
+
+            .top-bar>div:first-child {
+                gap: 12px !important;
+            }
+
             #roomThemeToggle {
-                padding: 6px !important;
+                padding: 8px !important;
             }
+
             #roomThemeToggle svg {
-                width: 18px !important;
-                height: 18px !important;
+                width: 22px !important;
+                height: 22px !important;
             }
 
             .video-grid-container {
-                margin: 4px !important;
-                border-radius: 16px !important;
-            }
-            .video-card {
+                margin: 0 10px !important;
                 border-radius: 12px !important;
             }
-            #videoGridMain .video-card.m-1 {
-                margin: 2px !important;
+
+            .alone-mode .video-grid-container {
+                margin: 0 10px !important;
+                border-radius: 12px !important;
             }
+
+            #videoGridMain .video-card {
+                border-radius: 12px !important;
+            }
+
+            #videoGridMain .video-card.m-1 {
+                margin: 0 !important;
+            }
+
+            #videoGridMain.grid-cols-1.grid-rows-2 {
+                max-height: 55dvh !important;
+            }
+
+            .alone-mode #videoGridMain .video-card.m-1 {
+                margin: 0 !important;
+            }
+
+            .alone-mode .flex-1.min-h-0 {
+                padding: 0 !important;
+            }
+
+            #localVideo {
+                object-fit: cover !important;
+            }
+
             #localAvatarCircle {
                 width: 48px !important;
                 height: 48px !important;
             }
+
             #localAvatarCircle span {
                 font-size: 1.5rem !important;
             }
+
             #localAvatarText {
                 font-size: 1.25rem !important;
             }
+
             [id^="remote-avatar-circle-"] {
                 width: 64px !important;
                 height: 64px !important;
             }
+
             [id^="remote-avatar-circle-"] span {
                 font-size: 2rem !important;
             }
 
             .bottom-toolbar {
-                padding: 6px 4px !important;
-                gap: 12px !important;
+                padding: 10px 8px !important;
+                gap: 16px !important;
                 overflow: visible !important;
                 flex-wrap: nowrap !important;
                 justify-content: center !important;
+                position: fixed !important;
             }
+
             .bottom-toolbar .toolbar-btn {
                 flex-shrink: 0;
                 min-width: 0;
-                padding: 0 6px;
+                padding: 0 8px;
             }
+
             .bottom-toolbar .toolbar-btn .h-12 {
-                height: 28px !important;
+                height: 36px !important;
             }
+
             .bottom-toolbar .toolbar-btn svg {
-                width: 20px !important;
-                height: 20px !important;
+                width: 26px !important;
+                height: 26px !important;
             }
+
             .bottom-toolbar .toolbar-btn span:last-child {
-                font-size: 8px !important;
-                margin-top: 0 !important;
+                font-size: 11px !important;
+                margin-top: 2px !important;
             }
+
             .bottom-toolbar #leaveBtn {
-                margin-left: 2px !important;
+                margin-left: 4px !important;
             }
+
             .bottom-toolbar #leaveBtn .btn-danger {
-                padding: 4px 8px !important;
-                font-size: 10px !important;
-                border-radius: 6px !important;
+                padding: 6px 12px !important;
+                font-size: 13px !important;
+                border-radius: 8px !important;
             }
+
             #participantBadge {
-                font-size: 7px !important;
-                padding: 1px 3px !important;
+                font-size: 9px !important;
+                padding: 2px 4px !important;
                 top: -4px !important;
                 right: -4px !important;
             }
+
             .bottom-toolbar .ml-8 {
-                margin-left: 2px !important;
+                margin-left: 4px !important;
             }
 
             .mobile-hide {
                 display: none !important;
             }
+
             #mobileMoreBtn {
                 display: flex !important;
             }
+
             #mobileMoreDropdown {
                 position: fixed;
-                bottom: 70px;
+                bottom: 80px;
                 left: 50%;
                 transform: translateX(-50%);
                 width: calc(100vw - 16px);
@@ -753,11 +819,13 @@
                 z-index: 100;
                 padding: 12px;
             }
+
             #mobileMoreDropdown .more-grid {
                 display: grid;
                 grid-template-columns: repeat(3, 1fr);
                 gap: 8px;
             }
+
             #mobileMoreDropdown .more-grid button {
                 display: flex;
                 flex-direction: column;
@@ -773,19 +841,23 @@
                 cursor: pointer;
                 min-width: 0;
             }
+
             #mobileMoreDropdown .more-grid button:hover {
                 background: var(--hover-bg);
             }
+
             #mobileMoreDropdown .more-grid button svg {
                 width: 22px !important;
                 height: 22px !important;
             }
+
             #mobileMoreDropdown .more-grid button .h-12 {
                 height: 28px !important;
                 display: flex;
                 align-items: center;
                 justify-content: center;
             }
+
             #mobileMoreDropdown .more-grid button span {
                 font-size: 9px !important;
                 font-weight: 600;
@@ -794,9 +866,11 @@
             #participantSidebar {
                 width: 100vw !important;
             }
+
             #transcriptSidebar {
                 width: 100vw !important;
             }
+
             #transcriptSidebar .p-4 {
                 padding: 10px 12px !important;
             }
@@ -805,6 +879,7 @@
                 right: 8px !important;
                 padding: 8px !important;
             }
+
             #openSidebarBtn svg {
                 width: 18px !important;
                 height: 18px !important;
@@ -818,23 +893,28 @@
                 transform: translateX(-50%) !important;
             }
 
-            #notulensiModal > div {
+            #notulensiModal>div {
                 width: 95% !important;
                 height: 92vh !important;
                 border-radius: 16px !important;
             }
+
             #notulensiModal .p-6 {
                 padding: 14px !important;
             }
+
             #notulensiModal .grid-cols-1.md\:grid-cols-2 {
                 grid-template-columns: 1fr !important;
             }
+
             #notulensiModal .text-lg {
                 font-size: 15px !important;
             }
+
             #notulensiModal table {
                 font-size: 12px !important;
             }
+
             #notulensiModal th,
             #notulensiModal td {
                 padding: 6px 8px !important;
@@ -843,28 +923,34 @@
             .speaker-strip {
                 height: 80px !important;
             }
+
             .speaker-strip .video-card {
                 min-width: 100px !important;
                 height: 72px !important;
             }
+
             .sidebar-vertical-strip {
                 width: 80px !important;
             }
+
             .sidebar-vertical-strip .video-card {
                 min-height: 60px !important;
             }
+
             .spotlight-overlay {
                 width: 100px !important;
                 height: 70px !important;
             }
 
-            #confirmNotulenModal > div {
+            #confirmNotulenModal>div {
                 padding: 20px !important;
                 width: 90% !important;
             }
+
             #confirmNotulenModal h2 {
                 font-size: 18px !important;
             }
+
             #confirmNotulenModal button {
                 font-size: 15px !important;
                 padding: 8px 20px !important;
@@ -872,10 +958,11 @@
         }
     </style>
 
-    <div class="h-screen flex flex-col relative meeting-bg text-white overflow-hidden font-sans">
+    <div id="meetingContainer" class="h-screen flex flex-col relative meeting-bg text-white overflow-hidden font-sans">
 
         <!-- Top Bar -->
-        <div class="absolute top-0 left-0 right-0 px-6 py-4 flex justify-between items-center z-10 top-bar">
+        <div
+            class="static md:absolute md:top-0 md:left-0 md:right-0 px-6 py-4 flex justify-between items-center z-10 top-bar">
             <div class="flex items-center gap-3">
                 <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
                     <path
@@ -885,7 +972,8 @@
             </div>
             <div class="flex items-center gap-2">
                 <button id="roomThemeToggle"
-                    class="p-2 hover:bg-white/10 rounded-full transition text-white/70 hover:text-white" title="Toggle tema">
+                    class="p-2 hover:bg-white/10 rounded-full transition text-white/70 hover:text-white"
+                    title="Toggle tema">
                     <svg id="roomThemeIconSun" class="w-5 h-5 hidden" fill="none" stroke="currentColor" stroke-width="2"
                         viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -908,8 +996,9 @@
         </div>
 
         <!-- Video Grid Area -->
-        <div class="flex-1 w-full h-full p-1 md:p-2 pb-24 relative flex flex-col">
-            <div id="videoGridWrapper" class="flex-1 overflow-hidden relative flex flex-row video-grid-container m-1 md:m-2">
+        <div class="flex-1 min-h-0 p-1 md:p-2 pb-24 relative flex flex-col max-h-[90vh]">
+            <div id="videoGridWrapper"
+                class="h-dvh md:flex-1 max-h-[70vh] overflow-hidden relative flex flex-row video-grid-container m-1 md:m-2">
                 <!-- Screen Share Display -->
                 <div id="screenShareContainer" class="hidden flex-1 min-w-0 relative screen-share-container m-2"
                     style="background:#111">
@@ -919,25 +1008,26 @@
                         <span id="screenShareLabel" class="text-white text-sm font-semibold"></span>
                         <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
                     </div>
-                    <button id="pinScreenShareBtn"
-                        class="absolute top-3 right-3 pin-btn text-xs px-2 py-1.5 z-30"><svg class="w-4 h-4 inline" fill="currentColor" viewBox="0 0 24 24"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/></svg></button>
+                    <button id="pinScreenShareBtn" class="absolute top-3 right-3 pin-btn text-xs px-2 py-1.5 z-30"><svg
+                            class="w-4 h-4 inline" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z" />
+                        </svg></button>
                     <button id="stopScreenShareBtn"
                         class="absolute top-3 right-14 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg z-30 hidden shadow-lg shadow-red-600/20">Stop
                         Sharing</button>
                 </div>
-                <div id="videoGridMain" class="min-w-0 relative z-0" style="flex:1">
+                <div id="videoGridMain" class="min-w-0 relative z-0 h-full" style="flex:1">
                     <!-- Local Video -->
-                    <div id="localVideoContainer"
-                        class="relative bg-black rounded-lg overflow-hidden h-full video-card m-1">
+                    <div id="localVideoContainer" class="relative rounded-lg overflow-hidden h-full video-card m-1">
                         <video id="localVideo" autoplay muted playsinline class="w-full h-full object-cover"
                             style="transform: scaleX(-1)"></video>
-                        <div id="localAvatar"
-                            class="absolute inset-0 bg-gray-900/80 flex items-center justify-center hidden z-10">
+                        <div id="localAvatar" class="absolute inset-0 flex items-center justify-center hidden z-10"
+                            style="background:rgba(0,0,0,0.6)">
                             <div class="relative">
-<div id="localAvatarCircle"
-    style="width:80px;height:80px;border-radius:50%;background:#374151;display:flex;align-items:center;justify-content:center;transition:all 0.3s">
-    <span id="localAvatarText"
-        style="font-size:2.25rem;color:#fff;font-weight:700;text-transform:uppercase"></span>
+                                <div id="localAvatarCircle"
+                                    style="width:80px;height:80px;border-radius:50%;background:#4b5563;display:flex;align-items:center;justify-content:center;transition:all 0.3s">
+                                    <span id="localAvatarText"
+                                        style="font-size:2.25rem;color:#fff;font-weight:700;text-transform:uppercase"></span>
                                 </div>
                             </div>
                         </div>
@@ -950,7 +1040,8 @@
                 </div>
             </div>
             <!-- Pagination Dots -->
-            <div id="paginationDots" class="flex justify-center items-center gap-1 md:gap-2 py-1 md:py-2 flex-shrink-0" style="display:none">
+            <div id="paginationDots" class="flex justify-center items-center gap-1 md:gap-2 py-1 md:py-2 flex-shrink-0"
+                style="display:none">
             </div>
 
             <!-- "Simpan Notulen Rapat?" Confirmation Modal -->
@@ -1105,9 +1196,9 @@
                 class="flex flex-col items-center text-white hover:text-gray-200 transition toolbar-btn">
                 <div class="h-12 flex items-center justify-center">
                     <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24">
-                        <circle cx="12" cy="5" r="2"/>
-                        <circle cx="12" cy="12" r="2"/>
-                        <circle cx="12" cy="19" r="2"/>
+                        <circle cx="12" cy="5" r="2" />
+                        <circle cx="12" cy="12" r="2" />
+                        <circle cx="12" cy="19" r="2" />
                     </svg>
                 </div>
                 <span class="text-sm font-semibold mt-1">Lainnya</span>
@@ -1228,37 +1319,52 @@
             </div>
             <div id="contextMenu" class="hidden fixed z-50 context-menu py-1 min-w-[140px]">
                 <button id="contextPinBtn"
-                    class="w-full text-left px-4 py-2.5 text-sm text-gray-200 hover:text-white flex items-center gap-2"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/></svg>
+                    class="w-full text-left px-4 py-2.5 text-sm text-gray-200 hover:text-white flex items-center gap-2"><svg
+                        class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z" />
+                    </svg>
                     Pin</button>
             </div>
         </div>
 
         <!-- Transcript Sidebar -->
-        <div id="transcriptSidebar" class="collapsed absolute top-0 right-0 h-full w-96 max-w-[90vw] z-40 flex flex-col border-l border-white/5 bg-gray-900/90 backdrop-blur-xl transform transition-all duration-300">
+        <div id="transcriptSidebar"
+            class="collapsed absolute top-0 right-0 h-full w-96 max-w-[90vw] z-40 flex flex-col border-l border-white/5 bg-gray-900/90 backdrop-blur-xl transform transition-all duration-300">
             <div class="p-4 border-b border-white/5 flex items-center justify-between shrink-0">
                 <div class="flex items-center gap-2">
                     <span id="sidebarStatusIndicator" class="relative inline-flex rounded-full h-2 w-2 bg-gray-500">
-                        <span id="sidebarPulse" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-gray-400 opacity-75"></span>
+                        <span id="sidebarPulse"
+                            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-gray-400 opacity-75"></span>
                     </span>
                     <h3 class="text-sm font-bold text-white">Transkrip Rapat</h3>
                 </div>
                 <div class="flex items-center gap-1">
-                    <button id="toggleSidebarBtn" title="Sembunyikan transkrip" class="text-gray-400 hover:text-white hover:bg-white/10 rounded-lg p-1.5 transition-colors">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    <button id="toggleSidebarBtn" title="Sembunyikan transkrip"
+                        class="text-gray-400 hover:text-white hover:bg-white/10 rounded-lg p-1.5 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
                     </button>
                 </div>
             </div>
             <div class="px-4 py-2 border-b border-white/5 shrink-0">
-                <span id="transcribeStatus" class="text-gray-500 font-semibold uppercase tracking-wider text-xs">Nonaktif</span>
+                <span id="transcribeStatus"
+                    class="text-gray-500 font-semibold uppercase tracking-wider text-xs">Nonaktif</span>
             </div>
             <div id="transcriptMessages" class="flex-1 min-h-0 overflow-y-auto p-3 space-y-3 custom-scrollbar">
-                <div id="emptyTranscriptMsg" class="text-gray-500 text-center py-8 italic text-xs">Belum ada transkrip aktif.</div>
+                <div id="emptyTranscriptMsg" class="text-gray-500 text-center py-8 italic text-xs">Belum ada transkrip
+                    aktif.</div>
             </div>
         </div>
 
-        <button id="openSidebarBtn" class="hidden fixed right-4 top-1/2 -translate-y-1/2 z-50 bg-gray-800/90 hover:bg-gray-700 border border-white/10 text-white p-3 rounded-l-xl shadow-xl transition-all">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-            <span id="sidebarActiveDot" class="absolute -top-1 -left-1 w-3 h-3 bg-emerald-500 rounded-full animate-pulse hidden"></span>
+        <button id="openSidebarBtn"
+            class="hidden fixed right-4 top-1/2 -translate-y-1/2 z-50 bg-gray-800/90 hover:bg-gray-700 border border-white/10 text-white p-3 rounded-l-xl shadow-xl transition-all">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+            <span id="sidebarActiveDot"
+                class="absolute -top-1 -left-1 w-3 h-3 bg-emerald-500 rounded-full animate-pulse hidden"></span>
         </button>
 
         <button id="startRecordBtn" class="hidden"></button>
@@ -1662,8 +1768,12 @@
                 minute: '2-digit'
             });
             const isMe = Number(userId) === currentUserId;
-            const nameColors = ['text-indigo-400', 'text-emerald-400', 'text-amber-400', 'text-pink-400', 'text-sky-400', 'text-purple-400'];
-            const avatarBgColors = ['bg-indigo-500/20', 'bg-emerald-500/20', 'bg-amber-500/20', 'bg-pink-500/20', 'bg-sky-500/20', 'bg-purple-500/20'];
+            const nameColors = ['text-indigo-400', 'text-emerald-400', 'text-amber-400', 'text-pink-400', 'text-sky-400',
+                'text-purple-400'
+            ];
+            const avatarBgColors = ['bg-indigo-500/20', 'bg-emerald-500/20', 'bg-amber-500/20', 'bg-pink-500/20',
+                'bg-sky-500/20', 'bg-purple-500/20'
+            ];
             const colorIndex = Number(userId) % nameColors.length;
             const nameColor = isMe ? 'text-violet-400' : nameColors[colorIndex];
             const avatarBg = isMe ? 'bg-violet-500/20' : avatarBgColors[colorIndex];
@@ -1738,9 +1848,9 @@
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 }
             }).finally(() => {
-                const redirectUrl = isAdmin
-                    ? '{{ route("admin.meetings.index") }}'
-                    : '/join';
+                const redirectUrl = isAdmin ?
+                    '{{ route('admin.meetings.index') }}' :
+                    '/join';
                 window.location.href = redirectUrl;
             });
         }
@@ -1774,7 +1884,7 @@
             card = document.createElement('div');
             card.id = cardId;
             card.dataset.identity = identity;
-            card.className = 'bg-black rounded-2xl overflow-hidden shadow-xl h-full w-full relative video-card m-1';
+            card.className = 'rounded-2xl overflow-hidden shadow-xl h-full w-full relative video-card m-1';
             const video = document.createElement('video');
             video.id = videoId;
             video.autoplay = true;
@@ -1788,16 +1898,18 @@
             pinBtn.id = `pin-btn-${safeKey}`;
             pinBtn.dataset.identity = identity;
             pinBtn.className = 'absolute top-2 right-2 pin-btn text-xs px-1.5 py-0.5 z-20 transition-colors';
-            pinBtn.innerHTML = '<svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/></svg>';
+            pinBtn.innerHTML =
+                '<svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/></svg>';
             pinBtn.onclick = (e) => {
                 e.stopPropagation();
                 togglePin(identity);
             };
             const avatar = document.createElement('div');
             avatar.id = `remote-avatar-${safeKey}`;
-            avatar.className = 'absolute inset-0 bg-gray-900/80 flex items-center justify-center hidden z-10';
+            avatar.className = 'absolute inset-0 flex items-center justify-center hidden z-10';
+            avatar.style.background = 'rgba(0,0,0,0.6)';
             avatar.innerHTML =
-                `<div class="relative"><div id="remote-avatar-circle-${safeKey}" style="width:112px;height:112px;border-radius:50%;background:#374151;display:flex;align-items:center;justify-content:center;transition:all 0.3s"><span style="font-size:3rem;color:#fff;font-weight:700;text-transform:uppercase">${(displayName || identity || 'P').charAt(0).toUpperCase()}</span></div></div>`;
+                `<div class="relative"><div id="remote-avatar-circle-${safeKey}" style="width:112px;height:112px;border-radius:50%;background:#4b5563;display:flex;align-items:center;justify-content:center;transition:all 0.3s"><span style="font-size:3rem;color:#fff;font-weight:700;text-transform:uppercase">${(displayName || identity || 'P').charAt(0).toUpperCase()}</span></div></div>`;
             card.appendChild(video);
             card.appendChild(pinBtn);
             card.appendChild(avatar);
@@ -1897,6 +2009,12 @@
             if (badge) badge.textContent = totalCount;
             if (countText) countText.textContent = totalCount;
             updateParticipantSidebar();
+
+            // Alone mode toggle
+            const container = document.getElementById('meetingContainer');
+            if (container) {
+                container.classList.toggle('alone-mode', totalCount === 1);
+            }
         }
 
         function applyGridLayout(grid, remotes, totalCount) {
@@ -1909,7 +2027,11 @@
                     el.classList.remove('speaker-main-video');
                 });
             } else if (totalCount === 2) {
-                grid.classList.add('grid-cols-2', 'grid-rows-1');
+                if (window.innerWidth < 768) {
+                    grid.classList.add('grid-cols-1', 'grid-rows-2');
+                } else {
+                    grid.classList.add('grid-cols-2', 'grid-rows-1');
+                }
                 cards.forEach(el => {
                     el.style.display = '';
                     el.classList.remove('speaker-main-video');
@@ -2083,7 +2205,8 @@
                     try {
                         await new Promise((resolve, reject) => {
                             const s = document.createElement('script');
-                            s.src = 'https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js';
+                            s.src =
+                                'https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js';
                             s.onload = () => {
                                 if (window.LiveKit) resolve();
                                 else reject(new Error('LiveKit CDN load failed'));
@@ -2431,9 +2554,13 @@
             const pinBtn = document.getElementById('contextPinBtn');
             if (pinBtn) {
                 if (isPinned(identity)) {
-                    pinBtn.innerHTML = '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/></svg> Unpin ' + escapeHtml(displayName);
+                    pinBtn.innerHTML =
+                        '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/></svg> Unpin ' +
+                        escapeHtml(displayName);
                 } else {
-                    pinBtn.innerHTML = '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/></svg> Pin ' + escapeHtml(displayName);
+                    pinBtn.innerHTML =
+                        '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/></svg> Pin ' +
+                        escapeHtml(displayName);
                 }
                 pinBtn.onclick = () => {
                     togglePin(identity);
@@ -2550,9 +2677,9 @@
             const pusher = window.Echo?.connector?.pusher;
             if (pusher?.connection) {
                 pusher.connection.bind('connected', () => setConnectionStatus('LiveKit: terhubung',
-                'text-emerald-400'));
+                    'text-emerald-400'));
                 pusher.connection.bind('disconnected', () => setConnectionStatus('LiveKit: terputus',
-                'text-amber-300'));
+                    'text-amber-300'));
             }
             const channel = window.Echo.private('meeting.' + meetingId);
             channel.listen('.WebRTCSignal', async (e) => {
@@ -2563,7 +2690,8 @@
                     return;
                 }
                 if (data.type === 'start-recording-broadcast') {
-                    if (transcriptMessages) transcriptMessages.innerHTML = '<div id="emptyTranscriptMsg" class="text-gray-500 text-center py-8 italic text-xs">Belum ada transkrip aktif.</div>';
+                    if (transcriptMessages) transcriptMessages.innerHTML =
+                        '<div id="emptyTranscriptMsg" class="text-gray-500 text-center py-8 italic text-xs">Belum ada transkrip aktif.</div>';
                     if (showNotulensiBtn) showNotulensiBtn.classList.add('hidden');
                     if (pdfBtn) pdfBtn.classList.add('opacity-40', 'pointer-events-none');
                     if (!liveTranscriptionActive) {
@@ -3620,11 +3748,26 @@
         const mobileMoreDropdown = document.getElementById('mobileMoreDropdown');
         const moreGrid = mobileMoreDropdown?.querySelector('.more-grid');
 
-        const mobileHiddenButtons = [
-            { id: 'participantBtn', label: 'Partisipan', icon: '<svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>' },
-            { id: 'screenShareBtn', label: 'Share Screen', icon: '<svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25A2.25 2.25 0 015.25 3h13.5A2.25 2.25 0 0121 5.25z"/></svg>' },
-            { id: 'layoutBtn', label: 'Layout', icon: '<svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>' },
-            { id: 'recordScreenBtn', label: 'Rekam', icon: '<svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4zM14 13h-3v3H9v-3H6v-2h3V8h2v3h3v2z"/></svg>' },
+        const mobileHiddenButtons = [{
+                id: 'participantBtn',
+                label: 'Partisipan',
+                icon: '<svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>'
+            },
+            {
+                id: 'screenShareBtn',
+                label: 'Share Screen',
+                icon: '<svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25A2.25 2.25 0 015.25 3h13.5A2.25 2.25 0 0121 5.25z"/></svg>'
+            },
+            {
+                id: 'layoutBtn',
+                label: 'Layout',
+                icon: '<svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>'
+            },
+            {
+                id: 'recordScreenBtn',
+                label: 'Rekam',
+                icon: '<svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4zM14 13h-3v3H9v-3H6v-2h3V8h2v3h3v2z"/></svg>'
+            },
         ];
 
         if (moreGrid && mobileMoreBtn && mobileMoreDropdown) {
@@ -3632,12 +3775,17 @@
                 mobileMoreDropdown.style.display = 'none';
             }
 
-            mobileHiddenButtons.unshift({ id: 'aiNotulenTriggerBtn', label: 'AI Notulen', icon: '<svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24"><path d="M7.5 5.6L10 7 8.6 4.5 10 2 7.5 3.4 5 2l1.4 2.5L5 7zm12 9.8L17 14l1.4 2.5L17 19l2.5-1.4L22 19l-1.4-2.5L22 14zM22 2l-2.5 1.4L17 2l1.4 2.5L17 7l2.5-1.4L22 7l-1.4-2.5zm-7.63 5.29c-.39-.39-1.02-.39-1.41 0L1.29 18.96c-.39.39-.39 1.02 0 1.41l2.34 2.34c.39.39 1.02.39 1.41 0L16.7 11.05c.39-.39.39-1.02 0-1.41l-2.33-2.35zm-1.03 5.49l-2.12-2.12 2.44-2.44 2.12 2.12-2.44 2.44z"/></svg>' });
+            mobileHiddenButtons.unshift({
+                id: 'aiNotulenTriggerBtn',
+                label: 'AI Notulen',
+                icon: '<svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24"><path d="M7.5 5.6L10 7 8.6 4.5 10 2 7.5 3.4 5 2l1.4 2.5L5 7zm12 9.8L17 14l1.4 2.5L17 19l2.5-1.4L22 19l-1.4-2.5L22 14zM22 2l-2.5 1.4L17 2l1.4 2.5L17 7l2.5-1.4L22 7l-1.4-2.5zm-7.63 5.29c-.39-.39-1.02-.39-1.41 0L1.29 18.96c-.39.39-.39 1.02 0 1.41l2.34 2.34c.39.39 1.02.39 1.41 0L16.7 11.05c.39-.39.39-1.02 0-1.41l-2.33-2.35zm-1.03 5.49l-2.12-2.12 2.44-2.44 2.12 2.12-2.44 2.44z"/></svg>'
+            });
 
             mobileHiddenButtons.forEach(function(item) {
                 const btn = document.createElement('button');
                 btn.setAttribute('data-target', item.id);
-                btn.innerHTML = '<div class="h-12 flex items-center justify-center">' + item.icon + '</div><span>' + item.label + '</span>';
+                btn.innerHTML = '<div class="h-12 flex items-center justify-center">' + item.icon + '</div><span>' +
+                    item.label + '</span>';
                 btn.addEventListener('click', function(e) {
                     e.stopPropagation();
                     closeMobileMoreDropdown();
@@ -3650,7 +3798,9 @@
                             popup.style.transform = 'translateX(-50%)';
                             popup.style.zIndex = '200';
                             popup.classList.remove('hidden');
-                            setTimeout(function() { popup.classList.remove('opacity-0'); }, 10);
+                            setTimeout(function() {
+                                popup.classList.remove('opacity-0');
+                            }, 10);
                         }
                     } else if (item.id === 'layoutBtn') {
                         const layouts = ['grid', 'speaker', 'sidebar', 'spotlight'];
@@ -3680,9 +3830,12 @@
                 }
                 // Close share popup if mobile more is clicked
                 const sharePopup = document.getElementById('sharePopup');
-                if (sharePopup && !sharePopup.classList.contains('hidden') && mobileMoreBtn && mobileMoreBtn.contains(e.target)) {
+                if (sharePopup && !sharePopup.classList.contains('hidden') && mobileMoreBtn && mobileMoreBtn
+                    .contains(e.target)) {
                     sharePopup.classList.add('opacity-0');
-                    setTimeout(function() { sharePopup.classList.add('hidden'); }, 300);
+                    setTimeout(function() {
+                        sharePopup.classList.add('hidden');
+                    }, 300);
                 }
             });
         }

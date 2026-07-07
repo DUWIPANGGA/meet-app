@@ -323,7 +323,8 @@ document.addEventListener('alpine:init', () => {
         animationId: null,
         canvas: null,
         canvasCtx: null,
-        whisperUrl: '{{ env("WHISPER_URL", "http://127.0.0.1:8001/transcribe") }}',
+        transcribeUrl: '{{ route("audio.transcribe") }}',
+        transcribeStatusUrl: (id) => '{{ route("audio.transcribe.status", ["id" => "__ID__"]) }}'.replace('__ID__', id),
         summarizeUrl: '{{ route("ai.summarize") }}',
         saveUrl: '{{ route("audio.save") }}',
         saveRawUrl: '{{ route("audio.save-raw") }}',
@@ -432,15 +433,35 @@ document.addEventListener('alpine:init', () => {
             try {
                 this.step = 1;
                 this.statusMessage = 'Mengirim audio ke Whisper untuk transkripsi...';
-                const formData = new FormData();
-                formData.append('file', audioBlob, filename);
-                const res = await fetch(this.whisperUrl, { method: 'POST', body: formData });
-                if (!res.ok) {
-                    const errText = await res.text();
-                    throw new Error(`HTTP ${res.status}: ${errText.substring(0, 200)}`);
+                const transcribeRes = await fetch(this.transcribeUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': this.csrfToken,
+                    },
+                    body: JSON.stringify({ live_audio_id: liveAudioId }),
+                });
+                if (!transcribeRes.ok) {
+                    const errData = await transcribeRes.json();
+                    throw new Error(errData.message ?? `HTTP ${transcribeRes.status}`);
                 }
-                const data = await res.json();
-                transcript = data.text ?? data.transcription ?? data.result ?? '';
+                const transcribeData = await transcribeRes.json();
+                if (transcribeData.status === 'completed') {
+                    transcript = transcribeData.transcript;
+                } else {
+                    this.statusMessage = 'Menunggu hasil transkripsi Whisper...';
+                    while (true) {
+                        await new Promise(r => setTimeout(r, 2000));
+                        const pollRes = await fetch(this.transcribeStatusUrl(liveAudioId), {
+                            headers: { 'X-CSRF-TOKEN': this.csrfToken },
+                        });
+                        const pollData = await pollRes.json();
+                        if (pollData.status === 'completed') {
+                            transcript = pollData.transcript;
+                            break;
+                        }
+                    }
+                }
                 if (!transcript || transcript.trim() === '') {
                     throw new Error('Whisper mengembalikan teks kosong. Pastikan audio berisi suara yang jelas.');
                 }
