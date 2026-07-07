@@ -13,12 +13,12 @@ jobs:
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.SSH_HOST || '103.189.234.229' }}
-          username: ${{ secrets.SSH_USER || 'gesvy' }}
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.SSH_PORT || '22' }}
+          port: ${{ secrets.SSH_PORT }}
           script: |
-            cd /var/www/bps
+            cd ${{ secrets.PROJECT_PATH }}
             git pull origin master
             composer install --no-dev --optimize-autoloader --ignore-platform-reqs
             npm run build

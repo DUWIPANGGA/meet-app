@@ -29,3 +29,6 @@ Thumbs.db
 /ffmpeg/bin/*.exe
 /ffmpeg/bin/*.dll
 
+# Server credentials — DO NOT COMMIT
+server.md
+
