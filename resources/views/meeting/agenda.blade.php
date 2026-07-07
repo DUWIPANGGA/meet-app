@@ -411,7 +411,7 @@
                     {
                         id: '{{ $meeting->id }}',
                         title: '{!! addslashes($meeting->nama_rapat) !!}',
-                        start: '{{ \Carbon\Carbon::parse($meeting->tanggal)->format("Y-m-d") }}T{{ $meeting->waktu ?? "00:00:00" }}',
+                        start: '{{ \Carbon\Carbon::parse($meeting->tanggal)->format("Y-m-d") }}T{{ $meeting->waktu ? \Carbon\Carbon::parse($meeting->waktu)->format("H:i") : "00:00" }}',
                         extendedProps: {
                             status: '{{ $meeting->status_rapat }}',
                             tipe: '{{ $meeting->tipe_rapat === "Offline" ? "offline" : "online" }}',

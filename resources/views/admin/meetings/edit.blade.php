@@ -39,7 +39,7 @@
                 </div>
                 <div>
                     <label class="block text-sm font-semibold mb-1.5" style="color:var(--text-secondary)">Waktu <span class="text-red-400">*</span></label>
-                    <input type="time" name="waktu" value="{{ old('waktu', $meeting->waktu) }}" required
+                    <input type="time" name="waktu" value="{{ old('waktu', $meeting->waktu ? \Carbon\Carbon::parse($meeting->waktu)->format('H:i') : '') }}" required
                            class="w-full px-3 py-2.5 input-theme rounded-xl outline-none transition text-sm">
                     @error('waktu') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
