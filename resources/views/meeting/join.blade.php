@@ -189,6 +189,14 @@
                         </div>
                     </div>
 
+                    <!-- Deskripsi -->
+                    <div>
+                        <label class="block text-sm font-semibold mb-1.5" style="color:var(--text-secondary)">Deskripsi (opsional)</label>
+                        <textarea name="deskripsi_rapat" rows="3"
+                                  placeholder="Topik bahasan, agenda, dll."
+                                  class="w-full px-4 py-2.5 input-theme rounded-xl outline-none transition text-sm resize-none"></textarea>
+                    </div>
+
                     <!-- Tanggal & Waktu (jika terjadwal) -->
                     <div x-show="meetingType === 'scheduled'" style="display: none;" class="grid grid-cols-2 gap-3">
                         <div>
