@@ -166,6 +166,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/audio-notulensi/transcribe/{id}/status', [AudioController::class, 'transcribeStatus'])->name('audio.transcribe.status');
     });
 
+    // ======================== MEETING LAYOUT SIMULATION ========================
+    Route::get('/meeting-layout-test', function () {
+        return view('meeting.layout-test');
+    })->name('meeting.layout-test');
+
     // ======================== VIDEO REKAMAN LAYAR ========================
     Route::prefix('videos')->middleware('user.permission:ManageMeetingRecording')->group(function () {
         Route::get('/', [\App\Http\Controllers\VideoController::class, 'index'])->name('video.index');

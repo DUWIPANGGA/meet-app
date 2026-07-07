@@ -46,16 +46,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::delete('agendas/{meeting}', [AgendaController::class, 'destroy'])->name('agendas.destroy');
     });
 
-    // Arsips (Full CRUD)
+    // Riwayat Meeting
     Route::middleware('user.permission:AdminAccessArsips')->group(function () {
-        Route::get('arsips', [ArsipController::class, 'index'])->name('arsips.index');
-        Route::get('arsips/create', [ArsipController::class, 'create'])->name('arsips.create');
-        Route::post('arsips', [ArsipController::class, 'store'])->name('arsips.store');
-        Route::get('arsips/{arsip}', [ArsipController::class, 'show'])->name('arsips.show');
-        Route::get('arsips/{arsip}/pdf', [ArsipController::class, 'downloadPdf'])->name('arsips.pdf');
-        Route::get('arsips/{arsip}/edit', [ArsipController::class, 'edit'])->name('arsips.edit');
-        Route::put('arsips/{arsip}', [ArsipController::class, 'update'])->name('arsips.update');
-        Route::delete('arsips/{arsip}', [ArsipController::class, 'destroy'])->name('arsips.destroy');
+        Route::get('riwayat-meeting', [AdminController::class, 'riwayatMeeting'])->name('riwayat-meeting.index');
+        Route::delete('riwayat-meeting/{meeting}', [AdminController::class, 'destroyRiwayatMeeting'])->name('riwayat-meeting.destroy');
     });
 
     // Transkrip (CRUD)

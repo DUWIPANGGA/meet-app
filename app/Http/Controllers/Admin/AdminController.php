@@ -7,7 +7,6 @@ use App\Models\Meeting;
 use App\Models\Notulensi;
 use App\Models\RekamanAudio;
 use App\Models\Transkrip;
-use App\Models\Arsip;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -26,12 +25,35 @@ class AdminController extends Controller
             'total_rekaman'    => RekamanAudio::count(),
             'total_transkripsi'=> Transkrip::count(),
             'total_notulensi'  => Notulensi::count(),
-            'total_arsips'     => Arsip::count(),
         ];
 
         $recentMeetings = Meeting::latest()->take(5)->get();
 
         return view('admin.dashboard.index', compact('stats', 'recentMeetings'));
+    }
+
+    public function riwayatMeeting()
+    {
+        $meetings = Meeting::with(['transkrip', 'notulensi', 'creator'])
+            ->where(function ($q) {
+                $q->whereHas('transkrip')->orWhereHas('notulensi');
+            })
+            ->latest()
+            ->paginate(20);
+
+        return view('admin.riwayat-meeting.index', compact('meetings'));
+    }
+
+    public function destroyRiwayatMeeting(Meeting $meeting)
+    {
+        $meeting->transkrip()->delete();
+        $meeting->notulensi()->delete();
+        $meeting->rekamanAudio()->delete();
+        $meeting->arsip()->delete();
+        $meeting->delete();
+
+        return redirect()->route('admin.riwayat-meeting.index')
+            ->with('success', 'Riwayat meeting berhasil dihapus.');
     }
 
     public function profile()
