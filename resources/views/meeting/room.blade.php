@@ -1225,7 +1225,8 @@
                     <span class="text-sm font-semibold mt-1">Layout</span>
                 </button>
                 <div id="layoutDropdown"
-                    class="hidden absolute bottom-full mb-4 left-1/2 -translate-x-1/2 layout-dropdown min-w-[160px] opacity-0 transition-opacity">
+                    style="display:none;opacity:0"
+                    class="absolute bottom-full mb-4 left-1/2 -translate-x-1/2 layout-dropdown min-w-[160px] transition-opacity">
                     <button data-layout="grid" class="active-layout"><svg class="w-4 h-4" fill="currentColor"
                             viewBox="0 0 24 24">
                             <path
@@ -1943,7 +1944,41 @@
         }
 
         let currentPage = 0;
-        const PER_PAGE = 4;
+        const PER_PAGE = 6;
+
+        function goToPage(page) {
+            const cards = getParticipantCards();
+            const totalPages = Math.ceil(cards.length / PER_PAGE);
+            currentPage = Math.max(0, Math.min(page, totalPages - 1));
+            updateParticipantUI();
+        }
+
+        function getCurrentPageCards(cards) {
+            const start = currentPage * PER_PAGE;
+            return cards.slice(start, start + PER_PAGE);
+        }
+
+        function updatePaginationDots() {
+            const container = document.getElementById('paginationDots');
+            if (!container) return;
+            const cards = getParticipantCards();
+            const totalPages = Math.ceil(cards.length / PER_PAGE);
+            if (totalPages <= 1) {
+                container.style.display = 'none';
+                container.innerHTML = '';
+                return;
+            }
+            container.style.display = 'flex';
+            container.innerHTML = '';
+            for (let i = 0; i < totalPages; i++) {
+                const dot = document.createElement('button');
+                dot.className = 'pagination-dot w-2 h-2 md:w-3 md:h-3 rounded-full transition-all duration-300 ' +
+                    (i === currentPage ? 'bg-violet-500 scale-125' : 'bg-white/30 hover:bg-white/50');
+                dot.setAttribute('aria-label', 'Halaman ' + (i + 1));
+                dot.addEventListener('click', () => goToPage(i));
+                container.appendChild(dot);
+            }
+        }
 
         function getParticipantCards() {
             const remoteContainer = document.getElementById('remoteVideos');
@@ -1995,6 +2030,10 @@
             if (_lastUIUpdateKey === key) return;
             _lastUIUpdateKey = key;
 
+            // Reset currentPage if out of bounds
+            const totalPages = Math.ceil(getParticipantCards().length / PER_PAGE);
+            if (currentPage >= totalPages) currentPage = Math.max(0, totalPages - 1);
+
             // Remove all layout classes
             grid.classList.remove('layout-speaker', 'layout-sidebar', 'layout-spotlight');
             grid.className = 'min-w-0 relative z-0';
@@ -2020,9 +2059,15 @@
             if (container) {
                 container.classList.toggle('alone-mode', totalCount === 1);
             }
+
+            updatePaginationDots();
         }
 
         function applyGridLayout(grid, remotes, totalCount) {
+
+            const paginatedCards = getCurrentPageCards(getParticipantCards());
+            const visibleCount = paginatedCards.length;
+
             // Bersihkan kelas grid sebelumnya
             grid.classList.add('grid', 'gap-2', 'w-full', 'h-full');
             // Hapus kelas grid-cols-* dan grid-rows-* jika ada (dari layout sebelumnya)
@@ -2032,28 +2077,28 @@
             const isMobile = window.innerWidth < 768;
             let cols, rows;
 
-            if (totalCount === 1) {
+            if (visibleCount <= 1) {
                 cols = 1;
                 rows = 1;
             } else if (isMobile) {
-                if (totalCount === 2) {
+                if (visibleCount === 2) {
                     cols = 1;
                     rows = 2; // 1 kolom, 2 baris → atas-bawah
                 } else {
                     cols = 2;
-                    rows = Math.ceil(totalCount / cols);
+                    rows = Math.ceil(visibleCount / cols);
                 }
             } else {
                 // Desktop
-                if (totalCount === 2) {
+                if (visibleCount === 2) {
                     cols = 2;
                     rows = 1;
-                } else if (totalCount <= 4) {
+                } else if (visibleCount <= 4) {
                     cols = 2;
-                    rows = Math.ceil(totalCount / cols);
+                    rows = Math.ceil(visibleCount / cols);
                 } else {
                     cols = 3;
-                    rows = Math.ceil(totalCount / cols);
+                    rows = Math.ceil(visibleCount / cols);
                 }
             }
 
@@ -2062,11 +2107,18 @@
             grid.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
 
             // Pastikan semua kartu video ditampilkan
-            const cards = getParticipantCards();
-            cards.forEach(el => {
+            const allCards = getParticipantCards();
+            paginatedCards.forEach(el => {
                 el.style.display = '';
-                el.classList.remove('speaker-main-video');
+                el.classList.remove('speaker-main-video', 'spotlight-main', 'spotlight-overlay');
             });
+            allCards.forEach(el => {
+                if (!paginatedCards.includes(el)) {
+                    el.style.display = 'none';
+                }
+            });
+
+            grid.querySelectorAll('.speaker-strip, .sidebar-main-area, .sidebar-vertical-strip').forEach(el => el.remove());
         }
 
         function applySpeakerLayout(grid, remotes, totalCount) {
@@ -2084,6 +2136,7 @@
             }
             strip.innerHTML = '';
 
+            const nonMain = [];
             cards.forEach(card => {
                 card.classList.remove('speaker-main-video');
                 const id = card.dataset?.identity || String(currentUserId);
@@ -2092,8 +2145,18 @@
                     card.style.display = '';
                     if (card.parentElement !== grid) grid.insertBefore(card, strip);
                 } else {
-                    card.style.display = '';
-                    if (card.parentElement !== strip) strip.appendChild(card);
+                    nonMain.push(card);
+                }
+            });
+
+            const paginatedStrip = getCurrentPageCards(nonMain);
+            paginatedStrip.forEach(card => {
+                card.style.display = '';
+                if (card.parentElement !== strip) strip.appendChild(card);
+            });
+            nonMain.forEach(card => {
+                if (!paginatedStrip.includes(card)) {
+                    card.style.display = 'none';
                 }
             });
         }
@@ -2117,14 +2180,25 @@
             const mainId = activeSpeakerIdentity || pinnedIdentities[0] || (remotes.length > 0 ? remotes[0].dataset
                 .identity : null);
 
+            const nonMain = [];
             cards.forEach(card => {
                 const id = card.dataset?.identity || String(currentUserId);
                 if (id === mainId || (mainId === null && card.id === 'localVideoContainer')) {
                     card.style.display = '';
                     if (card.parentElement !== mainArea) mainArea.appendChild(card);
                 } else {
-                    card.style.display = '';
-                    if (card.parentElement !== vstrip) vstrip.appendChild(card);
+                    nonMain.push(card);
+                }
+            });
+
+            const paginatedVstrip = getCurrentPageCards(nonMain);
+            paginatedVstrip.forEach(card => {
+                card.style.display = '';
+                if (card.parentElement !== vstrip) vstrip.appendChild(card);
+            });
+            nonMain.forEach(card => {
+                if (!paginatedVstrip.includes(card)) {
+                    card.style.display = 'none';
                 }
             });
         }
@@ -2138,42 +2212,36 @@
             // Remove old overlay classes
             cards.forEach(c => c.classList.remove('spotlight-main', 'spotlight-overlay'));
 
-            let overlayIndex = 0;
+            const nonMain = [];
             cards.forEach(card => {
-                card.style.display = '';
                 const id = card.dataset?.identity || String(currentUserId);
                 if (id === target || (target === null && card.id === 'localVideoContainer')) {
                     card.classList.add('spotlight-main');
+                    card.style.display = '';
                 } else {
-                    card.classList.add('spotlight-overlay');
-                    const overlayPositions = [{
-                            bottom: 16,
-                            right: 16
-                        },
-                        {
-                            bottom: 16,
-                            right: 210
-                        },
-                        {
-                            bottom: 16,
-                            right: 404
-                        },
-                        {
-                            bottom: 16,
-                            right: 598
-                        },
-                        {
-                            bottom: 16,
-                            left: 16
-                        }
-                    ];
-                    const pos = overlayPositions[overlayIndex] || {
-                        bottom: 16,
-                        right: 16
-                    };
-                    card.style.bottom = pos.bottom + 'px';
-                    card.style.right = pos.right + 'px';
-                    overlayIndex++;
+                    nonMain.push(card);
+                }
+            });
+
+            const paginatedOverlays = getCurrentPageCards(nonMain);
+            const overlayPositions = [
+                { bottom: 16, right: 16 },
+                { bottom: 16, right: 210 },
+                { bottom: 16, right: 404 },
+                { bottom: 16, right: 598 },
+                { bottom: 16, left: 16 }
+            ];
+            paginatedOverlays.forEach((card, idx) => {
+                card.classList.add('spotlight-overlay');
+                card.style.display = '';
+                const pos = overlayPositions[idx] || { bottom: 16, right: 16 };
+                card.style.bottom = pos.bottom + 'px';
+                card.style.right = pos.right + 'px';
+                if (pos.left) card.style.left = pos.left + 'px';
+            });
+            nonMain.forEach(card => {
+                if (!paginatedOverlays.includes(card)) {
+                    card.style.display = 'none';
                 }
             });
         }
@@ -2635,23 +2703,32 @@
 
         // Layout selector
         if (layoutBtn && layoutDropdown) {
+            function showLayoutDropdown() {
+                layoutDropdown.style.display = '';
+                requestAnimationFrame(() => { layoutDropdown.style.opacity = '1'; });
+            }
+            function hideLayoutDropdown() {
+                layoutDropdown.style.opacity = '0';
+                setTimeout(() => { layoutDropdown.style.display = 'none'; }, 300);
+            }
             layoutBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                layoutDropdown.classList.toggle('hidden');
-                setTimeout(() => layoutDropdown.classList.toggle('opacity-0'), 10);
+                if (layoutDropdown.style.display === 'none') {
+                    showLayoutDropdown();
+                } else {
+                    hideLayoutDropdown();
+                }
             });
             document.addEventListener('click', (e) => {
-                if (!layoutBtn.contains(e.target) && !layoutDropdown.contains(e.target) && !layoutDropdown.classList
-                    .contains('hidden')) {
-                    layoutDropdown.classList.add('opacity-0');
-                    setTimeout(() => layoutDropdown.classList.add('hidden'), 300);
+                if (!layoutBtn.contains(e.target) && !layoutDropdown.contains(e.target) &&
+                    layoutDropdown.style.display !== 'none') {
+                    hideLayoutDropdown();
                 }
             });
             layoutDropdown.querySelectorAll('button').forEach(btn => {
                 btn.addEventListener('click', () => {
                     applyLayout(btn.dataset.layout);
-                    layoutDropdown.classList.add('opacity-0');
-                    setTimeout(() => layoutDropdown.classList.add('hidden'), 300);
+                    hideLayoutDropdown();
                 });
             });
             // Set initial active state

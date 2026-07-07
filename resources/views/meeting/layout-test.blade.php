@@ -1272,7 +1272,8 @@
                     <span class="text-sm font-semibold mt-1">Layout</span>
                 </button>
                 <div id="layoutDropdown"
-                    class="hidden absolute bottom-full mb-4 left-1/2 -translate-x-1/2 layout-dropdown min-w-[160px] opacity-0 transition-opacity">
+                    style="display:none;opacity:0"
+                    class="absolute bottom-full mb-4 left-1/2 -translate-x-1/2 layout-dropdown min-w-[160px] transition-opacity">
                     <button data-layout="grid" class="active-layout"><svg class="w-4 h-4" fill="currentColor"
                             viewBox="0 0 24 24">
                             <path
@@ -1539,7 +1540,7 @@
 
     <script>
         // ======================== MOCK DATA ========================
-        const mockParticipants = [
+        var mockParticipants = [
             { id: 1, name: 'Anda' },
             { id: 2, name: 'Budi Santoso' },
             { id: 3, name: 'Siti Rahma' },
@@ -1672,7 +1673,41 @@
         }
 
         let currentPage = 0;
-        const PER_PAGE = 4;
+        const PER_PAGE = 6;
+
+        function goToPage(page) {
+            const cards = getParticipantCards();
+            const totalPages = Math.ceil(cards.length / PER_PAGE);
+            currentPage = Math.max(0, Math.min(page, totalPages - 1));
+            updateParticipantUI();
+        }
+
+        function getCurrentPageCards(cards) {
+            const start = currentPage * PER_PAGE;
+            return cards.slice(start, start + PER_PAGE);
+        }
+
+        function updatePaginationDots() {
+            const container = document.getElementById('paginationDots');
+            if (!container) return;
+            const cards = getParticipantCards();
+            const totalPages = Math.ceil(cards.length / PER_PAGE);
+            if (totalPages <= 1) {
+                container.style.display = 'none';
+                container.innerHTML = '';
+                return;
+            }
+            container.style.display = 'flex';
+            container.innerHTML = '';
+            for (let i = 0; i < totalPages; i++) {
+                const dot = document.createElement('button');
+                dot.className = 'pagination-dot w-2 h-2 md:w-3 md:h-3 rounded-full transition-all duration-300 ' +
+                    (i === currentPage ? 'bg-violet-500 scale-125' : 'bg-white/30 hover:bg-white/50');
+                dot.setAttribute('aria-label', 'Halaman ' + (i + 1));
+                dot.addEventListener('click', () => goToPage(i));
+                container.appendChild(dot);
+            }
+        }
 
         function getParticipantCards() {
             const remoteContainer = document.getElementById('remoteVideos');
@@ -1738,6 +1773,10 @@
             if (_lastUIUpdateKey === key) return;
             _lastUIUpdateKey = key;
 
+            // Reset currentPage if out of bounds
+            const totalPages = Math.ceil(getParticipantCards().length / PER_PAGE);
+            if (currentPage >= totalPages) currentPage = Math.max(0, totalPages - 1);
+
             // Remove all layout classes
             grid.classList.remove('layout-speaker', 'layout-sidebar', 'layout-spotlight');
             grid.className = 'min-w-0 relative z-0';
@@ -1763,9 +1802,15 @@
             if (container) {
                 container.classList.toggle('alone-mode', totalCount === 1);
             }
+
+            updatePaginationDots();
         }
 
         function applyGridLayout(grid, remotes, totalCount) {
+
+            const paginatedCards = getCurrentPageCards(getParticipantCards());
+            const visibleCount = paginatedCards.length;
+
             grid.classList.add('grid', 'gap-2', 'w-full', 'h-full');
             grid.classList.remove('grid-cols-1', 'grid-cols-2', 'grid-cols-3', 'grid-cols-4');
             grid.classList.remove('grid-rows-1', 'grid-rows-2', 'grid-rows-3', 'grid-rows-4', 'grid-rows-5');
@@ -1773,27 +1818,27 @@
             const isMobile = window.innerWidth < 768;
             let cols, rows;
 
-            if (totalCount === 1) {
+            if (visibleCount <= 1) {
                 cols = 1;
                 rows = 1;
             } else if (isMobile) {
-                if (totalCount === 2) {
+                if (visibleCount === 2) {
                     cols = 1;
                     rows = 2;
                 } else {
                     cols = 2;
-                    rows = Math.ceil(totalCount / cols);
+                    rows = Math.ceil(visibleCount / cols);
                 }
             } else {
-                if (totalCount === 2) {
+                if (visibleCount === 2) {
                     cols = 2;
                     rows = 1;
-                } else if (totalCount <= 4) {
+                } else if (visibleCount <= 4) {
                     cols = 2;
-                    rows = Math.ceil(totalCount / cols);
+                    rows = Math.ceil(visibleCount / cols);
                 } else {
                     cols = 3;
-                    rows = Math.ceil(totalCount / cols);
+                    rows = Math.ceil(visibleCount / cols);
                 }
             }
 
@@ -1801,17 +1846,22 @@
             grid.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
 
             const remoteContainer = document.getElementById('remoteVideos');
-            const cards = getParticipantCards();
-            cards.forEach(el => {
+            const allCards = getParticipantCards();
+
+            // Hide cards not on current page, show cards on current page
+            paginatedCards.forEach(el => {
                 el.style.display = '';
                 el.classList.remove('speaker-main-video', 'spotlight-main', 'spotlight-overlay');
-                // Move remote cards back to remoteVideos container
                 if (el.id !== 'localVideoContainer' && remoteContainer && el.parentElement !== remoteContainer) {
                     remoteContainer.appendChild(el);
                 }
-                // Ensure local is direct child of grid
                 if (el.id === 'localVideoContainer' && el.parentElement !== grid) {
                     grid.appendChild(el);
+                }
+            });
+            allCards.forEach(el => {
+                if (!paginatedCards.includes(el)) {
+                    el.style.display = 'none';
                 }
             });
 
@@ -1834,6 +1884,7 @@
             }
             strip.innerHTML = '';
 
+            const nonMain = [];
             cards.forEach(card => {
                 card.classList.remove('speaker-main-video');
                 const id = card.dataset?.identity || String(currentUserId);
@@ -1842,8 +1893,18 @@
                     card.style.display = '';
                     if (card.parentElement !== grid) grid.insertBefore(card, strip);
                 } else {
-                    card.style.display = '';
-                    if (card.parentElement !== strip) strip.appendChild(card);
+                    nonMain.push(card);
+                }
+            });
+
+            const paginatedStrip = getCurrentPageCards(nonMain);
+            paginatedStrip.forEach(card => {
+                card.style.display = '';
+                if (card.parentElement !== strip) strip.appendChild(card);
+            });
+            nonMain.forEach(card => {
+                if (!paginatedStrip.includes(card)) {
+                    card.style.display = 'none';
                 }
             });
         }
@@ -1867,14 +1928,25 @@
             const mainId = activeSpeakerIdentity || pinnedIdentities[0] || (remotes.length > 0 ? remotes[0].dataset
                 .identity : null);
 
+            const nonMain = [];
             cards.forEach(card => {
                 const id = card.dataset?.identity || String(currentUserId);
                 if (id === mainId || (mainId === null && card.id === 'localVideoContainer')) {
                     card.style.display = '';
                     if (card.parentElement !== mainArea) mainArea.appendChild(card);
                 } else {
-                    card.style.display = '';
-                    if (card.parentElement !== vstrip) vstrip.appendChild(card);
+                    nonMain.push(card);
+                }
+            });
+
+            const paginatedVstrip = getCurrentPageCards(nonMain);
+            paginatedVstrip.forEach(card => {
+                card.style.display = '';
+                if (card.parentElement !== vstrip) vstrip.appendChild(card);
+            });
+            nonMain.forEach(card => {
+                if (!paginatedVstrip.includes(card)) {
+                    card.style.display = 'none';
                 }
             });
         }
@@ -1888,42 +1960,36 @@
             // Remove old overlay classes
             cards.forEach(c => c.classList.remove('spotlight-main', 'spotlight-overlay'));
 
-            let overlayIndex = 0;
+            const nonMain = [];
             cards.forEach(card => {
-                card.style.display = '';
                 const id = card.dataset?.identity || String(currentUserId);
                 if (id === target || (target === null && card.id === 'localVideoContainer')) {
                     card.classList.add('spotlight-main');
+                    card.style.display = '';
                 } else {
-                    card.classList.add('spotlight-overlay');
-                    const overlayPositions = [{
-                            bottom: 16,
-                            right: 16
-                        },
-                        {
-                            bottom: 16,
-                            right: 210
-                        },
-                        {
-                            bottom: 16,
-                            right: 404
-                        },
-                        {
-                            bottom: 16,
-                            right: 598
-                        },
-                        {
-                            bottom: 16,
-                            left: 16
-                        }
-                    ];
-                    const pos = overlayPositions[overlayIndex] || {
-                        bottom: 16,
-                        right: 16
-                    };
-                    card.style.bottom = pos.bottom + 'px';
-                    card.style.right = pos.right + 'px';
-                    overlayIndex++;
+                    nonMain.push(card);
+                }
+            });
+
+            const paginatedOverlays = getCurrentPageCards(nonMain);
+            const overlayPositions = [
+                { bottom: 16, right: 16 },
+                { bottom: 16, right: 210 },
+                { bottom: 16, right: 404 },
+                { bottom: 16, right: 598 },
+                { bottom: 16, left: 16 }
+            ];
+            paginatedOverlays.forEach((card, idx) => {
+                card.classList.add('spotlight-overlay');
+                card.style.display = '';
+                const pos = overlayPositions[idx] || { bottom: 16, right: 16 };
+                card.style.bottom = pos.bottom + 'px';
+                card.style.right = pos.right + 'px';
+                if (pos.left) card.style.left = pos.left + 'px';
+            });
+            nonMain.forEach(card => {
+                if (!paginatedOverlays.includes(card)) {
+                    card.style.display = 'none';
                 }
             });
         }
@@ -2116,23 +2182,32 @@
 
         // Layout selector
         if (layoutBtn && layoutDropdown) {
+            function showLayoutDropdown() {
+                layoutDropdown.style.display = '';
+                requestAnimationFrame(() => { layoutDropdown.style.opacity = '1'; });
+            }
+            function hideLayoutDropdown() {
+                layoutDropdown.style.opacity = '0';
+                setTimeout(() => { layoutDropdown.style.display = 'none'; }, 300);
+            }
             layoutBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                layoutDropdown.classList.toggle('hidden');
-                setTimeout(() => layoutDropdown.classList.toggle('opacity-0'), 10);
+                if (layoutDropdown.style.display === 'none') {
+                    showLayoutDropdown();
+                } else {
+                    hideLayoutDropdown();
+                }
             });
             document.addEventListener('click', (e) => {
-                if (!layoutBtn.contains(e.target) && !layoutDropdown.contains(e.target) && !layoutDropdown.classList
-                    .contains('hidden')) {
-                    layoutDropdown.classList.add('opacity-0');
-                    setTimeout(() => layoutDropdown.classList.add('hidden'), 300);
+                if (!layoutBtn.contains(e.target) && !layoutDropdown.contains(e.target) &&
+                    layoutDropdown.style.display !== 'none') {
+                    hideLayoutDropdown();
                 }
             });
             layoutDropdown.querySelectorAll('button').forEach(btn => {
                 btn.addEventListener('click', () => {
                     applyLayout(btn.dataset.layout);
-                    layoutDropdown.classList.add('opacity-0');
-                    setTimeout(() => layoutDropdown.classList.add('hidden'), 300);
+                    hideLayoutDropdown();
                 });
             });
             // Set initial active state
@@ -2513,6 +2588,7 @@
 
         function setParticipantCount(count) {
             count = Math.max(1, Math.min(15, count));
+            currentPage = 0;
             const localName = 'Anda';
             const names = ['Budi Santoso', 'Siti Rahma', 'Ahmad Fauzi', 'Dewi Lestari', 'Rudi Hermawan',
                 'Mega Putri', 'Adi Pratama', 'Rina Wijaya', 'Deni Saputra', 'Fitri Handayani',
@@ -2597,14 +2673,7 @@
             applyLayout('grid');
         }
 
-        // Debug panel controls (set up after DOM ready)
-        document.getElementById('debugAdd')?.addEventListener('click', function() {
-            setParticipantCount(mockParticipants.length + 1);
-        });
-        document.getElementById('debugRemove')?.addEventListener('click', function() {
-            setParticipantCount(mockParticipants.length - 1);
-        });
-        document.getElementById('debugResetLayout')?.addEventListener('click', resetLayout);
+
     </script>
 
     <!-- Floating Debug Panel -->
@@ -2618,9 +2687,9 @@
             <div>
                 <label class="text-[10px] text-gray-500 uppercase tracking-wider font-semibold">Participants</label>
                 <div class="flex items-center gap-2 mt-1">
-                    <button id="debugRemove" class="w-7 h-7 rounded-lg bg-red-500/20 hover:bg-red-500/40 text-red-400 flex items-center justify-center text-sm font-bold transition">&minus;</button>
+                    <button onclick="setParticipantCount(mockParticipants.length - 1)" class="w-7 h-7 rounded-lg bg-red-500/20 hover:bg-red-500/40 text-red-400 flex items-center justify-center text-sm font-bold transition">&minus;</button>
                     <span id="debugCount" class="text-white font-bold text-sm min-w-[24px] text-center">6</span>
-                    <button id="debugAdd" class="w-7 h-7 rounded-lg bg-green-500/20 hover:bg-green-500/40 text-green-400 flex items-center justify-center text-sm font-bold transition">+</button>
+                    <button onclick="setParticipantCount(mockParticipants.length + 1)" class="w-7 h-7 rounded-lg bg-green-500/20 hover:bg-green-500/40 text-green-400 flex items-center justify-center text-sm font-bold transition">+</button>
                 </div>
             </div>
 
@@ -2636,7 +2705,7 @@
                 <button onclick="applyLayout('spotlight')" class="flex-1 text-[10px] px-2 py-1.5 rounded-lg bg-white/5 hover:bg-violet-500/20 text-gray-400 hover:text-violet-400 transition font-semibold">Spotlight</button>
             </div>
 
-            <button id="debugResetLayout" class="w-full text-[10px] px-2 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 transition font-semibold">
+            <button id="debugResetLayout" class="w-full text-[10px] px-2 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 transition font-semibold" onclick="resetLayout()">
                 Reset Layout
             </button>
         </div>

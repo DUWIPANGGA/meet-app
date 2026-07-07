@@ -86,9 +86,11 @@ Route::middleware(['auth'])->group(function () {
             ->name('meeting.recording.upload');
     });
 
-    // Screen recording upload (accessible to all meeting participants)
-    Route::post('/meeting/{meeting}/upload-screen-recording', [MeetingController::class, 'uploadRecording'])
-        ->name('meeting.upload-screen-recording');
+    // Screen recording upload
+    Route::middleware('user.permission:ManageMeetingRecording')->group(function () {
+        Route::post('/meeting/{meeting}/upload-screen-recording', [MeetingController::class, 'uploadRecording'])
+            ->name('meeting.upload-screen-recording');
+    });
 
     // ======================== MEETING BROADCAST ========================
     Route::middleware('user.permission:UseMeetingBroadcast')->group(function () {
