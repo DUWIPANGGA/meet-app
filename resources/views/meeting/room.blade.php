@@ -998,7 +998,7 @@
         <!-- Video Grid Area -->
         <div class="flex-1 min-h-0 p-1 md:p-2 pb-24 relative flex flex-col max-h-[90vh]">
             <div id="videoGridWrapper"
-                class="h-dvh md:flex-1 overflow-hidden relative flex flex-row video-grid-container m-1 md:m-2 md:max-h-[80vh] max-h-[60vh]">
+                class="h-dvh md:flex-1 overflow-hidden relative flex flex-row video-grid-container m-1 md:m-2 md:max-h-[80vh] max-h-[70vh]">
                 <!-- Screen Share Display -->
                 <div id="screenShareContainer" class="hidden flex-1 min-w-0 relative screen-share-container m-2"
                     style="background:#111">
@@ -2018,36 +2018,50 @@
         }
 
         function applyGridLayout(grid, remotes, totalCount) {
+            // Bersihkan kelas grid sebelumnya
             grid.classList.add('grid', 'gap-2', 'w-full', 'h-full');
-            const cards = getParticipantCards();
+            // Hapus kelas grid-cols-* dan grid-rows-* jika ada (dari layout sebelumnya)
+            grid.classList.remove('grid-cols-1', 'grid-cols-2', 'grid-cols-3', 'grid-cols-4');
+            grid.classList.remove('grid-rows-1', 'grid-rows-2', 'grid-rows-3', 'grid-rows-4', 'grid-rows-5');
+
+            const isMobile = window.innerWidth < 768;
+            let cols, rows;
+
             if (totalCount === 1) {
-                grid.classList.add('grid-cols-1', 'grid-rows-1');
-                cards.forEach(el => {
-                    el.style.display = '';
-                    el.classList.remove('speaker-main-video');
-                });
-            } else if (totalCount === 2) {
-                if (window.innerWidth < 768) {
-                    grid.classList.add('grid-cols-1', 'grid-rows-2');
+                cols = 1;
+                rows = 1;
+            } else if (isMobile) {
+                if (totalCount === 2) {
+                    cols = 1;
+                    rows = 2; // 1 kolom, 2 baris → atas-bawah
                 } else {
-                    grid.classList.add('grid-cols-2', 'grid-rows-1');
+                    cols = 2;
+                    rows = Math.ceil(totalCount / cols);
                 }
-                cards.forEach(el => {
-                    el.style.display = '';
-                    el.classList.remove('speaker-main-video');
-                });
             } else {
-                const cols = totalCount <= 4 ? 2 : 3;
-                const rows = Math.ceil(totalCount / cols);
-                grid.classList.add(`grid-cols-${cols}`);
-                if (rows === 1) grid.classList.add('grid-rows-1');
-                else if (rows === 2) grid.classList.add('grid-rows-2');
-                else grid.classList.add('grid-rows-3');
-                cards.forEach(el => {
-                    el.style.display = '';
-                    el.classList.remove('speaker-main-video');
-                });
+                // Desktop
+                if (totalCount === 2) {
+                    cols = 2;
+                    rows = 1;
+                } else if (totalCount <= 4) {
+                    cols = 2;
+                    rows = Math.ceil(totalCount / cols);
+                } else {
+                    cols = 3;
+                    rows = Math.ceil(totalCount / cols);
+                }
             }
+
+            // Terapkan grid template dengan gaya inline
+            grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+            grid.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+
+            // Pastikan semua kartu video ditampilkan
+            const cards = getParticipantCards();
+            cards.forEach(el => {
+                el.style.display = '';
+                el.classList.remove('speaker-main-video');
+            });
         }
 
         function applySpeakerLayout(grid, remotes, totalCount) {
