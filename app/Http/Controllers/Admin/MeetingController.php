@@ -60,6 +60,10 @@ class MeetingController extends Controller
             'status_rapat' => $isInstant ? 'Berlangsung' : ($validated['status_rapat'] ?? 'Menunggu'),
         ]);
 
+        if ($isInstant) {
+            return redirect()->route('meeting.room', $meeting->id);
+        }
+
         if ($request->_source === 'agenda') {
             return redirect()->route('admin.agendas.index')
                 ->with('success', 'Rapat berhasil dibuat.');
