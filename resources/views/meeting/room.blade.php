@@ -998,7 +998,7 @@
         <!-- Video Grid Area -->
         <div class="flex-1 min-h-0 p-1 md:p-2 pb-24 relative flex flex-col max-h-[90vh]">
             <div id="videoGridWrapper"
-                class="h-dvh md:flex-1 overflow-hidden relative flex flex-row video-grid-container m-1 md:m-2 max-h-[30vh]">
+                class="h-dvh md:flex-1 overflow-hidden relative flex flex-row video-grid-container m-1 md:m-2 max-h-[70vh]">
                 <!-- Screen Share Display -->
                 <div id="screenShareContainer" class="hidden flex-1 min-w-0 relative screen-share-container m-2"
                     style="background:#111">
