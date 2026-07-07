@@ -8,7 +8,8 @@
     <title>Meeting Layout Simulation</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
@@ -968,6 +969,7 @@
     </style>
 
 </head>
+
 <body class="bg-gray-900 text-white h-screen overflow-hidden" style="font-family:'Inter',system-ui,sans-serif">
 
     <div id="meetingContainer" class="h-screen flex flex-col relative meeting-bg text-white overflow-hidden font-sans">
@@ -991,8 +993,8 @@
                 <button id="roomThemeToggle"
                     class="p-2 hover:bg-white/10 rounded-full transition text-white/70 hover:text-white"
                     title="Toggle tema">
-                    <svg id="roomThemeIconSun" class="w-5 h-5 hidden" fill="none" stroke="currentColor" stroke-width="2"
-                        viewBox="0 0 24 24">
+                    <svg id="roomThemeIconSun" class="w-5 h-5 hidden" fill="none" stroke="currentColor"
+                        stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                     </svg>
@@ -1002,6 +1004,23 @@
                             d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                     </svg>
                 </button>
+                <div class="relative flex items-center">
+                    <button id="layoutNavBtn"
+                        class="p-2 hover:bg-white/10 rounded-full transition text-white/70 hover:text-white"
+                        title="Ganti layout">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z" />
+                        </svg>
+                    </button>
+                    <div id="layoutNavDropdown"
+                        style="display:none;opacity:0"
+                        class="absolute top-full mt-2 right-0 layout-dropdown min-w-[160px] transition-opacity z-[70]">
+                        <button data-layout="grid" class="active-layout"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg> Grid</button>
+                        <button data-layout="speaker"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg> Speaker</button>
+                        <button data-layout="sidebar"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M3 3v18h18V3H3zm8 16H5V5h6v14zm8 0h-6V5h6v14z"/></svg> Sidebar</button>
+                        <button data-layout="spotlight"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5-9h10v2H7z"/></svg> Spotlight</button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -1035,7 +1054,8 @@
                 </div>
                 <div id="videoGridMain" class="min-w-0 relative z-0 h-full" style="flex:1">
                     <!-- Local Video (mock avatar) -->
-                    <div id="localVideoContainer" class="relative rounded-lg overflow-hidden h-full video-card m-1" data-identity="1">
+                    <div id="localVideoContainer" class="relative rounded-lg overflow-hidden h-full video-card m-1"
+                        data-identity="1">
                         <div id="localAvatar" class="absolute inset-0 flex items-center justify-center z-10"
                             style="background:rgba(0,0,0,0.6)">
                             <div class="relative">
@@ -1046,53 +1066,120 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="absolute bottom-2 left-2 text-xs px-2 py-1 rounded name-label text-gray-200">Anda</div>
+                        <div class="absolute bottom-2 left-2 text-xs px-2 py-1 rounded name-label text-gray-200">Anda
+                        </div>
                         <div
                             class="absolute top-2 left-2 rec-badge text-white px-2 py-0.5 rounded text-[10px] font-bold z-20 tracking-wider">
                             REC</div>
                     </div>
                     <!-- Remote Videos Container (mock cards) -->
                     <div id="remoteVideos" class="contents">
-                        <div id="remote-card-2" data-identity="2" class="rounded-2xl overflow-hidden shadow-xl h-full w-full relative video-card m-1">
-                            <div id="remote-avatar-2" class="absolute inset-0 flex items-center justify-center z-10" style="background:rgba(0,0,0,0.6)">
-                                <div class="relative"><div id="remote-avatar-circle-2" style="width:112px;height:112px;border-radius:50%;background:#4b5563;display:flex;align-items:center;justify-content:center;transition:all 0.3s"><span style="font-size:3rem;color:#fff;font-weight:700;text-transform:uppercase">B</span></div></div>
+                        <div id="remote-card-2" data-identity="2"
+                            class="rounded-2xl overflow-hidden shadow-xl h-full w-full relative video-card m-1">
+                            <div id="remote-avatar-2" class="absolute inset-0 flex items-center justify-center z-10"
+                                style="background:rgba(0,0,0,0.6)">
+                                <div class="relative">
+                                    <div id="remote-avatar-circle-2"
+                                        style="width:112px;height:112px;border-radius:50%;background:#4b5563;display:flex;align-items:center;justify-content:center;transition:all 0.3s">
+                                        <span
+                                            style="font-size:3rem;color:#fff;font-weight:700;text-transform:uppercase">B</span>
+                                    </div>
+                                </div>
                             </div>
-                            <button id="pin-btn-2" data-identity="2" class="absolute top-2 right-2 pin-btn text-xs px-1.5 py-0.5 z-20 transition-colors"><svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/></svg></button>
-                            <div class="absolute bottom-2 left-2 text-xs px-2 py-1 rounded name-label text-gray-200">Budi Santoso</div>
+                            <button id="pin-btn-2" data-identity="2"
+                                class="absolute top-2 right-2 pin-btn text-xs px-1.5 py-0.5 z-20 transition-colors"><svg
+                                    class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z" />
+                                </svg></button>
+                            <div class="absolute bottom-2 left-2 text-xs px-2 py-1 rounded name-label text-gray-200">
+                                Budi Santoso</div>
                         </div>
-                        <div id="remote-card-3" data-identity="3" class="rounded-2xl overflow-hidden shadow-xl h-full w-full relative video-card m-1">
-                            <div id="remote-avatar-3" class="absolute inset-0 flex items-center justify-center z-10" style="background:rgba(0,0,0,0.6)">
-                                <div class="relative"><div id="remote-avatar-circle-3" style="width:112px;height:112px;border-radius:50%;background:#4b5563;display:flex;align-items:center;justify-content:center;transition:all 0.3s"><span style="font-size:3rem;color:#fff;font-weight:700;text-transform:uppercase">S</span></div></div>
+                        <div id="remote-card-3" data-identity="3"
+                            class="rounded-2xl overflow-hidden shadow-xl h-full w-full relative video-card m-1">
+                            <div id="remote-avatar-3" class="absolute inset-0 flex items-center justify-center z-10"
+                                style="background:rgba(0,0,0,0.6)">
+                                <div class="relative">
+                                    <div id="remote-avatar-circle-3"
+                                        style="width:112px;height:112px;border-radius:50%;background:#4b5563;display:flex;align-items:center;justify-content:center;transition:all 0.3s">
+                                        <span
+                                            style="font-size:3rem;color:#fff;font-weight:700;text-transform:uppercase">S</span>
+                                    </div>
+                                </div>
                             </div>
-                            <button id="pin-btn-3" data-identity="3" class="absolute top-2 right-2 pin-btn text-xs px-1.5 py-0.5 z-20 transition-colors"><svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/></svg></button>
-                            <div class="absolute bottom-2 left-2 text-xs px-2 py-1 rounded name-label text-gray-200">Siti Rahma</div>
+                            <button id="pin-btn-3" data-identity="3"
+                                class="absolute top-2 right-2 pin-btn text-xs px-1.5 py-0.5 z-20 transition-colors"><svg
+                                    class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z" />
+                                </svg></button>
+                            <div class="absolute bottom-2 left-2 text-xs px-2 py-1 rounded name-label text-gray-200">
+                                Siti Rahma</div>
                         </div>
-                        <div id="remote-card-4" data-identity="4" class="rounded-2xl overflow-hidden shadow-xl h-full w-full relative video-card m-1">
-                            <div id="remote-avatar-4" class="absolute inset-0 flex items-center justify-center z-10" style="background:rgba(0,0,0,0.6)">
-                                <div class="relative"><div id="remote-avatar-circle-4" style="width:112px;height:112px;border-radius:50%;background:#4b5563;display:flex;align-items:center;justify-content:center;transition:all 0.3s"><span style="font-size:3rem;color:#fff;font-weight:700;text-transform:uppercase">A</span></div></div>
+                        <div id="remote-card-4" data-identity="4"
+                            class="rounded-2xl overflow-hidden shadow-xl h-full w-full relative video-card m-1">
+                            <div id="remote-avatar-4" class="absolute inset-0 flex items-center justify-center z-10"
+                                style="background:rgba(0,0,0,0.6)">
+                                <div class="relative">
+                                    <div id="remote-avatar-circle-4"
+                                        style="width:112px;height:112px;border-radius:50%;background:#4b5563;display:flex;align-items:center;justify-content:center;transition:all 0.3s">
+                                        <span
+                                            style="font-size:3rem;color:#fff;font-weight:700;text-transform:uppercase">A</span>
+                                    </div>
+                                </div>
                             </div>
-                            <button id="pin-btn-4" data-identity="4" class="absolute top-2 right-2 pin-btn text-xs px-1.5 py-0.5 z-20 transition-colors"><svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/></svg></button>
-                            <div class="absolute bottom-2 left-2 text-xs px-2 py-1 rounded name-label text-gray-200">Ahmad Fauzi</div>
+                            <button id="pin-btn-4" data-identity="4"
+                                class="absolute top-2 right-2 pin-btn text-xs px-1.5 py-0.5 z-20 transition-colors"><svg
+                                    class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z" />
+                                </svg></button>
+                            <div class="absolute bottom-2 left-2 text-xs px-2 py-1 rounded name-label text-gray-200">
+                                Ahmad Fauzi</div>
                         </div>
-                        <div id="remote-card-5" data-identity="5" class="rounded-2xl overflow-hidden shadow-xl h-full w-full relative video-card m-1">
-                            <div id="remote-avatar-5" class="absolute inset-0 flex items-center justify-center z-10" style="background:rgba(0,0,0,0.6)">
-                                <div class="relative"><div id="remote-avatar-circle-5" style="width:112px;height:112px;border-radius:50%;background:#4b5563;display:flex;align-items:center;justify-content:center;transition:all 0.3s"><span style="font-size:3rem;color:#fff;font-weight:700;text-transform:uppercase">D</span></div></div>
+                        <div id="remote-card-5" data-identity="5"
+                            class="rounded-2xl overflow-hidden shadow-xl h-full w-full relative video-card m-1">
+                            <div id="remote-avatar-5" class="absolute inset-0 flex items-center justify-center z-10"
+                                style="background:rgba(0,0,0,0.6)">
+                                <div class="relative">
+                                    <div id="remote-avatar-circle-5"
+                                        style="width:112px;height:112px;border-radius:50%;background:#4b5563;display:flex;align-items:center;justify-content:center;transition:all 0.3s">
+                                        <span
+                                            style="font-size:3rem;color:#fff;font-weight:700;text-transform:uppercase">D</span>
+                                    </div>
+                                </div>
                             </div>
-                            <button id="pin-btn-5" data-identity="5" class="absolute top-2 right-2 pin-btn text-xs px-1.5 py-0.5 z-20 transition-colors"><svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/></svg></button>
-                            <div class="absolute bottom-2 left-2 text-xs px-2 py-1 rounded name-label text-gray-200">Dewi Lestari</div>
+                            <button id="pin-btn-5" data-identity="5"
+                                class="absolute top-2 right-2 pin-btn text-xs px-1.5 py-0.5 z-20 transition-colors"><svg
+                                    class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z" />
+                                </svg></button>
+                            <div class="absolute bottom-2 left-2 text-xs px-2 py-1 rounded name-label text-gray-200">
+                                Dewi Lestari</div>
                         </div>
-                        <div id="remote-card-6" data-identity="6" class="rounded-2xl overflow-hidden shadow-xl h-full w-full relative video-card m-1">
-                            <div id="remote-avatar-6" class="absolute inset-0 flex items-center justify-center z-10" style="background:rgba(0,0,0,0.6)">
-                                <div class="relative"><div id="remote-avatar-circle-6" style="width:112px;height:112px;border-radius:50%;background:#4b5563;display:flex;align-items:center;justify-content:center;transition:all 0.3s"><span style="font-size:3rem;color:#fff;font-weight:700;text-transform:uppercase">R</span></div></div>
+                        <div id="remote-card-6" data-identity="6"
+                            class="rounded-2xl overflow-hidden shadow-xl h-full w-full relative video-card m-1">
+                            <div id="remote-avatar-6" class="absolute inset-0 flex items-center justify-center z-10"
+                                style="background:rgba(0,0,0,0.6)">
+                                <div class="relative">
+                                    <div id="remote-avatar-circle-6"
+                                        style="width:112px;height:112px;border-radius:50%;background:#4b5563;display:flex;align-items:center;justify-content:center;transition:all 0.3s">
+                                        <span
+                                            style="font-size:3rem;color:#fff;font-weight:700;text-transform:uppercase">R</span>
+                                    </div>
+                                </div>
                             </div>
-                            <button id="pin-btn-6" data-identity="6" class="absolute top-2 right-2 pin-btn text-xs px-1.5 py-0.5 z-20 transition-colors"><svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/></svg></button>
-                            <div class="absolute bottom-2 left-2 text-xs px-2 py-1 rounded name-label text-gray-200">Rudi Hermawan</div>
+                            <button id="pin-btn-6" data-identity="6"
+                                class="absolute top-2 right-2 pin-btn text-xs px-1.5 py-0.5 z-20 transition-colors"><svg
+                                    class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z" />
+                                </svg></button>
+                            <div class="absolute bottom-2 left-2 text-xs px-2 py-1 rounded name-label text-gray-200">
+                                Rudi Hermawan</div>
                         </div>
                     </div>
                 </div>
             </div>
             <!-- Pagination Dots -->
-            <div id="paginationDots" class="flex justify-center items-center gap-1 md:gap-2 py-1 md:py-2 flex-shrink-0"
+            <div id="paginationDots"
+                class="flex justify-center items-center gap-1 md:gap-2 py-1 md:py-2 flex-shrink-0"
                 style="display:none">
             </div>
 
@@ -1115,7 +1202,8 @@
         <div
             class="absolute bottom-0 left-0 right-0 bottom-toolbar border-t border-gray-700/50 py-3 px-6 flex justify-between md:justify-center md:gap-16 items-center z-50 shadow-[0_-8px_30px_rgba(0,0,0,0.6)] overflow-x-auto overflow-y-hidden md:overflow-x-visible">
             <!-- Kamera -->
-            <button id="cameraBtn" class="flex flex-col items-center text-white hover:text-gray-200 transition toolbar-btn">
+            <button id="cameraBtn"
+                class="flex flex-col items-center text-white hover:text-gray-200 transition toolbar-btn">
                 <div class="h-12 flex items-center justify-center">
                     <svg id="camIcon" class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24">
                         <path
@@ -1130,7 +1218,8 @@
             </button>
 
             <!-- Audio (Mic) -->
-            <button id="muteBtn" class="flex flex-col items-center text-white hover:text-gray-200 transition toolbar-btn">
+            <button id="muteBtn"
+                class="flex flex-col items-center text-white hover:text-gray-200 transition toolbar-btn">
                 <div class="h-12 flex items-center justify-center">
                     <svg id="micIcon" class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24">
                         <path
@@ -1161,7 +1250,8 @@
                 <div id="aiLoadingOverlay"
                     class="hidden absolute bottom-full mb-4 left-1/2 -translate-x-1/2 w-72 bg-white rounded-lg shadow-xl border border-gray-200 p-4 text-gray-800 z-50 transition-opacity opacity-0">
                     <div class="flex items-center gap-3">
-                        <div class="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-violet-500 shrink-0">
+                        <div
+                            class="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-violet-500 shrink-0">
                         </div>
                         <div>
                             <p class="font-semibold text-sm text-gray-900">AI Sedang Menyusun Notulensi...</p>
@@ -1189,7 +1279,8 @@
                 <div id="sharePopup"
                     class="absolute bottom-full mb-4 left-1/2 -translate-x-1/2 w-72 bg-white rounded-lg shadow-xl border border-gray-200 p-4 text-gray-800 z-50 hidden transition-opacity opacity-0">
                     <h4 class="font-medium mb-2 text-sm text-left">Bagikan info rapat ini</h4>
-                    <p class="text-xs text-gray-500 mb-3 text-left">Berikan link atau ID rapat ini kepada peserta lain.</p>
+                    <p class="text-xs text-gray-500 mb-3 text-left">Berikan link atau ID rapat ini kepada peserta lain.
+                    </p>
                     <div class="flex flex-col gap-2">
                         <div class="flex items-center gap-2">
                             <input type="text" readonly value="MT-001"
@@ -1199,8 +1290,7 @@
                         <div class="flex items-center gap-2">
                             <input type="text" readonly value="#"
                                 class="flex-1 bg-gray-50 border border-gray-300 rounded px-2 py-1.5 text-xs text-gray-600 outline-none">
-                            <button
-                                onclick="navigator.clipboard.writeText('#'); alert('Link disalin ke clipboard!')"
+                            <button onclick="navigator.clipboard.writeText('#'); alert('Link disalin ke clipboard!')"
                                 class="p-1.5 bg-blue-50 text-[#0284c7] hover:bg-blue-100 rounded transition shrink-0"
                                 title="Salin link">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
@@ -1233,7 +1323,8 @@
             <button id="screenShareBtn"
                 class="flex flex-col items-center text-white hover:text-gray-200 transition toolbar-btn relative mobile-hide">
                 <div class="h-12 flex items-center justify-center">
-                    <svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="1.5"
+                        viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25A2.25 2.25 0 015.25 3h13.5A2.25 2.25 0 0121 5.25z">
                     </svg>
@@ -1271,8 +1362,7 @@
                     </div>
                     <span class="text-sm font-semibold mt-1">Layout</span>
                 </button>
-                <div id="layoutDropdown"
-                    style="display:none;opacity:0"
+                <div id="layoutDropdown" style="display:none;opacity:0"
                     class="absolute bottom-full mb-4 left-1/2 -translate-x-1/2 layout-dropdown min-w-[160px] transition-opacity">
                     <button data-layout="grid" class="active-layout"><svg class="w-4 h-4" fill="currentColor"
                             viewBox="0 0 24 24">
@@ -1359,7 +1449,8 @@
                 <button id="closeParticipantBtn"
                     class="text-gray-500 hover:text-white transition hover:bg-white/5 rounded-lg p-1.5">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12">
                         </path>
                     </svg>
                 </button>
@@ -1391,7 +1482,8 @@
                 <div class="flex items-center gap-1">
                     <button id="toggleSidebarBtn" title="Sembunyikan transkrip"
                         class="text-gray-400 hover:text-white hover:bg-white/10 rounded-lg p-1.5 transition-colors">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
@@ -1451,8 +1543,8 @@
                     <div class="rounded-xl border p-5"
                         style="background:rgba(139,92,246,0.04);border-color:rgba(139,92,246,0.18)">
                         <div class="flex items-center gap-2.5 mb-3">
-                            <svg class="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" stroke-width="2"
-                                viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 text-violet-400" fill="none" stroke="currentColor"
+                                stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7" />
                             </svg>
                             <h3 class="text-sm font-bold text-violet-400">Ringkasan Eksekutif</h3>
@@ -1501,9 +1593,11 @@
                             <table class="w-full text-left text-sm">
                                 <thead style="background:rgba(56,189,248,0.05)">
                                     <tr>
-                                        <th class="px-4 py-3 text-xs font-bold uppercase tracking-wide text-sky-400">Tugas
+                                        <th class="px-4 py-3 text-xs font-bold uppercase tracking-wide text-sky-400">
+                                            Tugas
                                         </th>
-                                        <th class="px-4 py-3 text-xs font-bold uppercase tracking-wide text-sky-400">PIC
+                                        <th class="px-4 py-3 text-xs font-bold uppercase tracking-wide text-sky-400">
+                                            PIC
                                         </th>
                                         <th class="px-4 py-3 text-xs font-bold uppercase tracking-wide text-sky-400">
                                             Deadline</th>
@@ -1540,13 +1634,30 @@
 
     <script>
         // ======================== MOCK DATA ========================
-        var mockParticipants = [
-            { id: 1, name: 'Anda' },
-            { id: 2, name: 'Budi Santoso' },
-            { id: 3, name: 'Siti Rahma' },
-            { id: 4, name: 'Ahmad Fauzi' },
-            { id: 5, name: 'Dewi Lestari' },
-            { id: 6, name: 'Rudi Hermawan' },
+        var mockParticipants = [{
+                id: 1,
+                name: 'Anda'
+            },
+            {
+                id: 2,
+                name: 'Budi Santoso'
+            },
+            {
+                id: 3,
+                name: 'Siti Rahma'
+            },
+            {
+                id: 4,
+                name: 'Ahmad Fauzi'
+            },
+            {
+                id: 5,
+                name: 'Dewi Lestari'
+            },
+            {
+                id: 6,
+                name: 'Rudi Hermawan'
+            },
         ];
 
         // ======================== DEKLARASI VARIABEL ========================
@@ -1744,6 +1855,9 @@
             document.querySelectorAll('#layoutDropdown button').forEach(btn => {
                 btn.classList.toggle('active-layout', btn.dataset.layout === mode);
             });
+            document.querySelectorAll('#layoutNavDropdown button').forEach(btn => {
+                btn.classList.toggle('active-layout', btn.dataset.layout === mode);
+            });
             // Update debug panel layout name
             const debugName = document.getElementById('debugLayoutName');
             if (debugName) debugName.textContent = mode.charAt(0).toUpperCase() + mode.slice(1);
@@ -1769,13 +1883,14 @@
             if (!grid || !remoteContainer) return;
             const remotes = Array.from(remoteContainer.querySelectorAll(':scope > [id^="remote-card-"]'));
             const totalCount = 1 + remotes.length;
-            const key = `${currentLayout}|${totalCount}|${remotes.map(el => el.dataset.identity).join(',')}`;
-            if (_lastUIUpdateKey === key) return;
-            _lastUIUpdateKey = key;
 
             // Reset currentPage if out of bounds
             const totalPages = Math.ceil(getParticipantCards().length / PER_PAGE);
             if (currentPage >= totalPages) currentPage = Math.max(0, totalPages - 1);
+
+            const key = `${currentLayout}|${currentPage}|${totalCount}|${remotes.map(el => el.dataset.identity).join(',')}`;
+            if (_lastUIUpdateKey === key) return;
+            _lastUIUpdateKey = key;
 
             // Remove all layout classes
             grid.classList.remove('layout-speaker', 'layout-sidebar', 'layout-spotlight');
@@ -1972,17 +2087,34 @@
             });
 
             const paginatedOverlays = getCurrentPageCards(nonMain);
-            const overlayPositions = [
-                { bottom: 16, right: 16 },
-                { bottom: 16, right: 210 },
-                { bottom: 16, right: 404 },
-                { bottom: 16, right: 598 },
-                { bottom: 16, left: 16 }
+            const overlayPositions = [{
+                    bottom: 16,
+                    right: 16
+                },
+                {
+                    bottom: 16,
+                    right: 210
+                },
+                {
+                    bottom: 16,
+                    right: 404
+                },
+                {
+                    bottom: 16,
+                    right: 598
+                },
+                {
+                    bottom: 16,
+                    left: 16
+                }
             ];
             paginatedOverlays.forEach((card, idx) => {
                 card.classList.add('spotlight-overlay');
                 card.style.display = '';
-                const pos = overlayPositions[idx] || { bottom: 16, right: 16 };
+                const pos = overlayPositions[idx] || {
+                    bottom: 16,
+                    right: 16
+                };
                 card.style.bottom = pos.bottom + 'px';
                 card.style.right = pos.right + 'px';
                 if (pos.left) card.style.left = pos.left + 'px';
@@ -2184,11 +2316,16 @@
         if (layoutBtn && layoutDropdown) {
             function showLayoutDropdown() {
                 layoutDropdown.style.display = '';
-                requestAnimationFrame(() => { layoutDropdown.style.opacity = '1'; });
+                layoutDropdown.style.opacity = '0';
+                void layoutDropdown.offsetHeight;
+                layoutDropdown.style.opacity = '1';
             }
+
             function hideLayoutDropdown() {
                 layoutDropdown.style.opacity = '0';
-                setTimeout(() => { layoutDropdown.style.display = 'none'; }, 300);
+                setTimeout(() => {
+                    layoutDropdown.style.display = 'none';
+                }, 200);
             }
             layoutBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -2212,6 +2349,48 @@
             });
             // Set initial active state
             layoutDropdown.querySelector(`[data-layout="${currentLayout}"]`)?.classList.add('active-layout');
+        }
+
+        // Navbar layout selector
+        const layoutNavBtn = document.getElementById('layoutNavBtn');
+        const layoutNavDropdown = document.getElementById('layoutNavDropdown');
+        if (layoutNavBtn && layoutNavDropdown) {
+            function showNavLayoutDropdown() {
+                layoutNavDropdown.style.display = '';
+                layoutNavDropdown.style.opacity = '0';
+                void layoutNavDropdown.offsetHeight;
+                layoutNavDropdown.style.opacity = '1';
+            }
+            function hideNavLayoutDropdown() {
+                layoutNavDropdown.style.opacity = '0';
+                setTimeout(() => { layoutNavDropdown.style.display = 'none'; }, 200);
+            }
+            layoutNavBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (layoutNavDropdown.style.display === 'none') {
+                    showNavLayoutDropdown();
+                } else {
+                    hideNavLayoutDropdown();
+                }
+            });
+            document.addEventListener('click', (e) => {
+                if (!layoutNavBtn.contains(e.target) && !layoutNavDropdown.contains(e.target) &&
+                    layoutNavDropdown.style.display !== 'none') {
+                    hideNavLayoutDropdown();
+                }
+            });
+            layoutNavDropdown.querySelectorAll('button').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    applyLayout(btn.dataset.layout);
+                    hideNavLayoutDropdown();
+                });
+            });
+            function syncNavLayoutActive() {
+                layoutNavDropdown.querySelectorAll('button').forEach(btn => {
+                    btn.classList.toggle('active-layout', btn.dataset.layout === currentLayout);
+                });
+            }
+            syncNavLayoutActive();
         }
 
         // Screen recording
@@ -2597,9 +2776,15 @@
 
             // Rebuild mockParticipants
             mockParticipants.length = 0;
-            mockParticipants.push({ id: 1, name: localName });
+            mockParticipants.push({
+                id: 1,
+                name: localName
+            });
             for (let i = 0; i < count - 1; i++) {
-                mockParticipants.push({ id: i + 2, name: names[i % names.length] });
+                mockParticipants.push({
+                    id: i + 2,
+                    name: names[i % names.length]
+                });
             }
 
             // Rebuild remote cards
@@ -2632,7 +2817,9 @@
                 card.className = 'rounded-2xl overflow-hidden shadow-xl h-full w-full relative video-card m-1';
 
                 const initials = p.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
-                const colors = ['#7c3aed', '#0891b2', '#d97706', '#059669', '#dc2626', '#7c3aed', '#db2777', '#0284c7', '#65a30d', '#ea580c', '#9333ea', '#0d9488', '#dc2626', '#ca8a04'];
+                const colors = ['#7c3aed', '#0891b2', '#d97706', '#059669', '#dc2626', '#7c3aed', '#db2777',
+                    '#0284c7', '#65a30d', '#ea580c', '#9333ea', '#0d9488', '#dc2626', '#ca8a04'
+                ];
                 const color = colors[idx % colors.length];
 
                 card.innerHTML = `
@@ -2672,12 +2859,11 @@
             currentLayout = 'grid';
             applyLayout('grid');
         }
-
-
     </script>
 
     <!-- Floating Debug Panel -->
-    <div id="debugPanel" class="fixed top-4 right-4 z-[999] bg-gray-900/90 backdrop-blur-xl border border-white/10 rounded-xl p-4 min-w-[200px] shadow-2xl select-none font-sans">
+    <div id="debugPanel"
+        class="fixed top-4 right-4 z-[999] bg-gray-900/90 backdrop-blur-xl border border-white/10 rounded-xl p-4 min-w-[200px] shadow-2xl select-none font-sans">
         <div class="flex items-center justify-between mb-3">
             <span class="text-xs font-bold uppercase tracking-wider text-violet-400">Debug Panel</span>
             <span class="text-[10px] text-gray-500">Ctrl+D</span>
@@ -2687,9 +2873,11 @@
             <div>
                 <label class="text-[10px] text-gray-500 uppercase tracking-wider font-semibold">Participants</label>
                 <div class="flex items-center gap-2 mt-1">
-                    <button onclick="setParticipantCount(mockParticipants.length - 1)" class="w-7 h-7 rounded-lg bg-red-500/20 hover:bg-red-500/40 text-red-400 flex items-center justify-center text-sm font-bold transition">&minus;</button>
+                    <button onclick="setParticipantCount(mockParticipants.length - 1)"
+                        class="w-7 h-7 rounded-lg bg-red-500/20 hover:bg-red-500/40 text-red-400 flex items-center justify-center text-sm font-bold transition">&minus;</button>
                     <span id="debugCount" class="text-white font-bold text-sm min-w-[24px] text-center">6</span>
-                    <button onclick="setParticipantCount(mockParticipants.length + 1)" class="w-7 h-7 rounded-lg bg-green-500/20 hover:bg-green-500/40 text-green-400 flex items-center justify-center text-sm font-bold transition">+</button>
+                    <button onclick="setParticipantCount(mockParticipants.length + 1)"
+                        class="w-7 h-7 rounded-lg bg-green-500/20 hover:bg-green-500/40 text-green-400 flex items-center justify-center text-sm font-bold transition">+</button>
                 </div>
             </div>
 
@@ -2699,13 +2887,19 @@
             </div>
 
             <div class="flex gap-1.5">
-                <button onclick="applyLayout('grid')" class="flex-1 text-[10px] px-2 py-1.5 rounded-lg bg-white/5 hover:bg-violet-500/20 text-gray-400 hover:text-violet-400 transition font-semibold">Grid</button>
-                <button onclick="applyLayout('speaker')" class="flex-1 text-[10px] px-2 py-1.5 rounded-lg bg-white/5 hover:bg-violet-500/20 text-gray-400 hover:text-violet-400 transition font-semibold">Speaker</button>
-                <button onclick="applyLayout('sidebar')" class="flex-1 text-[10px] px-2 py-1.5 rounded-lg bg-white/5 hover:bg-violet-500/20 text-gray-400 hover:text-violet-400 transition font-semibold">Sidebar</button>
-                <button onclick="applyLayout('spotlight')" class="flex-1 text-[10px] px-2 py-1.5 rounded-lg bg-white/5 hover:bg-violet-500/20 text-gray-400 hover:text-violet-400 transition font-semibold">Spotlight</button>
+                <button onclick="applyLayout('grid')"
+                    class="flex-1 text-[10px] px-2 py-1.5 rounded-lg bg-white/5 hover:bg-violet-500/20 text-gray-400 hover:text-violet-400 transition font-semibold">Grid</button>
+                <button onclick="applyLayout('speaker')"
+                    class="flex-1 text-[10px] px-2 py-1.5 rounded-lg bg-white/5 hover:bg-violet-500/20 text-gray-400 hover:text-violet-400 transition font-semibold">Speaker</button>
+                <button onclick="applyLayout('sidebar')"
+                    class="flex-1 text-[10px] px-2 py-1.5 rounded-lg bg-white/5 hover:bg-violet-500/20 text-gray-400 hover:text-violet-400 transition font-semibold">Sidebar</button>
+                <button onclick="applyLayout('spotlight')"
+                    class="flex-1 text-[10px] px-2 py-1.5 rounded-lg bg-white/5 hover:bg-violet-500/20 text-gray-400 hover:text-violet-400 transition font-semibold">Spotlight</button>
             </div>
 
-            <button id="debugResetLayout" class="w-full text-[10px] px-2 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 transition font-semibold" onclick="resetLayout()">
+            <button id="debugResetLayout"
+                class="w-full text-[10px] px-2 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 transition font-semibold"
+                onclick="resetLayout()">
                 Reset Layout
             </button>
         </div>

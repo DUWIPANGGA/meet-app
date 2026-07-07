@@ -990,6 +990,23 @@
                             d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                     </svg>
                 </button>
+                <div class="relative flex items-center">
+                    <button id="layoutNavBtn"
+                        class="p-2 hover:bg-white/10 rounded-full transition text-white/70 hover:text-white"
+                        title="Ganti layout">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z" />
+                        </svg>
+                    </button>
+                    <div id="layoutNavDropdown"
+                        style="display:none;opacity:0"
+                        class="absolute top-full mt-2 right-0 layout-dropdown min-w-[160px] transition-opacity z-[70]">
+                        <button data-layout="grid" class="active-layout"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg> Grid</button>
+                        <button data-layout="speaker"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg> Speaker</button>
+                        <button data-layout="sidebar"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M3 3v18h18V3H3zm8 16H5V5h6v14zm8 0h-6V5h6v14z"/></svg> Sidebar</button>
+                        <button data-layout="spotlight"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5-9h10v2H7z"/></svg> Spotlight</button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -1378,8 +1395,13 @@
         <a id="showNotulensiBtn" class="hidden"></a>
         <a id="pdfBtn" class="hidden"></a>
 
-        <!-- Hidden canvas for screen recording -->
-        <canvas id="recordingCanvas" class="hidden" width="1920" height="1080"></canvas>
+        <!-- Hidden canvas for screen recording - NOT display:none, because captureStream() needs canvas to be painted -->
+        <canvas id="recordingCanvas" width="1920" height="1080" style="position:fixed;top:-9999px;left:-9999px;pointer-events:none;opacity:0.01"></canvas>
+
+        <!-- Countdown overlay -->
+        <div id="countdownOverlay" class="fixed inset-0 z-[9999] flex items-center justify-center hidden" style="background:rgba(0,0,0,0.7)">
+            <div id="countdownNumber" class="text-white font-bold select-none" style="font-size:18rem;line-height:1;text-shadow:0 0 60px rgba(139,92,246,0.6)">3</div>
+        </div>
 
         <!-- Layout containers -->
         <div id="speakerMainVideo" class="hidden"></div>
@@ -2010,6 +2032,9 @@
             document.querySelectorAll('#layoutDropdown button').forEach(btn => {
                 btn.classList.toggle('active-layout', btn.dataset.layout === mode);
             });
+            document.querySelectorAll('#layoutNavDropdown button').forEach(btn => {
+                btn.classList.toggle('active-layout', btn.dataset.layout === mode);
+            });
         }
 
         function getVideoCardByIdentity(identity) {
@@ -2026,13 +2051,14 @@
             if (!grid || !remoteContainer) return;
             const remotes = Array.from(remoteContainer.querySelectorAll(':scope > [id^="remote-card-"]'));
             const totalCount = 1 + remotes.length;
-            const key = `${currentLayout}|${totalCount}|${remotes.map(el => el.dataset.identity).join(',')}`;
-            if (_lastUIUpdateKey === key) return;
-            _lastUIUpdateKey = key;
 
             // Reset currentPage if out of bounds
             const totalPages = Math.ceil(getParticipantCards().length / PER_PAGE);
             if (currentPage >= totalPages) currentPage = Math.max(0, totalPages - 1);
+
+            const key = `${currentLayout}|${currentPage}|${totalCount}|${remotes.map(el => el.dataset.identity).join(',')}`;
+            if (_lastUIUpdateKey === key) return;
+            _lastUIUpdateKey = key;
 
             // Remove all layout classes
             grid.classList.remove('layout-speaker', 'layout-sidebar', 'layout-spotlight');
@@ -2705,11 +2731,13 @@
         if (layoutBtn && layoutDropdown) {
             function showLayoutDropdown() {
                 layoutDropdown.style.display = '';
-                requestAnimationFrame(() => { layoutDropdown.style.opacity = '1'; });
+                layoutDropdown.style.opacity = '0';
+                void layoutDropdown.offsetHeight;
+                layoutDropdown.style.opacity = '1';
             }
             function hideLayoutDropdown() {
                 layoutDropdown.style.opacity = '0';
-                setTimeout(() => { layoutDropdown.style.display = 'none'; }, 300);
+                setTimeout(() => { layoutDropdown.style.display = 'none'; }, 200);
             }
             layoutBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -2735,13 +2763,58 @@
             layoutDropdown.querySelector(`[data-layout="${currentLayout}"]`)?.classList.add('active-layout');
         }
 
+        // Navbar layout selector
+        const layoutNavBtn = document.getElementById('layoutNavBtn');
+        const layoutNavDropdown = document.getElementById('layoutNavDropdown');
+        if (layoutNavBtn && layoutNavDropdown) {
+            function showNavLayoutDropdown() {
+                layoutNavDropdown.style.display = '';
+                layoutNavDropdown.style.opacity = '0';
+                void layoutNavDropdown.offsetHeight;
+                layoutNavDropdown.style.opacity = '1';
+            }
+            function hideNavLayoutDropdown() {
+                layoutNavDropdown.style.opacity = '0';
+                setTimeout(() => { layoutNavDropdown.style.display = 'none'; }, 200);
+            }
+            layoutNavBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (layoutNavDropdown.style.display === 'none') {
+                    showNavLayoutDropdown();
+                } else {
+                    hideNavLayoutDropdown();
+                }
+            });
+            document.addEventListener('click', (e) => {
+                if (!layoutNavBtn.contains(e.target) && !layoutNavDropdown.contains(e.target) &&
+                    layoutNavDropdown.style.display !== 'none') {
+                    hideNavLayoutDropdown();
+                }
+            });
+            layoutNavDropdown.querySelectorAll('button').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    applyLayout(btn.dataset.layout);
+                    hideNavLayoutDropdown();
+                });
+            });
+            // Sync active state with bottom dropdown
+            function syncNavLayoutActive() {
+                layoutNavDropdown.querySelectorAll('button').forEach(btn => {
+                    btn.classList.toggle('active-layout', btn.dataset.layout === currentLayout);
+                });
+            }
+            syncNavLayoutActive();
+        }
+
         // Screen recording
         if (recordScreenBtn) {
             recordScreenBtn.addEventListener('click', async () => {
                 if (isRecordingScreen) {
                     await stopScreenRecording();
+                } else if (isCountdownActive) {
+                    cancelCountdown();
                 } else {
-                    await startScreenRecording();
+                    await startCountdown();
                 }
             });
         }
@@ -3095,6 +3168,51 @@
             ctx.stroke();
         }
 
+        // ======================== COUNTDOWN ========================
+        const countdownOverlay = document.getElementById('countdownOverlay');
+        const countdownNumber = document.getElementById('countdownNumber');
+        let isCountdownActive = false;
+        let countdownInterval = null;
+        let countdownResolve = null;
+
+        function cancelCountdown() {
+            if (!isCountdownActive) return;
+            clearInterval(countdownInterval);
+            countdownOverlay.classList.add('hidden');
+            isCountdownActive = false;
+            if (countdownResolve) countdownResolve();
+        }
+
+        function startCountdown() {
+            return new Promise((resolve) => {
+                isCountdownActive = true;
+                countdownResolve = resolve;
+                countdownOverlay.classList.remove('hidden');
+                let count = 3;
+                countdownNumber.textContent = count;
+                countdownNumber.style.transform = 'scale(0.5)';
+                countdownNumber.style.transition = 'transform 0.3s ease';
+                countdownNumber.offsetHeight;
+                countdownNumber.style.transform = 'scale(1)';
+
+                countdownInterval = setInterval(() => {
+                    if (!isCountdownActive) return;
+                    count--;
+                    if (count > 0) {
+                        countdownNumber.textContent = count;
+                        countdownNumber.style.transform = 'scale(0.5)';
+                        countdownNumber.offsetHeight;
+                        countdownNumber.style.transform = 'scale(1)';
+                    } else {
+                        clearInterval(countdownInterval);
+                        countdownOverlay.classList.add('hidden');
+                        isCountdownActive = false;
+                        resolve();
+                    }
+                }, 1000);
+            });
+        }
+
         // ======================== SCREEN RECORDING ========================
         async function startScreenRecording() {
             if (isRecordingScreen) return;
@@ -3104,7 +3222,7 @@
             }
             recordingCanvas = document.getElementById('recordingCanvas');
             if (!recordingCanvas) {
-                alert('Canvas not found');
+                alert('Canvas tidak ditemukan.');
                 return;
             }
             recordingCanvasCtx = recordingCanvas.getContext('2d');
@@ -3329,30 +3447,72 @@
                 renderFrame();
             }, 66);
 
-            const videoStream = recordingCanvas.captureStream(15);
-            let combinedStream;
-            if (recordingAudioDestination) {
-                const audioTracks = recordingAudioDestination.stream.getAudioTracks();
-                if (audioTracks.length > 0) {
-                    combinedStream = new MediaStream([
-                        ...videoStream.getVideoTracks(),
-                        audioTracks[0]
-                    ]);
+            if (!recordingCanvas.captureStream) {
+                alert('Browser tidak mendukung fitur rekam layar (canvas.captureStream). Gunakan Chrome atau Firefox versi terbaru.');
+                isRecordingScreen = false;
+                clearInterval(recordingRenderTimer);
+                recordingRenderTimer = null;
+                return;
+            }
+
+            let videoStream, combinedStream;
+            try {
+                videoStream = recordingCanvas.captureStream(15);
+            } catch (e) {
+                alert('Gagal memulai rekaman: ' + e.message);
+                isRecordingScreen = false;
+                clearInterval(recordingRenderTimer);
+                recordingRenderTimer = null;
+                return;
+            }
+
+            try {
+                if (recordingAudioDestination) {
+                    const audioTracks = recordingAudioDestination.stream.getAudioTracks();
+                    if (audioTracks.length > 0) {
+                        combinedStream = new MediaStream([
+                            ...videoStream.getVideoTracks(),
+                            audioTracks[0]
+                        ]);
+                    } else {
+                        combinedStream = videoStream;
+                    }
                 } else {
                     combinedStream = videoStream;
                 }
-            } else {
+            } catch (e) {
                 combinedStream = videoStream;
             }
 
-            const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp8,opus') ?
-                'video/webm;codecs=vp8,opus' :
-                'video/webm';
-            recordingMediaRecorder = new MediaRecorder(combinedStream, {
-                mimeType
-            });
+            let mimeType = 'video/webm';
+            try {
+                if (MediaRecorder.isTypeSupported('video/webm;codecs=vp8,opus')) {
+                    mimeType = 'video/webm;codecs=vp8,opus';
+                } else if (MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus')) {
+                    mimeType = 'video/webm;codecs=vp9,opus';
+                }
+            } catch (e) {}
+
+            try {
+                recordingMediaRecorder = new MediaRecorder(combinedStream, { mimeType });
+            } catch (e) {
+                try {
+                    recordingMediaRecorder = new MediaRecorder(combinedStream);
+                } catch (e2) {
+                    alert('Gagal membuat MediaRecorder: ' + e2.message);
+                    isRecordingScreen = false;
+                    clearInterval(recordingRenderTimer);
+                    recordingRenderTimer = null;
+                    return;
+                }
+            }
+
             recordingMediaRecorder.ondataavailable = (e) => {
                 if (e.data.size > 0) recordingChunks.push(e.data);
+            };
+            recordingMediaRecorder.onerror = (e) => {
+                console.error('MediaRecorder error:', e);
+                stopScreenRecording();
             };
             recordingMediaRecorder.onstop = () => {
                 if (recordingChunks.length > 0) {
