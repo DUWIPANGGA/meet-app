@@ -11,7 +11,7 @@ class WhisperCppService
 {
     public function transcribeChunk(string $absolutePath): string
     {
-        $whisperUrl = env('WHISPER_URL', 'http://127.0.0.1:8001/transcribe');
+        $whisperUrl = config('services.whisper.url');
         $filename = basename($absolutePath);
 
         if (!is_file($absolutePath)) {
