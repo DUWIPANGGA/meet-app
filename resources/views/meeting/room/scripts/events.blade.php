@@ -156,7 +156,8 @@ if (aiNotulenTriggerBtn) {
                 if (transcriptSidebar) transcriptSidebar.classList.remove('collapsed');
                 if (openSidebarBtn) openSidebarBtn.classList.add('hidden');
             } catch (err) {
-                alert('Gagal memulai notulensi: ' + err.message);
+                console.error('Notulensi error:', err);
+                alert('Gagal memulai notulensi: ' + (err.message || 'Terjadi kesalahan koneksi. Cek WebSocket Whisper / Reverb.'));
             }
         }
     });
