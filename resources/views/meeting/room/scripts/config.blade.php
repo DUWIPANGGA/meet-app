@@ -51,8 +51,8 @@ const saveLiveTranscriptUrl = baseUrl + '/save-live-transcript';
 const notulensiPdfUrl = baseUrl + '/notulensi-pdf';
 
 // Dynamic Reverb config & Whisper WS URL
-const wsHost = window.location.hostname;
-const isHttps = window.location.protocol === 'https:';
+const wsHost = '{{ env("VITE_REVERB_HOST", "meet-bps.my.id") }}';
+const isHttps = '{{ env("VITE_REVERB_SCHEME", "https") }}' === 'https';
 const whisperWsUrl = (isHttps ? 'wss://' : 'ws://') + wsHost + '/ws/transcribe';
 window._REVERB_CONFIG = {
     host: wsHost,
