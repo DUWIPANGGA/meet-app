@@ -77,7 +77,34 @@ if (cameraBtn) {
     });
 }
 
-if (leaveBtn) leaveBtn.addEventListener('click', leaveMeeting);
+const aiNotulenActiveDot = document.getElementById('aiNotulenActiveDot');
+const confirmEndMeetingModal = document.getElementById('confirmEndMeetingModal');
+const cancelEndMeetingBtn = document.getElementById('cancelEndMeetingBtn');
+const confirmEndMeetingBtn = document.getElementById('confirmEndMeetingBtn');
+const confirmEndTitle = document.getElementById('confirmEndTitle');
+const confirmEndDesc = document.getElementById('confirmEndDesc');
+
+if (leaveBtn) leaveBtn.addEventListener('click', () => {
+    const isActive = liveTranscriptionActive || (typeof pipelineStatus !== 'undefined' && pipelineStatus === 'processing');
+    if (isActive) {
+        if (confirmEndTitle) confirmEndTitle.textContent = 'Akhiri Rapat?';
+        if (confirmEndDesc) confirmEndDesc.textContent = liveTranscriptionActive
+            ? 'AI Notulen sedang aktif. Mengakhiri rapat akan menghentikan proses transkrip dan notulensi.'
+            : 'Proses notulensi sedang berjalan. Mengakhiri rapat akan membatalkan proses ini.';
+        if (confirmEndMeetingModal) confirmEndMeetingModal.classList.remove('hidden');
+    } else {
+        leaveMeeting();
+    }
+});
+
+if (cancelEndMeetingBtn) cancelEndMeetingBtn.addEventListener('click', () => {
+    if (confirmEndMeetingModal) confirmEndMeetingModal.classList.add('hidden');
+});
+
+if (confirmEndMeetingBtn) confirmEndMeetingBtn.addEventListener('click', () => {
+    if (confirmEndMeetingModal) confirmEndMeetingModal.classList.add('hidden');
+    leaveMeeting();
+});
 
 const participantBtn = document.getElementById('participantBtn');
 const participantSidebar = document.getElementById('participantSidebar');
