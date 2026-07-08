@@ -8,7 +8,7 @@
         @include('meeting.room.hidden-elements')
 
         <!-- Video Grid Area -->
-        <div class="flex-1 min-h-0 p-1 md:p-2 pb-24 relative flex flex-col max-h-[90vh]">
+        <div class="flex-none min-h-0 p-1 md:p-2 pb-24 relative flex flex-col h-full">
             @include('meeting.room.video-grid')
             @include('meeting.room.confirmation-modal')
         </div>

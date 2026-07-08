@@ -1140,7 +1140,7 @@
 
         <!-- Bottom Toolbar -->
         <div
-            class="absolute bottom-0 left-0 right-0 bottom-toolbar border-t border-gray-700/50 py-3 px-6 flex justify-between md:justify-center md:gap-16 items-center z-50 shadow-[0_-8px_30px_rgba(0,0,0,0.6)] overflow-x-auto md:overflow-x-visible">
+            class="absolute bottom-0 left-0 right-0 bottom-toolbar border-t border-gray-700/50 py-3 px-6 flex justify-between md:justify-center md:gap-16 items-center z-50 shadow-[0_-8px_30px_rgba(0,0,0,0.6)] overflow-visible">
             <!-- Kamera -->
             <button id="cameraBtn"
                 class="flex flex-col items-center text-white hover:text-gray-200 transition toolbar-btn">

@@ -146,7 +146,7 @@ function updateParticipantUI() {
 
     // Remove all layout classes and inline grid styles
     grid.classList.remove('layout-speaker', 'layout-sidebar', 'layout-spotlight');
-    grid.className = 'min-w-0 relative z-0';
+    grid.className = 'min-w-0 relative z-0 h-full';
     grid.style.gridTemplateColumns = '';
     grid.style.gridTemplateRows = '';
 
@@ -225,7 +225,13 @@ function applyGridLayout(grid, remotes, totalCount) {
         }
     });
 
-    grid.querySelectorAll('.speaker-strip, .sidebar-main-area, .sidebar-vertical-strip').forEach(el => el.remove());
+    const oldContainers = grid.querySelectorAll('.speaker-strip, .sidebar-main-area, .sidebar-vertical-strip');
+    oldContainers.forEach(el => {
+        el.querySelectorAll('.video-card, [id^="remote-card-"]').forEach(card => {
+            if (card.parentElement !== grid) grid.appendChild(card);
+        });
+        el.remove();
+    });
 }
 
 function applySpeakerLayout(grid, remotes, totalCount) {

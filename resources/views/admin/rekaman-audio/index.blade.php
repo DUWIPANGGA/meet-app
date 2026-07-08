@@ -367,6 +367,13 @@ document.addEventListener('alpine:init', () => {
                 this.mediaRecorder = new MediaRecorder(stream);
                 this.audioChunks = [];
                 this.mediaRecorder.ondataavailable = e => { if (e.data.size > 0) this.audioChunks.push(e.data); };
+                this.mediaRecorder.onstop = () => {
+                    if (this.audioChunks.length === 0) return;
+                    const blob = new Blob(this.audioChunks, { type: this.mediaRecorder.mimeType || 'audio/webm' });
+                    const ext = (this.mediaRecorder.mimeType || 'audio/webm').includes('mp4') ? 'mp4' : (this.mediaRecorder.mimeType || '').includes('ogg') ? 'ogg' : 'webm';
+                    const filename = `rekaman_${Date.now()}.${ext}`;
+                    this.processAudio(blob, filename);
+                };
                 this.mediaRecorder.start();
                 this.isRecording = true;
                 this.startTime = Date.now();
@@ -376,7 +383,7 @@ document.addEventListener('alpine:init', () => {
             }
         },
         stopRecording() {
-            if (!this.mediaRecorder) return;
+            if (!this.mediaRecorder || this.mediaRecorder.state === 'inactive') return;
             this.mediaRecorder.stop();
             this.mediaRecorder.stream.getTracks().forEach(t => t.stop());
             this.isRecording = false;
@@ -386,7 +393,10 @@ document.addEventListener('alpine:init', () => {
             if (this.audioContext) this.audioContext.close();
         },
         cancelRecording() {
-            if (this.isRecording) this.stopRecording();
+            if (this.isRecording) {
+                this.mediaRecorder.onstop = null;
+                this.stopRecording();
+            }
             this.state = 'menu';
             this.audioChunks = [];
             this.timerText = '00:00:00';
@@ -417,7 +427,10 @@ document.addEventListener('alpine:init', () => {
                 formData.append('audio', audioBlob, filename);
                 const res = await fetch(this.saveRawUrl, {
                     method: 'POST',
-                    headers: { 'X-CSRF-TOKEN': this.csrfToken },
+                    headers: {
+                        'X-CSRF-TOKEN': this.csrfToken,
+                        'Accept': 'application/json',
+                    },
                     body: formData,
                 });
                 const data = await res.json();
@@ -438,6 +451,7 @@ document.addEventListener('alpine:init', () => {
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': this.csrfToken,
+                        'Accept': 'application/json',
                     },
                     body: JSON.stringify({ live_audio_id: liveAudioId }),
                 });
@@ -453,7 +467,10 @@ document.addEventListener('alpine:init', () => {
                     while (true) {
                         await new Promise(r => setTimeout(r, 2000));
                         const pollRes = await fetch(this.transcribeStatusUrl(liveAudioId), {
-                            headers: { 'X-CSRF-TOKEN': this.csrfToken },
+                            headers: {
+                                'X-CSRF-TOKEN': this.csrfToken,
+                                'Accept': 'application/json',
+                            },
                         });
                         const pollData = await pollRes.json();
                         if (pollData.status === 'completed') {
@@ -478,6 +495,7 @@ document.addEventListener('alpine:init', () => {
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': this.csrfToken,
+                        'Accept': 'application/json',
                     },
                     body: JSON.stringify({ text: transcript }),
                 });
@@ -499,7 +517,10 @@ document.addEventListener('alpine:init', () => {
                 formData.append('notulensi_teks', notulensiJson);
                 const res = await fetch(this.saveUrl, {
                     method: 'POST',
-                    headers: { 'X-CSRF-TOKEN': this.csrfToken },
+                    headers: {
+                        'X-CSRF-TOKEN': this.csrfToken,
+                        'Accept': 'application/json',
+                    },
                     body: formData,
                 });
                 const data = await res.json();

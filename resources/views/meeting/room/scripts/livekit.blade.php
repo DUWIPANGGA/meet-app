@@ -14,12 +14,12 @@ function createRemoteVideoCard(identity, displayName) {
     card = document.createElement('div');
     card.id = cardId;
     card.dataset.identity = identity;
-    card.className = 'rounded-2xl overflow-hidden shadow-xl h-full w-full relative video-card m-1';
+    card.className = 'rounded-2xl overflow-hidden shadow-xl h-full w-full min-h-0 relative video-card m-1';
     const video = document.createElement('video');
     video.id = videoId;
     video.autoplay = true;
     video.playsInline = true;
-    video.className = 'w-full h-full object-cover';
+    video.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover';
     video.muted = true;
     const label = document.createElement('div');
     label.className = 'absolute bottom-2 left-2 text-xs px-2 py-1 rounded name-label text-gray-200';

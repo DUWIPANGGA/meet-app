@@ -112,6 +112,10 @@
 
     /* ── Video cards ── */
     .video-card {
+        display: flex;
+        
+        justify-content: center;
+        align-items: center;
         background: var(--card-bg);
         backdrop-filter: blur(8px);
         border: 1px solid var(--card-border);

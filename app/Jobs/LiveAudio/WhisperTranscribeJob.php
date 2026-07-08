@@ -30,13 +30,23 @@ class WhisperTranscribeJob implements ShouldQueue
         $liveAudio = LiveAudio::query()->findOrFail($this->liveAudioId);
         $relative = $liveAudio->file_path;
 
-        if (blank($relative)) {
-            throw new \RuntimeException('Path audio untuk transkripsi kosong.');
+        if (blank($relative) || $relative === '0') {
+            Log::error('WhisperTranscribeJob: file_path invalid', [
+                'live_audio_id' => $this->liveAudioId,
+                'file_path' => $relative,
+            ]);
+            $this->job->delete();
+            return;
         }
 
         $absolute = Storage::disk('public')->path($relative);
         if (! is_file($absolute)) {
-            throw new \RuntimeException('File audio untuk transkripsi tidak ditemukan.');
+            Log::error('WhisperTranscribeJob: file not found on disk', [
+                'live_audio_id' => $this->liveAudioId,
+                'expected_path' => $absolute,
+            ]);
+            $this->job->delete();
+            return;
         }
 
         Log::info('WhisperTranscribeJob: transcribing', ['live_audio_id' => $this->liveAudioId]);
