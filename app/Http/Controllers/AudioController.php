@@ -51,6 +51,19 @@ class AudioController extends Controller
         $file = $request->file('audio');
         $path = $file->store('live_audios', 'public');
 
+        if (!$path || $path === '0' || $path === false) {
+            \Log::error('saveRaw: store() returned invalid path', [
+                'path' => $path,
+                'filename' => $file->getClientOriginalName(),
+                'size' => $file->getSize(),
+                'mime' => $file->getMimeType(),
+            ]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal menyimpan file audio ke storage.',
+            ], 500);
+        }
+
         $liveAudio = LiveAudio::create([
             'user_id'         => auth()->id(),
             'file_path'       => $path,
@@ -60,9 +73,15 @@ class AudioController extends Controller
             'durasi'          => 'Unknown',
         ]);
 
+        \Log::info('saveRaw: file saved', [
+            'live_audio_id' => $liveAudio->id,
+            'file_path' => $path,
+            'size' => $file->getSize(),
+        ]);
+
         // Simpan juga ke RekamanAudio agar tampil di admin/rekaman-audio
         RekamanAudio::create([
-            'meeting_id'     => null, // Standalone audio
+            'meeting_id'     => null,
             'file_audio'     => $path,
             'durasi'          => 'Unknown',
             'tanggal_upload' => now(),
@@ -155,6 +174,13 @@ class AudioController extends Controller
             $file = $request->file('audio');
             $path = $file->store('live_audios', 'public');
 
+            if (!$path || $path === '0' || $path === false) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Gagal menyimpan file audio ke storage.',
+                ], 500);
+            }
+
             // Simpan ke database
             $liveAudio = LiveAudio::create([
                 'user_id'         => auth()->id(),
@@ -202,6 +228,18 @@ class AudioController extends Controller
 
         $file = $request->file('audio');
         $path = $file->store('live_audios', 'public');
+
+        if (!$path || $path === '0' || $path === false) {
+            \Log::error('upload: store() returned invalid path', [
+                'path' => $path,
+                'filename' => $file->getClientOriginalName(),
+                'size' => $file->getSize(),
+            ]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal menyimpan file audio ke storage.',
+            ], 500);
+        }
 
         $liveAudio = LiveAudio::create([
             'user_id'         => auth()->id(),
