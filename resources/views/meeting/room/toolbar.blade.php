@@ -10,7 +10,7 @@
                     </svg>
                     <svg id="camOffIcon" class="w-10 h-10 hidden" fill="currentColor" viewBox="0 0 24 24">
                         <path
-                            d="M21 6.5l-4 are4V7c0-.55-.45-1-1-1H9.82L21 17.18V6.5zM3.27 2L2 3.27 4.73 6H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.21 0 .39-.08.54-.18L19.73 21 21 19.73 3.27 2z" />
+                            d="M21 6.5l-4 4V7c0-.55-.45-1-1-1H9.82L21 17.18V6.5zM3.27 2L2 3.27 4.73 6H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.21 0 .39-.08.54-.18L19.73 21 21 19.73 3.27 2z" />
                     </svg>
                 </div>
                 <span class="text-sm font-semibold mt-1">Kamera</span>
@@ -147,7 +147,7 @@
             </div>
 
             <!-- Layout Selector -->
-            <div class="relative flex flex-col items-center mobile-hide">
+            <div class="relative flex flex-col items-center">
                 <button id="layoutBtn"
                     class="flex flex-col items-center text-white hover:text-gray-200 transition toolbar-btn">
                     <div class="h-12 flex items-center justify-center">

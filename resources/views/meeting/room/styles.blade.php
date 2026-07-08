@@ -505,6 +505,7 @@
         margin: 0 !important;
         border-radius: 0 !important;
         border: none !important;
+        max-height: none !important;
     }
 
     .alone-mode .video-grid-container .video-card {
@@ -708,8 +709,10 @@
         }
 
         .alone-mode .video-grid-container {
-            margin: 0 10px !important;
-            border-radius: 12px !important;
+            margin: 0 !important;
+            border-radius: 0 !important;
+            max-height: 100vh !important;
+            max-height: 100dvh !important;
         }
 
         #videoGridMain .video-card {

@@ -37,6 +37,9 @@ class CheckUserPermission
 
         foreach ($permissions as $permission) {
             if (! $user->can(Str::snake($permission))) {
+                if ($request->expectsJson()) {
+                    return response()->json(['message' => 'Anda tidak memiliki izin untuk mengakses halaman tersebut.'], 403);
+                }
                 return redirect()->route('profile.show')
                     ->with('error', 'Anda tidak memiliki izin untuk mengakses halaman tersebut.');
             }

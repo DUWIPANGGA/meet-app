@@ -77,7 +77,6 @@ if (cameraBtn) {
     });
 }
 
-const aiNotulenActiveDot = document.getElementById('aiNotulenActiveDot');
 const confirmEndMeetingModal = document.getElementById('confirmEndMeetingModal');
 const cancelEndMeetingBtn = document.getElementById('cancelEndMeetingBtn');
 const confirmEndMeetingBtn = document.getElementById('confirmEndMeetingBtn');
@@ -242,6 +241,19 @@ if (recordingPopupClose) {
     if (!layoutBtn || !layoutDropdown) return;
 
     function showLayoutDropdown() {
+        if (window.innerWidth < 768) {
+            layoutDropdown.style.position = 'fixed';
+            layoutDropdown.style.bottom = '80px';
+            layoutDropdown.style.left = '50%';
+            layoutDropdown.style.transform = 'translateX(-50%)';
+            layoutDropdown.style.zIndex = '200';
+        } else {
+            layoutDropdown.style.position = '';
+            layoutDropdown.style.bottom = '';
+            layoutDropdown.style.left = '';
+            layoutDropdown.style.transform = '';
+            layoutDropdown.style.zIndex = '';
+        }
         layoutDropdown.style.display = 'block';
         requestAnimationFrame(() => {
             layoutDropdown.style.opacity = '1';
