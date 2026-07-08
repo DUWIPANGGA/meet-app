@@ -1,16 +1,6 @@
-<!DOCTYPE html>
-<html lang="id" class="dark">
+@extends('layouts.room')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="mock-csrf-token">
-    <title>Meeting Layout Simulation</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
-        rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
+@section('content')
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
@@ -486,20 +476,12 @@
             height: 140px;
             overflow-x: auto;
             flex-shrink: 0;
-            align-items: center;
             background: rgba(0, 0, 0, 0.2);
             border-top: 1px solid rgba(255, 255, 255, 0.05);
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-
-        #videoGridMain.layout-speaker .speaker-strip::-webkit-scrollbar {
-            display: none;
         }
 
         #videoGridMain.layout-speaker .speaker-strip .video-card {
-            width: 171px;
-            max-width: 171px;
+            min-width: 180px;
             height: 128px;
             flex-shrink: 0;
         }
@@ -508,9 +490,8 @@
             border-color: #22c55e !important;
         }
 
-        /* Safety: hide any video-card in grid that is NOT the main speaker and NOT inside strip */
-        #videoGridMain.layout-speaker > .video-card:not(.speaker-main-video) {
-            display: none !important;
+        #videoGridMain.layout-speaker .video-card:not(.speaker-main-video):not(.speaker-strip .video-card) {
+            display: none;
         }
 
         /* ── Alone mode: full screen when only 1 participant ── */
@@ -548,20 +529,12 @@
             gap: 4px;
             padding: 4px;
             overflow-y: auto;
-            overflow-x: hidden;
             background: rgba(0, 0, 0, 0.2);
             border-left: 1px solid rgba(255, 255, 255, 0.05);
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-
-        #videoGridMain.layout-sidebar .sidebar-vertical-strip::-webkit-scrollbar {
-            display: none;
         }
 
         #videoGridMain.layout-sidebar .sidebar-vertical-strip .video-card {
-            aspect-ratio: 4/3;
-            max-height: 150px;
+            min-height: 120px;
             flex-shrink: 0;
         }
 
@@ -720,7 +693,6 @@
             .video-grid-container {
                 margin: 0 10px !important;
                 border-radius: 12px !important;
-                padding-bottom: 70px !important;
             }
 
             .alone-mode .video-grid-container {
@@ -953,45 +925,21 @@
             }
 
             .speaker-strip .video-card {
-                width: 96px !important;
-                max-width: 96px !important;
+                min-width: 100px !important;
                 height: 72px !important;
             }
 
-            /* Sidebar: stack vertically on mobile */
-            #videoGridMain.layout-sidebar {
-                flex-direction: column !important;
-            }
-
-            #videoGridMain.layout-sidebar .sidebar-main-area {
-                flex: 1 !important;
-                min-height: 0 !important;
-            }
-
             .sidebar-vertical-strip {
-                width: 100% !important;
-                flex-direction: row !important;
-                overflow-y: hidden !important;
-                overflow-x: auto !important;
-                border-left: none !important;
-                border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
-                max-height: 90px !important;
+                width: 80px !important;
             }
 
             .sidebar-vertical-strip .video-card {
-                min-width: 120px !important;
-                max-width: 120px !important;
-                aspect-ratio: 4/3 !important;
-                max-height: none !important;
-                flex-shrink: 0 !important;
+                min-height: 60px !important;
             }
 
-            /* Spotlight: overlay in bottom-right corner */
             .spotlight-overlay {
                 width: 100px !important;
                 height: 70px !important;
-                bottom: 8px !important;
-                right: 8px !important;
             }
 
             #confirmNotulenModal>div {
@@ -1010,10 +958,6 @@
         }
     </style>
 
-</head>
-
-<body class="bg-gray-900 text-white h-screen overflow-hidden" style="font-family:'Inter',system-ui,sans-serif">
-
     <div id="meetingContainer" class="h-screen flex flex-col relative meeting-bg text-white overflow-hidden font-sans">
 
         <!-- Top Bar -->
@@ -1024,7 +968,7 @@
                     <path
                         d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                 </svg>
-                <h1 class="text-xl font-semibold" id="topBarUserName">Anda</h1>
+                <h1 class="text-xl font-semibold">{{ auth()->user()?->name ?? 'Nama' }}</h1>
             </div>
             <div class="flex items-center gap-2">
                 <div id="aiNotulenHeaderIndicator"
@@ -1035,8 +979,8 @@
                 <button id="roomThemeToggle"
                     class="p-2 hover:bg-white/10 rounded-full transition text-white/70 hover:text-white"
                     title="Toggle tema">
-                    <svg id="roomThemeIconSun" class="w-5 h-5 hidden" fill="none" stroke="currentColor"
-                        stroke-width="2" viewBox="0 0 24 24">
+                    <svg id="roomThemeIconSun" class="w-5 h-5 hidden" fill="none" stroke="currentColor" stroke-width="2"
+                        viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                     </svg>
@@ -1118,8 +1062,7 @@
                 </div>
             </div>
             <!-- Pagination Dots -->
-            <div id="paginationDots"
-                class="flex justify-center items-center gap-1 md:gap-2 py-1 md:py-2 flex-shrink-0"
+            <div id="paginationDots" class="flex justify-center items-center gap-1 md:gap-2 py-1 md:py-2 flex-shrink-0"
                 style="display:none">
             </div>
 
@@ -1140,10 +1083,9 @@
 
         <!-- Bottom Toolbar -->
         <div
-            class="absolute bottom-0 left-0 right-0 bottom-toolbar border-t border-gray-700/50 py-3 px-6 flex justify-between md:justify-center md:gap-16 items-center z-50 shadow-[0_-8px_30px_rgba(0,0,0,0.6)] overflow-x-auto md:overflow-x-visible">
+            class="absolute bottom-0 left-0 right-0 bottom-toolbar border-t border-gray-700/50 py-3 px-6 flex justify-between md:justify-center md:gap-16 items-center z-50 shadow-[0_-8px_30px_rgba(0,0,0,0.6)] overflow-x-auto overflow-y-hidden md:overflow-x-visible">
             <!-- Kamera -->
-            <button id="cameraBtn"
-                class="flex flex-col items-center text-white hover:text-gray-200 transition toolbar-btn">
+            <button id="cameraBtn" class="flex flex-col items-center text-white hover:text-gray-200 transition toolbar-btn">
                 <div class="h-12 flex items-center justify-center">
                     <svg id="camIcon" class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24">
                         <path
@@ -1158,8 +1100,7 @@
             </button>
 
             <!-- Audio (Mic) -->
-            <button id="muteBtn"
-                class="flex flex-col items-center text-white hover:text-gray-200 transition toolbar-btn">
+            <button id="muteBtn" class="flex flex-col items-center text-white hover:text-gray-200 transition toolbar-btn">
                 <div class="h-12 flex items-center justify-center">
                     <svg id="micIcon" class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24">
                         <path
@@ -1190,8 +1131,7 @@
                 <div id="aiLoadingOverlay"
                     class="hidden absolute bottom-full mb-4 left-1/2 -translate-x-1/2 w-72 bg-white rounded-lg shadow-xl border border-gray-200 p-4 text-gray-800 z-50 transition-opacity opacity-0">
                     <div class="flex items-center gap-3">
-                        <div
-                            class="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-violet-500 shrink-0">
+                        <div class="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-violet-500 shrink-0">
                         </div>
                         <div>
                             <p class="font-semibold text-sm text-gray-900">AI Sedang Menyusun Notulensi...</p>
@@ -1219,18 +1159,18 @@
                 <div id="sharePopup"
                     class="absolute bottom-full mb-4 left-1/2 -translate-x-1/2 w-72 bg-white rounded-lg shadow-xl border border-gray-200 p-4 text-gray-800 z-50 hidden transition-opacity opacity-0">
                     <h4 class="font-medium mb-2 text-sm text-left">Bagikan info rapat ini</h4>
-                    <p class="text-xs text-gray-500 mb-3 text-left">Berikan link atau ID rapat ini kepada peserta lain.
-                    </p>
+                    <p class="text-xs text-gray-500 mb-3 text-left">Berikan link atau ID rapat ini kepada peserta lain.</p>
                     <div class="flex flex-col gap-2">
                         <div class="flex items-center gap-2">
-                            <input type="text" readonly value="MT-001"
+                            <input type="text" readonly value="{{ $meeting->id }}"
                                 class="flex-1 bg-gray-50 border border-gray-300 rounded px-2 py-1.5 text-xs text-gray-800 font-mono outline-none">
                             <span class="text-xs text-gray-500 w-12">ID</span>
                         </div>
                         <div class="flex items-center gap-2">
-                            <input type="text" readonly value="#"
+                            <input type="text" readonly value="{{ route('meeting.room', $meeting->id) }}"
                                 class="flex-1 bg-gray-50 border border-gray-300 rounded px-2 py-1.5 text-xs text-gray-600 outline-none">
-                            <button onclick="navigator.clipboard.writeText('#'); alert('Link disalin ke clipboard!')"
+                            <button
+                                onclick="navigator.clipboard.writeText('{{ route('meeting.room', $meeting->id) }}'); alert('Link disalin ke clipboard!')"
                                 class="p-1.5 bg-blue-50 text-[#0284c7] hover:bg-blue-100 rounded transition shrink-0"
                                 title="Salin link">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
@@ -1263,8 +1203,7 @@
             <button id="screenShareBtn"
                 class="flex flex-col items-center text-white hover:text-gray-200 transition toolbar-btn relative mobile-hide">
                 <div class="h-12 flex items-center justify-center">
-                    <svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="1.5"
-                        viewBox="0 0 24 24">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25A2.25 2.25 0 015.25 3h13.5A2.25 2.25 0 0121 5.25z">
                     </svg>
@@ -1302,7 +1241,8 @@
                     </div>
                     <span class="text-sm font-semibold mt-1">Layout</span>
                 </button>
-                <div id="layoutDropdown" style="display:none;opacity:0"
+                <div id="layoutDropdown"
+                    style="display:none;opacity:0"
                     class="absolute bottom-full mb-4 left-1/2 -translate-x-1/2 layout-dropdown min-w-[160px] transition-opacity">
                     <button data-layout="grid" class="active-layout"><svg class="w-4 h-4" fill="currentColor"
                             viewBox="0 0 24 24">
@@ -1367,10 +1307,13 @@
             </div>
 
             <!-- Akhiri / Keluar -->
+            @php
+                $canEnd = $isCreator || $isAdmin;
+            @endphp
             <button id="leaveBtn" class="flex flex-col items-center transition toolbar-btn ml-8">
                 <div class="h-12 flex items-center justify-center">
                     <div class="btn-danger text-white font-bold rounded-xl px-5 py-2.5 shadow-lg tracking-wide">
-                        Akhiri
+                        {{ $canEnd ? 'Akhiri' : 'Keluar' }}
                     </div>
                 </div>
             </button>
@@ -1389,8 +1332,7 @@
                 <button id="closeParticipantBtn"
                     class="text-gray-500 hover:text-white transition hover:bg-white/5 rounded-lg p-1.5">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
                         </path>
                     </svg>
                 </button>
@@ -1422,8 +1364,7 @@
                 <div class="flex items-center gap-1">
                     <button id="toggleSidebarBtn" title="Sembunyikan transkrip"
                         class="text-gray-400 hover:text-white hover:bg-white/10 rounded-lg p-1.5 transition-colors">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
-                            viewBox="0 0 24 24">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
@@ -1462,6 +1403,11 @@
             <div id="countdownNumber" class="text-white font-bold select-none" style="font-size:18rem;line-height:1;text-shadow:0 0 60px rgba(139,92,246,0.6)">3</div>
         </div>
 
+        <!-- Layout containers -->
+        <div id="speakerMainVideo" class="hidden"></div>
+        <div id="speakerStrip" class="hidden"></div>
+        <div id="sidebarMainArea" class="hidden"></div>
+        <div id="sidebarStrip" class="hidden"></div>
     </div>
 
     <!-- Modal Notulensi -->
@@ -1483,8 +1429,8 @@
                     <div class="rounded-xl border p-5"
                         style="background:rgba(139,92,246,0.04);border-color:rgba(139,92,246,0.18)">
                         <div class="flex items-center gap-2.5 mb-3">
-                            <svg class="w-5 h-5 text-violet-400" fill="none" stroke="currentColor"
-                                stroke-width="2" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" stroke-width="2"
+                                viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7" />
                             </svg>
                             <h3 class="text-sm font-bold text-violet-400">Ringkasan Eksekutif</h3>
@@ -1533,11 +1479,9 @@
                             <table class="w-full text-left text-sm">
                                 <thead style="background:rgba(56,189,248,0.05)">
                                     <tr>
-                                        <th class="px-4 py-3 text-xs font-bold uppercase tracking-wide text-sky-400">
-                                            Tugas
+                                        <th class="px-4 py-3 text-xs font-bold uppercase tracking-wide text-sky-400">Tugas
                                         </th>
-                                        <th class="px-4 py-3 text-xs font-bold uppercase tracking-wide text-sky-400">
-                                            PIC
+                                        <th class="px-4 py-3 text-xs font-bold uppercase tracking-wide text-sky-400">PIC
                                         </th>
                                         <th class="px-4 py-3 text-xs font-bold uppercase tracking-wide text-sky-400">
                                             Deadline</th>
@@ -1573,44 +1517,37 @@
     </div>
 
     <script>
-        // ======================== MOCK DATA ========================
-        var mockParticipants = [{
-                id: 1,
-                name: 'Anda'
-            },
-            {
-                id: 2,
-                name: 'Budi Santoso'
-            },
-            {
-                id: 3,
-                name: 'Siti Rahma'
-            },
-            {
-                id: 4,
-                name: 'Ahmad Fauzi'
-            },
-            {
-                id: 5,
-                name: 'Dewi Lestari'
-            },
-            {
-                id: 6,
-                name: 'Rudi Hermawan'
-            },
-        ];
-
         // ======================== DEKLARASI VARIABEL ========================
+        let room = null;
+        let localStream = null;
         let isMuted = false,
             isCameraOff = false,
             audioEnabledByUser = false;
         let isScreenSharing = false;
         let screenShareStream = null;
         let pinnedIdentities = [];
-        let currentLayout = localStorage.getItem('layout_MT-001') || 'grid';
+        let currentLayout = localStorage.getItem('layout_' + @json($meeting->id)) || 'grid';
+        let isRecordingScreen = false;
+        let recordingByOther = false;
+        let recordingMediaRecorder = null;
+        let recordingChunks = [];
+        let recordingCanvasCtx = null;
+        let recordingRenderTimer = null;
+        let recordingAudioMixer = null;
+        let recordingAudioSource = null;
+        let recordingAudioDestination = null;
+        let recordingCanvas = null;
+        let recordingBgCanvas = null;
+        let recordingThumbCanvas = null;
+        let recordingParticipants = [];
+        let recordingSpeakerQueue = [];
+        let recordingVideoCache = new Map();
+        let thumbnailsDirty = true;
+        let bgDirty = true;
+        let recordingActiveSpeakers = [];
         let activeSpeakerIdentity = null;
         let spotlightTargetIdentity = null;
-        const meetingId = 'MT-001';
+        const meetingId = @json($meeting->id);
         // Load saved device state
         try {
             const s = JSON.parse(localStorage.getItem('device_' + meetingId));
@@ -1619,13 +1556,34 @@
                 isCameraOff = !!s.c;
             }
         } catch (e) {}
-        const currentUserId = 1;
-        const authName = 'Anda';
+        const currentUserId = Number(@json(auth()->id()));
+        const authName = @json(auth()->user()?->name ?? 'Anda');
         const baseUrl = '/meeting/' + meetingId;
-        const isCreator = true;
-        const isAdmin = true;
+        const liveKitUrl = @json($liveKitUrl);
+        const livekitTokenUrl = baseUrl + '/livekit-token';
+        const broadcastUrl = baseUrl + '/broadcast';
+        const leaveUrl = baseUrl + '/leave';
+        const endUrl = baseUrl + '/end';
+        const isCreator = @json($isCreator);
+        const isAdmin = @json($isAdmin);
+        const saveLiveTranscriptUrl = baseUrl + '/save-live-transcript';
+        const notulensiPdfUrl = baseUrl + '/notulensi-pdf';
+
+        // Dynamic Reverb config & Whisper WS URL
+        const wsHost = window.location.hostname;
+        const isHttps = window.location.protocol === 'https:';
+        const whisperWsUrl = (isHttps ? 'wss://' : 'ws://') + wsHost + '/ws/transcribe';
+        window._REVERB_CONFIG = {
+            host: wsHost,
+            wsPort: isHttps ? 443 : 8080,
+            wssPort: 443,
+            scheme: isHttps ? 'https' : 'http',
+            key: '{{ env('REVERB_APP_KEY') }}',
+            authEndpoint: '/broadcasting/auth',
+        };
 
         // DOM references
+        const localVideo = document.getElementById('localVideo');
         const remoteVideos = document.getElementById('remoteVideos');
         const muteBtn = document.getElementById('muteBtn');
         const cameraBtn = document.getElementById('cameraBtn');
@@ -1688,20 +1646,122 @@
                 toggleCamIcons(isCameraOff);
             }
             if (localAvatar) localAvatar.classList.toggle('hidden', !isCameraOff);
-            if (localAvatarText) localAvatarText.textContent = isCameraOff ? authName.charAt(0).toUpperCase() : '';
+            if (localAvatarText && isCameraOff) localAvatarText.textContent = authName.charAt(0).toUpperCase();
         }
         applyDeviceState();
         const localAvatarCircle = document.getElementById('localAvatarCircle');
+        let audioMonitorInterval = null;
+
+        function startAudioMonitor() {
+            stopAudioMonitor();
+            audioMonitorInterval = setInterval(() => {
+                const level = room?.localParticipant?.audioLevel || 0;
+                if (!localAvatarCircle) return;
+                if (level > 0.02) {
+                    localAvatarCircle.classList.add('speaking-ring');
+                    const localId = 'local_' + currentUserId;
+                    recordingSpeakerQueue = [localId, ...recordingSpeakerQueue.filter(id => id !== localId)].slice(
+                        0, 20);
+                    if (recordingVideoCache.has(localId)) recordingVideoCache.get(localId).isSpeaking = true;
+                } else {
+                    localAvatarCircle.classList.remove('speaking-ring');
+                    const localId = 'local_' + currentUserId;
+                    if (recordingVideoCache.has(localId)) recordingVideoCache.get(localId).isSpeaking = false;
+                }
+            }, 200);
+        }
+
+        function stopAudioMonitor() {
+            if (audioMonitorInterval) {
+                clearInterval(audioMonitorInterval);
+                audioMonitorInterval = null;
+            }
+            if (localAvatarCircle) localAvatarCircle.classList.remove('speaking-ring');
+        }
         const sidebarPulse = document.getElementById('sidebarPulse');
         const sidebarStatusIndicator = document.getElementById('sidebarStatusIndicator');
         const transcribeStatusEl = document.getElementById('transcribeStatus');
         const showNotulensiBtn = document.getElementById('showNotulensiBtn');
         const notulensiModal = document.getElementById('notulensiModal');
 
+        // Live transcription vars
+        let liveTranscriptionActive = false;
+        let isWhisperSocketOpen = false;
+        let whisperSocket = null;
+        let whisperRequestQueue = []; // [{userId, name}] - tracks which speaker's PCM is being processed
+        let lastSpeakerId = null;
+        let lastMessageElement = null;
+
+        const participantTranscribers = new Map();
+        // key: identity (string)
+        // value: { audioContext, processor, source, pcmBuffer,
+        //          silenceFrames, isSpeaking, wasSpeaking, userId, name }
+
+        function createTrackTranscriber(identity, userId, name) {
+            if (participantTranscribers.has(identity)) return participantTranscribers.get(identity);
+            const state = {
+                audioContext: null,
+                source: null,
+                processor: null,
+                pcmBuffer: [],
+                silenceFrames: 0,
+                isSpeaking: false,
+                wasSpeaking: false,
+                userId: userId,
+                name: name,
+                identity: identity
+            };
+            participantTranscribers.set(identity, state);
+            return state;
+        }
+
+        function removeTrackTranscriber(identity) {
+            const state = participantTranscribers.get(identity);
+            if (!state) return;
+            if (state.processor) try {
+                state.processor.disconnect();
+            } catch (e) {}
+            if (state.source) try {
+                state.source.disconnect();
+            } catch (e) {}
+            if (state.audioContext) try {
+                state.audioContext.close();
+            } catch (e) {}
+            participantTranscribers.delete(identity);
+            if (lastSpeakerId === state.userId) {
+                lastSpeakerId = null;
+                lastMessageElement = null;
+            }
+        }
+
+        function removeAllTranscribers() {
+            for (const identity of participantTranscribers.keys()) {
+                removeTrackTranscriber(identity);
+            }
+        }
+
         // Remote participant metadata
         const remoteParticipants = new Map();
 
         // ======================== FUNGSI UTILITY ========================
+        function setConnectionStatus(text, colorClass) {
+            if (connectionStatusEl) {
+                connectionStatusEl.textContent = text;
+                connectionStatusEl.className = 'text-xs ' + (colorClass || 'text-amber-300');
+            }
+        }
+
+        function updateSidebarStatus(statusText, textColorClass, pulseColorClass) {
+            if (transcribeStatusEl) {
+                transcribeStatusEl.textContent = statusText;
+                transcribeStatusEl.className = `${textColorClass} font-semibold uppercase tracking-wider`;
+            }
+            if (sidebarStatusIndicator) sidebarStatusIndicator.className =
+                `relative inline-flex rounded-full h-2 w-2 ${pulseColorClass}`;
+            if (sidebarPulse) sidebarPulse.className =
+                `animate-ping absolute inline-flex h-full w-full rounded-full ${pulseColorClass} opacity-75`;
+        }
+
         function escapeHtml(str) {
             return str?.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;') || '';
         }
@@ -1717,42 +1777,200 @@
             });
         }
 
+        function appendTranscriptMessage(userId, name, text) {
+            if (!transcriptMessages) return;
+            const emptyMsg = document.getElementById('emptyTranscriptMsg');
+            if (emptyMsg) emptyMsg.remove();
+
+            if (userId === lastSpeakerId && lastMessageElement) {
+                const textSpan = lastMessageElement.querySelector('.transcript-text');
+                if (textSpan) {
+                    textSpan.textContent += ' ' + text;
+                    transcriptMessages.scrollTop = transcriptMessages.scrollHeight;
+                    return;
+                }
+            }
+
+            const time = new Date().toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            const isMe = Number(userId) === currentUserId;
+            const nameColors = ['text-indigo-400', 'text-emerald-400', 'text-amber-400', 'text-pink-400', 'text-sky-400',
+                'text-purple-400'
+            ];
+            const avatarBgColors = ['bg-indigo-500/20', 'bg-emerald-500/20', 'bg-amber-500/20', 'bg-pink-500/20',
+                'bg-sky-500/20', 'bg-purple-500/20'
+            ];
+            const colorIndex = Number(userId) % nameColors.length;
+            const nameColor = isMe ? 'text-violet-400' : nameColors[colorIndex];
+            const avatarBg = isMe ? 'bg-violet-500/20' : avatarBgColors[colorIndex];
+            const avatarTextColor = isMe ? 'text-violet-400' : nameColors[colorIndex];
+            const initial = (name || '?').charAt(0).toUpperCase();
+
+            const div = document.createElement('div');
+            div.className = 'flex gap-2.5 items-start';
+            div.innerHTML = `
+                <div class="w-8 h-8 rounded-full ${avatarBg} flex items-center justify-center ${avatarTextColor} text-xs font-bold shrink-0 mt-0.5">${initial}</div>
+                <div class="min-w-0 flex-1">
+                    <div class="flex items-baseline gap-2 mb-0.5">
+                        <span class="${nameColor} font-semibold text-xs">${escapeHtml(name)}</span>
+                        <span class="text-gray-600 text-[10px] font-mono">${time}</span>
+                    </div>
+                    <div class="bg-white/5 rounded-lg rounded-tl-none px-3 py-2 text-gray-300 text-xs leading-relaxed transcript-text">${escapeHtml(text)}</div>
+                </div>
+            `;
+            transcriptMessages.appendChild(div);
+            transcriptMessages.scrollTop = transcriptMessages.scrollHeight;
+            lastSpeakerId = userId;
+            lastMessageElement = div;
+        }
+
+        async function syncTranscriptToLaravel(text, speakerId, speakerName) {
+            try {
+                await fetch(saveLiveTranscriptUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        text,
+                        speaker_id: speakerId,
+                        speaker_name: speakerName
+                    })
+                });
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function sendBroadcast(data) {
+            fetch(broadcastUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify(data)
+            });
+        }
+
         async function leaveMeeting() {
+            stopAudioMonitor();
             if (screenShareStream) {
                 screenShareStream.getTracks().forEach(t => t.stop());
                 screenShareStream = null;
             }
             isScreenSharing = false;
-            window.location.href = '/join';
+            if (room) {
+                await room.disconnect();
+                room = null;
+            }
+            const url = (isCreator || isAdmin) ? endUrl : leaveUrl;
+            fetch(url, {
+                method: 'POST',
+                keepalive: true,
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            }).finally(() => {
+                const redirectUrl = isAdmin ?
+                    '{{ route('admin.meetings.index') }}' :
+                    '/join';
+                window.location.href = redirectUrl;
+            });
+        }
+
+        // ======================== LIVEKIT SFU ========================
+        async function fetchLiveKitToken() {
+            const res = await fetch(livekitTokenUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                }
+            });
+            if (!res.ok) throw new Error('Gagal mendapatkan token LiveKit');
+            return res.json();
+        }
+
+        function createRemoteVideoCard(identity, displayName) {
+            const safeKey = identity.replace(/[^a-zA-Z0-9_-]/g, '_');
+            const cardId = `remote-card-${safeKey}`;
+            const videoId = `remote-video-${safeKey}`;
+            let card = document.getElementById(cardId);
+            if (card) {
+                return {
+                    card,
+                    video: document.getElementById(videoId),
+                    safeKey
+                };
+            }
+            card = document.createElement('div');
+            card.id = cardId;
+            card.dataset.identity = identity;
+            card.className = 'rounded-2xl overflow-hidden shadow-xl h-full w-full relative video-card m-1';
+            const video = document.createElement('video');
+            video.id = videoId;
+            video.autoplay = true;
+            video.playsInline = true;
+            video.className = 'w-full h-full object-cover';
+            video.muted = true;
+            const label = document.createElement('div');
+            label.className = 'absolute bottom-2 left-2 text-xs px-2 py-1 rounded name-label text-gray-200';
+            label.textContent = displayName || identity;
+            const pinBtn = document.createElement('button');
+            pinBtn.id = `pin-btn-${safeKey}`;
+            pinBtn.dataset.identity = identity;
+            pinBtn.className = 'absolute top-2 right-2 pin-btn text-xs px-1.5 py-0.5 z-20 transition-colors';
+            pinBtn.innerHTML =
+                '<svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/></svg>';
+            pinBtn.onclick = (e) => {
+                e.stopPropagation();
+                togglePin(identity);
+            };
+            const avatar = document.createElement('div');
+            avatar.id = `remote-avatar-${safeKey}`;
+            avatar.className = 'absolute inset-0 flex items-center justify-center hidden z-10';
+            avatar.style.background = 'rgba(0,0,0,0.6)';
+            avatar.innerHTML =
+                `<div class="relative"><div id="remote-avatar-circle-${safeKey}" style="width:112px;height:112px;border-radius:50%;background:#4b5563;display:flex;align-items:center;justify-content:center;transition:all 0.3s"><span style="font-size:3rem;color:#fff;font-weight:700;text-transform:uppercase">${(displayName || identity || 'P').charAt(0).toUpperCase()}</span></div></div>`;
+            card.appendChild(video);
+            card.appendChild(pinBtn);
+            card.appendChild(avatar);
+            card.appendChild(label);
+            remoteVideos.appendChild(card);
+            remoteParticipants.set(identity, {
+                identity,
+                displayName,
+                cardId,
+                videoId
+            });
+            scheduleParticipantUIUpdate();
+            return {
+                card,
+                video,
+                safeKey
+            };
+        }
+
+        function removeRemoteVideoCard(identity) {
+            const safeKey = (identity || '').replace(/[^a-zA-Z0-9_-]/g, '_');
+            const card = document.getElementById(`remote-card-${safeKey}`);
+            if (card) card.remove();
+            remoteParticipants.delete(identity);
+            scheduleParticipantUIUpdate();
         }
 
         let currentPage = 0;
         const PER_PAGE = 6;
 
-        function getMainSpeakerIdentity() {
-            if (activeSpeakerIdentity) return activeSpeakerIdentity;
-            if (pinnedIdentities.length > 0) return pinnedIdentities[0];
-            const remotes = getParticipantCards().filter(c => c.id !== 'localVideoContainer');
-            if (remotes.length > 0) return remotes[0].dataset?.identity || null;
-            return String(currentUserId);
-        }
-
-        function isStripLayout() {
-            return currentLayout === 'speaker' || currentLayout === 'sidebar' || currentLayout === 'spotlight';
-        }
-
-        function getNonMainCount() {
-            const cards = getParticipantCards();
-            if (!isStripLayout()) return cards.length;
-            const mainId = getMainSpeakerIdentity();
-            return cards.filter(c => {
-                if (c.id === 'localVideoContainer') return mainId !== String(currentUserId);
-                return c.dataset?.identity !== mainId;
-            }).length;
-        }
-
         function goToPage(page) {
-            const totalPages = Math.ceil(getNonMainCount() / PER_PAGE);
+            const cards = getParticipantCards();
+            const totalPages = Math.ceil(cards.length / PER_PAGE);
             currentPage = Math.max(0, Math.min(page, totalPages - 1));
             updateParticipantUI();
         }
@@ -1765,16 +1983,8 @@
         function updatePaginationDots() {
             const container = document.getElementById('paginationDots');
             if (!container) return;
-
-            // Mobile: no dots, user swipes strip instead
-            const isMobile = window.innerWidth < 768;
-            if (isMobile && isStripLayout()) {
-                container.style.display = 'none';
-                container.innerHTML = '';
-                return;
-            }
-
-            const totalPages = Math.ceil(getNonMainCount() / PER_PAGE);
+            const cards = getParticipantCards();
+            const totalPages = Math.ceil(cards.length / PER_PAGE);
             if (totalPages <= 1) {
                 container.style.display = 'none';
                 container.innerHTML = '';
@@ -1794,24 +2004,12 @@
 
         function getParticipantCards() {
             const remoteContainer = document.getElementById('remoteVideos');
-            const grid = document.getElementById('videoGridMain');
-            const remoteCards = new Map();
-            // From remoteVideos (not yet moved by layout)
-            if (remoteContainer) {
-                remoteContainer.querySelectorAll(':scope > [id^="remote-card-"]').forEach(el => {
-                    remoteCards.set(el.id, el);
-                });
-            }
-            // From grid (moved by layout — recursive to include strip/sidebar children)
-            if (grid) {
-                grid.querySelectorAll('[id^="remote-card-"]').forEach(el => {
-                    remoteCards.set(el.id, el);
-                });
-            }
-            const all = [];
+            const remotes = remoteContainer ? Array.from(remoteContainer.querySelectorAll(
+                ':scope > [id^="remote-card-"]')) : [];
             const localEl = document.getElementById('localVideoContainer');
+            const all = [];
             if (localEl) all.push(localEl);
-            remoteCards.forEach(el => all.push(el));
+            remotes.forEach(el => all.push(el));
             return all;
         }
 
@@ -1829,12 +2027,6 @@
         function applyLayout(mode) {
             currentLayout = mode;
             localStorage.setItem('layout_' + meetingId, mode);
-            // Reset active speaker identity to first remote if not set
-            if (!activeSpeakerIdentity) {
-                activeSpeakerIdentity = getMainSpeakerIdentity();
-            }
-            currentPage = 0;
-            _lastUIUpdateKey = '';
             updateParticipantUI();
             // Update dropdown active state
             document.querySelectorAll('#layoutDropdown button').forEach(btn => {
@@ -1842,15 +2034,6 @@
             });
             document.querySelectorAll('#layoutNavDropdown button').forEach(btn => {
                 btn.classList.toggle('active-layout', btn.dataset.layout === mode);
-            });
-            // Update debug panel layout name
-            const debugName = document.getElementById('debugLayoutName');
-            if (debugName) debugName.textContent = mode.charAt(0).toUpperCase() + mode.slice(1);
-            // Update debug layout buttons
-            document.querySelectorAll('#debugPanel button[onclick*="applyLayout"]').forEach(btn => {
-                const match = btn.getAttribute('onclick')?.match(/'([^']+)'/);
-                if (match) btn.classList.toggle('bg-violet-500/20', match[1] === mode);
-                btn.classList.toggle('text-violet-400', match && match[1] === mode);
             });
         }
 
@@ -1866,39 +2049,20 @@
             const grid = document.getElementById('videoGridMain');
             const remoteContainer = document.getElementById('remoteVideos');
             if (!grid || !remoteContainer) return;
-
-            // Get ALL remote cards (may be in remoteVideos or moved to grid by layout)
-            const allCards = getParticipantCards();
-            const remotes = allCards.filter(c => c.id !== 'localVideoContainer');
-            const totalCount = allCards.length;
+            const remotes = Array.from(remoteContainer.querySelectorAll(':scope > [id^="remote-card-"]'));
+            const totalCount = 1 + remotes.length;
 
             // Reset currentPage if out of bounds
-            const totalPages = Math.ceil(getNonMainCount() / PER_PAGE);
+            const totalPages = Math.ceil(getParticipantCards().length / PER_PAGE);
             if (currentPage >= totalPages) currentPage = Math.max(0, totalPages - 1);
 
-            const remoteIdentities = remotes.map(el => el.dataset?.identity || el.id).join(',');
-            const key = `${currentLayout}|${currentPage}|${totalCount}|${remoteIdentities}`;
+            const key = `${currentLayout}|${currentPage}|${totalCount}|${remotes.map(el => el.dataset.identity).join(',')}`;
             if (_lastUIUpdateKey === key) return;
             _lastUIUpdateKey = key;
 
-            // Remove all layout classes and inline grid styles
+            // Remove all layout classes
             grid.classList.remove('layout-speaker', 'layout-sidebar', 'layout-spotlight');
             grid.className = 'min-w-0 relative z-0';
-            grid.style.gridTemplateColumns = '';
-            grid.style.gridTemplateRows = '';
-
-            // Move ALL cards back to original containers before applying new layout
-            allCards.forEach(card => {
-                card.classList.remove('speaker-main-video', 'spotlight-main', 'spotlight-overlay');
-                if (card.id === 'localVideoContainer') {
-                    if (card.parentElement !== grid) grid.appendChild(card);
-                } else if (remoteContainer && card.parentElement !== remoteContainer) {
-                    remoteContainer.appendChild(card);
-                }
-            });
-
-            // Remove layout container elements
-            grid.querySelectorAll('.speaker-strip, .sidebar-main-area, .sidebar-vertical-strip').forEach(el => el.remove());
 
             if (currentLayout === 'speaker') {
                 applySpeakerLayout(grid, remotes, totalCount);
@@ -1930,7 +2094,9 @@
             const paginatedCards = getCurrentPageCards(getParticipantCards());
             const visibleCount = paginatedCards.length;
 
+            // Bersihkan kelas grid sebelumnya
             grid.classList.add('grid', 'gap-2', 'w-full', 'h-full');
+            // Hapus kelas grid-cols-* dan grid-rows-* jika ada (dari layout sebelumnya)
             grid.classList.remove('grid-cols-1', 'grid-cols-2', 'grid-cols-3', 'grid-cols-4');
             grid.classList.remove('grid-rows-1', 'grid-rows-2', 'grid-rows-3', 'grid-rows-4', 'grid-rows-5');
 
@@ -1943,12 +2109,13 @@
             } else if (isMobile) {
                 if (visibleCount === 2) {
                     cols = 1;
-                    rows = 2;
+                    rows = 2; // 1 kolom, 2 baris → atas-bawah
                 } else {
                     cols = 2;
                     rows = Math.ceil(visibleCount / cols);
                 }
             } else {
+                // Desktop
                 if (visibleCount === 2) {
                     cols = 2;
                     rows = 1;
@@ -1961,34 +2128,30 @@
                 }
             }
 
+            // Terapkan grid template dengan gaya inline
             grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
             grid.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
 
-            const remoteContainer = document.getElementById('remoteVideos');
+            // Pastikan semua kartu video ditampilkan
             const allCards = getParticipantCards();
-
-            // Hide cards not on current page, show cards on current page
             paginatedCards.forEach(el => {
                 el.style.display = '';
                 el.classList.remove('speaker-main-video', 'spotlight-main', 'spotlight-overlay');
-                if (el.id !== 'localVideoContainer' && remoteContainer && el.parentElement !== remoteContainer) {
-                    remoteContainer.appendChild(el);
-                }
-                if (el.id === 'localVideoContainer' && el.parentElement !== grid) {
-                    grid.appendChild(el);
-                }
             });
             allCards.forEach(el => {
                 if (!paginatedCards.includes(el)) {
                     el.style.display = 'none';
                 }
             });
+
+            grid.querySelectorAll('.speaker-strip, .sidebar-main-area, .sidebar-vertical-strip').forEach(el => el.remove());
         }
 
         function applySpeakerLayout(grid, remotes, totalCount) {
             grid.classList.add('layout-speaker');
             const cards = getParticipantCards();
-            const mainId = getMainSpeakerIdentity();
+            const mainId = activeSpeakerIdentity || pinnedIdentities[0] || (remotes.length > 0 ? remotes[0].dataset
+                .identity : null);
 
             // Create/maintain speaker strip container
             let strip = grid.querySelector('.speaker-strip');
@@ -1999,31 +2162,28 @@
             }
             strip.innerHTML = '';
 
-            // Hide ALL cards first
+            const nonMain = [];
             cards.forEach(card => {
                 card.classList.remove('speaker-main-video');
-                card.style.display = 'none';
-            });
-
-            // Show main speaker in grid
-            let mainCard = null;
-            cards.forEach(card => {
                 const id = card.dataset?.identity || String(currentUserId);
                 if (id === mainId || (mainId === null && card.id === 'localVideoContainer')) {
                     card.classList.add('speaker-main-video');
                     card.style.display = '';
                     if (card.parentElement !== grid) grid.insertBefore(card, strip);
-                    mainCard = card;
+                } else {
+                    nonMain.push(card);
                 }
             });
 
-            // Non-main cards go to strip
-            const nonMain = cards.filter(c => c !== mainCard);
-            const isMobile = window.innerWidth < 768;
-            const stripCards = isMobile ? nonMain : getCurrentPageCards(nonMain);
-            stripCards.forEach(card => {
+            const paginatedStrip = getCurrentPageCards(nonMain);
+            paginatedStrip.forEach(card => {
                 card.style.display = '';
                 if (card.parentElement !== strip) strip.appendChild(card);
+            });
+            nonMain.forEach(card => {
+                if (!paginatedStrip.includes(card)) {
+                    card.style.display = 'none';
+                }
             });
         }
 
@@ -2043,7 +2203,8 @@
             }
 
             const cards = getParticipantCards();
-            const mainId = getMainSpeakerIdentity();
+            const mainId = activeSpeakerIdentity || pinnedIdentities[0] || (remotes.length > 0 ? remotes[0].dataset
+                .identity : null);
 
             const nonMain = [];
             cards.forEach(card => {
@@ -2056,14 +2217,13 @@
                 }
             });
 
-            const isMobile = window.innerWidth < 768;
-            const stripCards = isMobile ? nonMain : getCurrentPageCards(nonMain);
-            stripCards.forEach(card => {
+            const paginatedVstrip = getCurrentPageCards(nonMain);
+            paginatedVstrip.forEach(card => {
                 card.style.display = '';
                 if (card.parentElement !== vstrip) vstrip.appendChild(card);
             });
             nonMain.forEach(card => {
-                if (!stripCards.includes(card)) {
+                if (!paginatedVstrip.includes(card)) {
                     card.style.display = 'none';
                 }
             });
@@ -2072,7 +2232,8 @@
         function applySpotlightLayout(grid, remotes, totalCount) {
             grid.classList.add('layout-spotlight');
             const cards = getParticipantCards();
-            const target = spotlightTargetIdentity || getMainSpeakerIdentity();
+            const target = spotlightTargetIdentity || activeSpeakerIdentity || pinnedIdentities[0] || (remotes.length > 0 ?
+                remotes[0].dataset.identity : null);
 
             // Remove old overlay classes
             cards.forEach(c => c.classList.remove('spotlight-main', 'spotlight-overlay'));
@@ -2089,14 +2250,7 @@
             });
 
             const paginatedOverlays = getCurrentPageCards(nonMain);
-            const isMobile = window.innerWidth < 768;
-            const overlayPositions = isMobile ? [
-                { bottom: 8, right: 8 },
-                { bottom: 8, right: 116 },
-                { bottom: 80, right: 8 },
-                { bottom: 80, right: 116 },
-                { bottom: 8, left: 8 }
-            ] : [
+            const overlayPositions = [
                 { bottom: 16, right: 16 },
                 { bottom: 16, right: 210 },
                 { bottom: 16, right: 404 },
@@ -2106,10 +2260,7 @@
             paginatedOverlays.forEach((card, idx) => {
                 card.classList.add('spotlight-overlay');
                 card.style.display = '';
-                const pos = overlayPositions[idx] || {
-                    bottom: 16,
-                    right: 16
-                };
+                const pos = overlayPositions[idx] || { bottom: 16, right: 16 };
                 card.style.bottom = pos.bottom + 'px';
                 card.style.right = pos.right + 'px';
                 if (pos.left) card.style.left = pos.left + 'px';
@@ -2159,69 +2310,208 @@
             list.innerHTML = html;
         }
 
-        // ======================== MOCK INIT ========================
-        function initMockMeeting() {
-            setParticipantCount(mockParticipants.length);
+        async function waitForLiveKit(timeout = 15000) {
+            const start = Date.now();
+            while (typeof window.LiveKit === 'undefined') {
+                if (Date.now() - start > timeout) {
+                    // Fallback: inject LiveKit from CDN if bundled version failed
+                    try {
+                        await new Promise((resolve, reject) => {
+                            const s = document.createElement('script');
+                            s.src =
+                                'https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js';
+                            s.onload = () => {
+                                if (window.LiveKit) resolve();
+                                else reject(new Error('LiveKit CDN load failed'));
+                            };
+                            s.onerror = reject;
+                            document.head.appendChild(s);
+                        });
+                        return;
+                    } catch (e) {
+                        throw new Error('LiveKit library gagal dimuat.');
+                    }
+                }
+                await new Promise(r => setTimeout(r, 100));
+            }
         }
 
-        // ======================== CREATE REMOTE CARD (matches livekit.blade.php) ========================
-        function createMockRemoteCard(identity, displayName) {
-            const safeKey = identity.replace(/[^a-zA-Z0-9_-]/g, '_');
-            const cardId = 'remote-card-' + safeKey;
-            const videoId = 'remote-video-' + safeKey;
-            let card = document.getElementById(cardId);
-            if (card) return;
-
-            const idx = mockParticipants.findIndex(p => String(p.id) === identity);
-            const initials = displayName.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
-            const colors = ['#7c3aed', '#0891b2', '#d97706', '#059669', '#dc2626', '#7c3aed', '#db2777',
-                '#0284c7', '#65a30d', '#ea580c', '#9333ea', '#0d9488', '#dc2626', '#ca8a04'
-            ];
-            const color = colors[(idx > 0 ? idx - 1 : 0) % colors.length];
-
-            card = document.createElement('div');
-            card.id = cardId;
-            card.dataset.identity = identity;
-            card.className = 'rounded-2xl overflow-hidden shadow-xl h-full w-full relative video-card m-1';
-
-            const video = document.createElement('video');
-            video.id = videoId;
-            video.autoplay = true;
-            video.playsInline = true;
-            video.className = 'w-full h-full object-cover';
-            video.muted = true;
-
-            const avatar = document.createElement('div');
-            avatar.id = 'remote-avatar-' + safeKey;
-            avatar.className = 'absolute inset-0 flex items-center justify-center z-10';
-            avatar.style.background = 'rgba(0,0,0,0.6)';
-            avatar.innerHTML = `<div class="relative"><div id="remote-avatar-circle-${safeKey}" style="width:112px;height:112px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;transition:all 0.3s"><span style="font-size:3rem;color:#fff;font-weight:700;text-transform:uppercase">${initials}</span></div></div>`;
-
-            const pinBtn = document.createElement('button');
-            pinBtn.id = 'pin-btn-' + safeKey;
-            pinBtn.dataset.identity = identity;
-            pinBtn.className = 'absolute top-2 right-2 pin-btn text-xs px-1.5 py-0.5 z-20 transition-colors';
-            pinBtn.innerHTML = '<svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/></svg>';
-
-            const label = document.createElement('div');
-            label.className = 'absolute bottom-2 left-2 text-xs px-2 py-1 rounded name-label text-gray-200';
-            label.textContent = displayName;
-
-            card.appendChild(video);
-            card.appendChild(avatar);
-            card.appendChild(pinBtn);
-            card.appendChild(label);
-
-            remoteVideos.appendChild(card);
-            remoteParticipants.set(identity, {
-                identity,
-                displayName,
-                cardId,
-                videoId
-            });
+        async function connectToLiveKit() {
+            try {
+                setConnectionStatus('LiveKit: menghubungkan...', 'text-amber-300');
+                if (!navigator.mediaDevices?.getUserMedia) {
+                    alert('Akses kamera/mikrofon tidak tersedia. Buka halaman ini via HTTPS atau localhost.');
+                    setConnectionStatus('Media tidak tersedia', 'text-red-400');
+                    return;
+                }
+                await waitForLiveKit();
+                const {
+                    token,
+                    serverUrl
+                } = await fetchLiveKitToken();
+                room = new LiveKit.Room({
+                    adaptiveStream: true,
+                    dynacast: true,
+                    videoCaptureDefaults: {
+                        resolution: LiveKit.VideoPresets.h720
+                    },
+                });
+                room.on(LiveKit.RoomEvent.TrackSubscribed, (track, publication, participant) => {
+                    if (publication.source === LiveKit.Track.Source.ScreenShare) {
+                        if (participant.isLocal) return;
+                        showRemoteScreenShare(track, participant);
+                        return;
+                    }
+                    if (publication.source === LiveKit.Track.Source.Microphone && !participant.isLocal &&
+                        liveTranscriptionActive && !participantTranscribers.has(participant.identity)) {
+                        const tracks = [];
+                        if (track.mediaStream) {
+                            track.mediaStream.getAudioTracks().forEach(t => tracks.push(t));
+                        }
+                        if (tracks.length === 0 && track.mediaStreamTrack) {
+                            tracks.push(track.mediaStreamTrack);
+                        }
+                        if (tracks.length > 0) {
+                            const userId = Number(participant.identity) || participant.identity;
+                            const displayName = participant.name || participant.identity;
+                            const state = createTrackTranscriber(participant.identity, userId, displayName);
+                            startTrackAudioCapture(state, tracks);
+                        }
+                        return;
+                    }
+                    if (participant.isLocal) return;
+                    const identity = participant.identity;
+                    const displayName = participant.name || identity;
+                    const {
+                        video
+                    } = createRemoteVideoCard(identity, displayName);
+                    track.attach(video);
+                    recordingVideoCache.set(identity, {
+                        videoEl: video,
+                        name: displayName,
+                        identity,
+                        isSpeaking: false
+                    });
+                    updateRecordingParticipants();
+                });
+                room.on(LiveKit.RoomEvent.TrackUnsubscribed, (track, publication, participant) => {
+                    if (publication?.source === LiveKit.Track.Source.ScreenShare) {
+                        hideScreenShare();
+                        bgDirty = true;
+                        return;
+                    }
+                    if (publication?.source === LiveKit.Track.Source.Camera) {
+                        scheduleParticipantUIUpdate();
+                    }
+                    track.detach();
+                    recordingVideoCache.delete(participant.identity);
+                    updateRecordingParticipants();
+                });
+                room.on(LiveKit.RoomEvent.ParticipantDisconnected, (participant) => {
+                    pinnedIdentities = pinnedIdentities.filter(id => id !== participant.identity);
+                    updatePinIndicators();
+                    removeRemoteVideoCard(participant.identity);
+                    if (liveTranscriptionActive) {
+                        removeTrackTranscriber(participant.identity);
+                    }
+                    recordingVideoCache.delete(participant.identity);
+                    updateRecordingParticipants();
+                });
+                room.on(LiveKit.RoomEvent.ConnectionStateChanged, (state) => {
+                    if (state === LiveKit.ConnectionState.Connected) {
+                        setConnectionStatus('LiveKit: terhubung', 'text-emerald-400');
+                    } else if (state === LiveKit.ConnectionState.Disconnected) {
+                        setConnectionStatus('LiveKit: terputus', 'text-amber-300');
+                    } else if (state === LiveKit.ConnectionState.Reconnecting) {
+                        setConnectionStatus('LiveKit: reconnect...', 'text-amber-300');
+                    }
+                });
+                room.on(LiveKit.RoomEvent.ActiveSpeakersChanged, (speakers) => {
+                    document.querySelectorAll('[id^="remote-avatar-circle-"].speaking-ring').forEach(el => el
+                        .classList.remove('speaking-ring'));
+                    recordingActiveSpeakers = speakers;
+                    const newActive = speakers.find(p => !p.isLocal);
+                    activeSpeakerIdentity = newActive ? newActive.identity : null;
+                    speakers.forEach(p => {
+                        if (p.isLocal) return;
+                        const safeKey = (p.identity || '').replace(/[^a-zA-Z0-9_-]/g, '_');
+                        const circle = document.getElementById('remote-avatar-circle-' + safeKey);
+                        if (circle) circle.classList.add('speaking-ring');
+                        recordingSpeakerQueue = [p.identity, ...recordingSpeakerQueue.filter(id =>
+                            id !== p.identity)].slice(0, 20);
+                    });
+                    if (currentLayout === 'speaker' || currentLayout === 'sidebar' || currentLayout ===
+                        'spotlight') {
+                        scheduleParticipantUIUpdate();
+                    }
+                    updateRecordingParticipants();
+                });
+                await room.connect(serverUrl, token);
+                subscribeEchoChannel();
+                localStream = await navigator.mediaDevices.getUserMedia({
+                    video: true,
+                    audio: {
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                        autoGainControl: true
+                    }
+                });
+                localVideo.srcObject = localStream;
+                const videoTrack = localStream.getVideoTracks()[0];
+                const audioTrack = localStream.getAudioTracks()[0];
+                // Disable tracks FIRST if saved state says muted/camera off (avoid brief flash)
+                if (isCameraOff && videoTrack) videoTrack.enabled = false;
+                if (isMuted && audioTrack) audioTrack.enabled = false;
+                if (videoTrack) {
+                    try {
+                        await room.localParticipant.publishTrack(videoTrack, {
+                            name: 'camera',
+                            source: LiveKit.Track.Source.Camera,
+                        });
+                    } catch (pubErr) {
+                        console.warn('publish camera (retry 1):', pubErr);
+                        await new Promise(r => setTimeout(r, 2000));
+                        await room.localParticipant.publishTrack(videoTrack, {
+                            name: 'camera',
+                            source: LiveKit.Track.Source.Camera,
+                        });
+                    }
+                    if (isCameraOff) {
+                        const pub = room.localParticipant.getTrackPublication(LiveKit.Track.Source.Camera);
+                        if (pub?.track) pub.track.mute().catch(e => console.warn(e));
+                    }
+                }
+                if (audioTrack) {
+                    try {
+                        await room.localParticipant.publishTrack(audioTrack, {
+                            name: 'microphone',
+                            source: LiveKit.Track.Source.Microphone,
+                        });
+                    } catch (pubErr) {
+                        console.warn('publish mic (retry 1):', pubErr);
+                        await new Promise(r => setTimeout(r, 2000));
+                        await room.localParticipant.publishTrack(audioTrack, {
+                            name: 'microphone',
+                            source: LiveKit.Track.Source.Microphone,
+                        });
+                    }
+                    if (isMuted) {
+                        const pub = room.localParticipant.getTrackPublication(LiveKit.Track.Source.Microphone);
+                        if (pub?.track) pub.track.mute().catch(e => console.warn(e));
+                    }
+                }
+                setConnectionStatus('LiveKit: terhubung', 'text-emerald-400');
+                updateParticipantUI();
+                if (isCameraOff) startAudioMonitor();
+                if (@json($meeting->pipeline_status ?? 'idle') === 'processing') startPipelinePolling();
+            } catch (error) {
+                console.error(error);
+                setConnectionStatus('LiveKit: gagal', 'text-red-400');
+                alert('Gagal terhubung ke server meeting.');
+            }
         }
 
-        // ======================== SCREEN SHARE (simplified) ========================
+        // ======================== SCREEN SHARE ========================
         const screenShareBtn = document.getElementById('screenShareBtn');
         const screenShareContainer = document.getElementById('screenShareContainer');
         const screenShareVideo = document.getElementById('screenShareVideo');
@@ -2229,18 +2519,105 @@
         const stopScreenShareBtn = document.getElementById('stopScreenShareBtn');
         const screenShareActiveDot = document.getElementById('screenShareActiveDot');
 
-        function toggleScreenShare() {
-            isScreenSharing = !isScreenSharing;
+        function isOtherSharing() {
+            if (!room) return false;
+            for (const p of room.remoteParticipants.values()) {
+                const pub = p.getTrackPublication(LiveKit.Track.Source.ScreenShare);
+                if (pub && pub.track) return true;
+            }
+            return false;
+        }
+
+        async function toggleScreenShare() {
             if (isScreenSharing) {
+                await stopScreenShare();
+                return;
+            }
+            if (isOtherSharing()) {
+                if (!confirm('Peserta lain sedang share layar. Ambil alih?')) return;
+                sendBroadcast({
+                    type: 'screen-share-takeover'
+                });
+            }
+            try {
+                await room.localParticipant.setScreenShareEnabled(true);
+                isScreenSharing = true;
+                bgDirty = true;
                 screenShareBtn.classList.add('text-green-400');
                 screenShareBtn.classList.remove('text-white');
                 if (screenShareActiveDot) screenShareActiveDot.classList.remove('hidden');
-            } else {
-                screenShareBtn.classList.remove('text-green-400');
-                screenShareBtn.classList.add('text-white');
-                if (screenShareActiveDot) screenShareActiveDot.classList.add('hidden');
-                screenShareContainer.classList.add('hidden');
+                sendBroadcast({
+                    type: 'screen-share-start',
+                    name: authName,
+                    sender_id: currentUserId
+                });
+                // Get the screen share track for local preview
+                const pub = room.localParticipant.getTrackPublication(LiveKit.Track.Source.ScreenShare);
+                if (pub && pub.track) {
+                    screenShareStream = new MediaStream();
+                    const tracks = pub.track.mediaStream?.getVideoTracks() || [];
+                    tracks.forEach(t => {
+                        t.addEventListener('ended', () => setTimeout(() => stopScreenShare(), 500));
+                        screenShareStream.addTrack(t);
+                    });
+                    showLocalScreenShareUI(true, tracks[0]);
+                } else {
+                    showLocalScreenShareUI(true);
+                }
+            } catch (e) {
+                if (e.name !== 'NotAllowedError' && e.name !== 'AbortError') console.warn('Screen share failed:', e);
             }
+        }
+
+        async function stopScreenShare() {
+            console.log('stopScreenShare called, reason:', new Error().stack);
+            if (room) {
+                await room.localParticipant.setScreenShareEnabled(false).catch(() => {});
+            }
+            if (screenShareStream) {
+                screenShareStream.getTracks().forEach(t => t.stop());
+                screenShareStream = null;
+            }
+            isScreenSharing = false;
+            bgDirty = true;
+            screenShareBtn.classList.remove('text-green-400');
+            screenShareBtn.classList.add('text-white');
+            if (screenShareActiveDot) screenShareActiveDot.classList.add('hidden');
+            sendBroadcast({
+                type: 'screen-share-stop'
+            });
+            showLocalScreenShareUI(false);
+            hideScreenShare();
+        }
+
+        function showLocalScreenShareUI(showing, track) {
+            if (showing && track) {
+                screenShareContainer.classList.remove('hidden');
+                screenShareContainer.style.display = 'flex';
+                screenShareContainer.style.alignItems = 'center';
+                screenShareContainer.style.justifyContent = 'center';
+                screenShareVideo.srcObject = new MediaStream([track]);
+                if (screenShareLabel) screenShareLabel.textContent = 'Anda sedang share layar';
+                if (stopScreenShareBtn) stopScreenShareBtn.classList.remove('hidden');
+            } else {
+                screenShareContainer.classList.add('hidden');
+                screenShareContainer.style.display = '';
+                screenShareVideo.srcObject = null;
+                if (stopScreenShareBtn) stopScreenShareBtn.classList.add('hidden');
+            }
+        }
+
+        function showRemoteScreenShare(track, participant) {
+            const name = participant.name || participant.identity || 'Participant';
+            hideScreenShare();
+            screenShareContainer.classList.remove('hidden');
+            screenShareContainer.style.display = 'flex';
+            screenShareContainer.style.alignItems = 'center';
+            screenShareContainer.style.justifyContent = 'center';
+            track.attach(screenShareVideo);
+            bgDirty = true;
+            if (screenShareLabel) screenShareLabel.textContent = name + ' sedang share layar';
+            if (stopScreenShareBtn) stopScreenShareBtn.classList.add('hidden');
         }
 
         // ======================== PIN VIEW ========================
@@ -2335,14 +2712,15 @@
             if (isScreenSharing) return;
             screenShareContainer.classList.add('hidden');
             screenShareContainer.style.display = '';
-            if (screenShareVideo) screenShareVideo.srcObject = null;
+            screenShareVideo.srcObject = null;
+            bgDirty = true;
         }
 
         if (screenShareBtn) {
             screenShareBtn.addEventListener('click', toggleScreenShare);
         }
         if (stopScreenShareBtn) {
-            stopScreenShareBtn.addEventListener('click', toggleScreenShare);
+            stopScreenShareBtn.addEventListener('click', () => stopScreenShare());
         }
         const pinScreenShareBtn = document.getElementById('pinScreenShareBtn');
         if (pinScreenShareBtn) {
@@ -2357,12 +2735,9 @@
                 void layoutDropdown.offsetHeight;
                 layoutDropdown.style.opacity = '1';
             }
-
             function hideLayoutDropdown() {
                 layoutDropdown.style.opacity = '0';
-                setTimeout(() => {
-                    layoutDropdown.style.display = 'none';
-                }, 200);
+                setTimeout(() => { layoutDropdown.style.display = 'none'; }, 200);
             }
             layoutBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -2422,6 +2797,7 @@
                     hideNavLayoutDropdown();
                 });
             });
+            // Sync active state with bottom dropdown
             function syncNavLayoutActive() {
                 layoutNavDropdown.querySelectorAll('button').forEach(btn => {
                     btn.classList.toggle('active-layout', btn.dataset.layout === currentLayout);
@@ -2432,15 +2808,21 @@
 
         // Screen recording
         if (recordScreenBtn) {
-            recordScreenBtn.addEventListener('click', () => {
-                // Placeholder: recording disabled in mock mode
-                alert('Screen recording is disabled in layout test mode.');
+            recordScreenBtn.addEventListener('click', async () => {
+                if (isRecordingScreen) {
+                    await stopScreenRecording();
+                } else if (isCountdownActive) {
+                    cancelCountdown();
+                } else {
+                    await startCountdown();
+                }
             });
         }
         const recordingPopupClose = document.getElementById('recordingPopupClose');
         if (recordingPopupClose) {
             recordingPopupClose.addEventListener('click', (e) => {
                 e.stopPropagation();
+                hideRecordingPopup();
             });
         }
 
@@ -2453,12 +2835,767 @@
             }
         });
 
+        // Listen for screen-share takeover from others via Echo
+        // (handled inside subscribeEchoChannel's WebRTCSignal listener)
+
+        // ======================== ECHO / REVERB SIGNALING ========================
+        async function subscribeEchoChannel() {
+            while (!window.Echo) {
+                await new Promise(r => setTimeout(r, 50));
+            }
+            const pusher = window.Echo?.connector?.pusher;
+            if (pusher?.connection) {
+                pusher.connection.bind('connected', () => setConnectionStatus('LiveKit: terhubung',
+                    'text-emerald-400'));
+                pusher.connection.bind('disconnected', () => setConnectionStatus('LiveKit: terputus',
+                    'text-amber-300'));
+            }
+            const channel = window.Echo.private('meeting.' + meetingId);
+            channel.listen('.WebRTCSignal', async (e) => {
+                const data = e.data ?? {};
+                if (data.type === 'transcription') {
+                    if (data.sender_id && Number(data.sender_id) === currentUserId) return;
+                    appendTranscriptMessage(data.sender_id, data.sender_name, data.text);
+                    return;
+                }
+                if (data.type === 'start-recording-broadcast') {
+                    if (transcriptMessages) transcriptMessages.innerHTML =
+                        '<div id="emptyTranscriptMsg" class="text-gray-500 text-center py-8 italic text-xs">Belum ada transkrip aktif.</div>';
+                    if (showNotulensiBtn) showNotulensiBtn.classList.add('hidden');
+                    if (pdfBtn) pdfBtn.classList.add('opacity-40', 'pointer-events-none');
+                    if (!liveTranscriptionActive) {
+                        liveTranscriptionActive = true;
+                        updateSidebarStatus('Menerima transkrip...', 'text-emerald-400', 'bg-emerald-500');
+                    }
+                    if (transcriptSidebar) transcriptSidebar.classList.remove('collapsed');
+                    if (openSidebarBtn) openSidebarBtn.classList.add('hidden');
+                    const dot = document.getElementById('aiNotulenActiveDot');
+                    if (dot) dot.classList.remove('hidden');
+                    const headerInd = document.getElementById('aiNotulenHeaderIndicator');
+                    if (headerInd) headerInd.classList.remove('hidden');
+                    return;
+                }
+                if (data.type === 'stop-recording-broadcast') {
+                    if (liveTranscriptionActive) {
+                        stopLiveTranscription();
+                    }
+                    const dot = document.getElementById('aiNotulenActiveDot');
+                    if (dot) dot.classList.add('hidden');
+                    const headerInd = document.getElementById('aiNotulenHeaderIndicator');
+                    if (headerInd) headerInd.classList.add('hidden');
+                    return;
+                }
+                if (data.type === 'camera-toggle') {
+                    const identity = String(data.sender_id);
+                    const safeKey = identity.replace(/[^a-zA-Z0-9_-]/g, '_');
+                    const avatar = document.getElementById(`remote-avatar-${safeKey}`);
+                    if (avatar) {
+                        if (data.isOff) avatar.classList.remove('hidden');
+                        else avatar.classList.add('hidden');
+                    }
+                }
+                if (data.type === 'screen-share-start' || data.type === 'screen-share-takeover') {
+                    if (data.sender_id && Number(data.sender_id) === currentUserId) return;
+                    if (isScreenSharing) stopScreenShare();
+                }
+                if (data.type === 'screen-share-stop') {
+                    if (!isScreenSharing) hideScreenShare();
+                }
+                if (data.type === 'screen-recording-start') {
+                    if (data.sender_id && Number(data.sender_id) === currentUserId) return;
+                    recordingByOther = true;
+                    if (recordScreenBtn) {
+                        recordScreenBtn.classList.add('opacity-40', 'pointer-events-none');
+                    }
+                    showRecordingPopup(true, data.name || 'Peserta lain');
+                }
+                if (data.type === 'screen-recording-stop') {
+                    recordingByOther = false;
+                    if (recordScreenBtn) {
+                        recordScreenBtn.classList.remove('opacity-40', 'pointer-events-none');
+                    }
+                    hideRecordingPopup();
+                }
+            });
+        }
+
+        // ======================== LIVE TRANSCRIPTION ========================
+        async function connectWhisperSocket() {
+            return new Promise((resolve, reject) => {
+                if (whisperSocket && whisperSocket.readyState === WebSocket.OPEN) {
+                    resolve();
+                    return;
+                }
+                whisperRequestQueue = [];
+                whisperSocket = new WebSocket(whisperWsUrl);
+                whisperSocket.binaryType = 'arraybuffer';
+                whisperSocket.onopen = () => {
+                    isWhisperSocketOpen = true;
+                    updateSidebarStatus('Socket terbuka', 'text-emerald-400', 'bg-emerald-500');
+                    resolve();
+                };
+                whisperSocket.onclose = () => {
+                    isWhisperSocketOpen = false;
+                    updateSidebarStatus('Koneksi putus', 'text-amber-400', 'bg-amber-500');
+                };
+                whisperSocket.onerror = (err) => {
+                    reject(err);
+                };
+                whisperSocket.onmessage = (event) => {
+                    try {
+                        const queued = whisperRequestQueue.shift();
+                        const data = JSON.parse(event.data);
+                        if (data.status === 'success' && data.text && data.text.trim() !== '') {
+                            appendTranscriptMessage(queued.userId, queued.name, data.text.trim());
+                            syncTranscriptToLaravel(data.text.trim(), queued.userId, queued.name);
+                        }
+                    } catch (e) {
+                        console.error(e);
+                    }
+                };
+            });
+        }
+
+        function sendAccumulatedPcmForSpeaker(state) {
+            if (state.pcmBuffer.length === 0) return;
+            if (!whisperSocket || whisperSocket.readyState !== WebSocket.OPEN) {
+                state.pcmBuffer = [];
+                return;
+            }
+            let totalSamples = 0;
+            for (let arr of state.pcmBuffer) totalSamples += arr.length;
+            const int16Array = new Int16Array(totalSamples);
+            let offset = 0;
+            for (let floatArr of state.pcmBuffer) {
+                for (let i = 0; i < floatArr.length; i++) {
+                    let s = Math.max(-1, Math.min(1, floatArr[i]));
+                    int16Array[offset++] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+                }
+            }
+            whisperRequestQueue.push({
+                userId: state.userId,
+                name: state.name
+            });
+            whisperSocket.send(int16Array.buffer);
+            state.pcmBuffer = [];
+        }
+
+        function startTrackVAD(state) {
+            const VAD_THRESHOLD = 0.0002;
+            const HANGOVER_FRAMES = 10;
+
+            state.processor.onaudioprocess = (event) => {
+                if (!liveTranscriptionActive) return;
+                const inputData = event.inputBuffer.getChannelData(0);
+                let sum = 0;
+                for (let i = 0; i < inputData.length; i++) sum += inputData[i] * inputData[i];
+                const energy = sum / inputData.length;
+
+                if (energy > VAD_THRESHOLD) {
+                    state.isSpeaking = true;
+                    state.silenceFrames = 0;
+                } else {
+                    state.silenceFrames++;
+                    if (state.silenceFrames > HANGOVER_FRAMES) state.isSpeaking = false;
+                }
+
+                if (state.isSpeaking) {
+                    state.pcmBuffer.push(new Float32Array(inputData));
+                    if (!state.wasSpeaking) {
+                        state.wasSpeaking = true;
+                        updateSidebarStatus('Mendengarkan (' + state.name + ')', 'text-emerald-400', 'bg-emerald-500');
+                    }
+                    if (state.pcmBuffer.length >= 28) sendAccumulatedPcmForSpeaker(state);
+                } else {
+                    if (state.wasSpeaking) {
+                        state.wasSpeaking = false;
+                        updateSidebarStatus('Memproses...', 'text-indigo-400', 'bg-indigo-500');
+                        sendAccumulatedPcmForSpeaker(state);
+                    }
+                }
+            };
+        }
+
+        async function startTrackAudioCapture(state, audioTracks) {
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            state.audioContext = new AudioContextClass({
+                sampleRate: 16000
+            });
+            const stream = new MediaStream(audioTracks);
+            state.source = state.audioContext.createMediaStreamSource(stream);
+            state.processor = state.audioContext.createScriptProcessor(4096, 1, 1);
+            startTrackVAD(state);
+            state.source.connect(state.processor);
+            state.processor.connect(state.audioContext.destination);
+            await state.audioContext.resume();
+        }
+
+        async function startLiveTranscription() {
+            await connectWhisperSocket();
+
+            // 1. Process local participant
+            if (localStream) {
+                const audioTracks = localStream.getAudioTracks();
+                if (audioTracks.length > 0 && audioTracks[0].enabled) {
+                    const state = createTrackTranscriber('local_' + currentUserId, currentUserId, authName);
+                    await startTrackAudioCapture(state, audioTracks);
+                }
+            }
+
+            // 2. Process all remote participants
+            if (room) {
+                room.remoteParticipants.forEach((participant) => {
+                    const audioPub = participant.getTrackPublication(LiveKit.Track.Source.Microphone);
+                    if (audioPub && audioPub.track) {
+                        const tracks = [];
+                        if (audioPub.track.mediaStream) {
+                            audioPub.track.mediaStream.getAudioTracks().forEach(t => tracks.push(t));
+                        }
+                        if (tracks.length === 0 && audioPub.track.mediaStreamTrack) {
+                            tracks.push(audioPub.track.mediaStreamTrack);
+                        }
+                        if (tracks.length > 0) {
+                            const identity = participant.identity;
+                            const userId = Number(identity) || identity;
+                            const displayName = participant.name || identity;
+                            const state = createTrackTranscriber(identity, userId, displayName);
+                            startTrackAudioCapture(state, tracks);
+                        }
+                    }
+                });
+            }
+
+            liveTranscriptionActive = true;
+            updateSidebarStatus('Mendengarkan (Multi)', 'text-emerald-400', 'bg-emerald-500');
+        }
+
+        function stopLiveTranscription() {
+            liveTranscriptionActive = false;
+            removeAllTranscribers();
+            whisperRequestQueue = [];
+            lastSpeakerId = null;
+            lastMessageElement = null;
+            if (whisperSocket && whisperSocket.readyState === WebSocket.OPEN) {
+                whisperSocket.close();
+                whisperSocket = null;
+            }
+            isWhisperSocketOpen = false;
+            updateSidebarStatus('Mati', 'text-gray-500', 'bg-gray-500');
+        }
+
+        // ======================== RECORDING HELPERS ========================
+        function updateRecordingParticipants() {
+            const speakers = recordingActiveSpeakers;
+            const speakerIds = new Set(speakers.filter(p => !p.isLocal).map(p => p.identity));
+
+            recordingVideoCache.forEach((entry) => {
+                entry.isSpeaking = speakerIds.has(entry.identity);
+            });
+
+            const ordered = [];
+            const added = new Set();
+
+            for (const p of speakers) {
+                if (p.isLocal) continue;
+                const entry = recordingVideoCache.get(p.identity);
+                if (entry && !added.has(p.identity)) {
+                    ordered.push(entry);
+                    added.add(p.identity);
+                }
+            }
+
+            if (ordered.length < 4) {
+                for (const id of recordingSpeakerQueue) {
+                    if (added.has(id)) continue;
+                    const entry = recordingVideoCache.get(id);
+                    if (entry) {
+                        ordered.push(entry);
+                        added.add(id);
+                    }
+                }
+            }
+
+            if (ordered.length < 4) {
+                const localEntry = recordingVideoCache.get('local_' + currentUserId);
+                if (localEntry && !added.has('local_' + currentUserId)) {
+                    ordered.push(localEntry);
+                    added.add('local_' + currentUserId);
+                }
+            }
+
+            if (ordered.length < 4) {
+                recordingVideoCache.forEach((entry, id) => {
+                    if (!added.has(id) && ordered.length < 4) {
+                        ordered.push(entry);
+                        added.add(id);
+                    }
+                });
+            }
+
+            recordingParticipants = ordered.slice(0, 4);
+            bgDirty = true;
+        }
+
+        function drawAvatar(ctx, name, x, y, w, h) {
+            ctx.fillStyle = '#374151';
+            ctx.beginPath();
+            ctx.roundRect(x, y, w, h, 8);
+            ctx.fill();
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 48px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText((name || 'P').charAt(0).toUpperCase(), x + w / 2, y + h / 2);
+            ctx.textBaseline = 'alphabetic';
+        }
+
+        function drawNameLabel(ctx, name, x, y, w, h) {
+            ctx.fillStyle = 'rgba(0,0,0,0.6)';
+            ctx.beginPath();
+            ctx.roundRect(x, y + h - 28, w, 28, 8);
+            ctx.fill();
+            ctx.fillStyle = '#fff';
+            ctx.font = '13px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(name || '-', x + w / 2, y + h - 8);
+        }
+
+        function drawSpeakingRing(ctx, x, y, w, h) {
+            ctx.strokeStyle = '#22c55e';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.roundRect(x - 1.5, y - 1.5, w + 3, h + 3, 9);
+            ctx.stroke();
+        }
+
+        // ======================== COUNTDOWN ========================
+        const countdownOverlay = document.getElementById('countdownOverlay');
+        const countdownNumber = document.getElementById('countdownNumber');
+        let isCountdownActive = false;
+        let countdownInterval = null;
+        let countdownResolve = null;
+
+        function cancelCountdown() {
+            if (!isCountdownActive) return;
+            clearInterval(countdownInterval);
+            countdownOverlay.classList.add('hidden');
+            isCountdownActive = false;
+            if (countdownResolve) countdownResolve();
+        }
+
+        function startCountdown() {
+            return new Promise((resolve) => {
+                isCountdownActive = true;
+                countdownResolve = resolve;
+                countdownOverlay.classList.remove('hidden');
+                let count = 3;
+                countdownNumber.textContent = count;
+                countdownNumber.style.transform = 'scale(0.5)';
+                countdownNumber.style.transition = 'transform 0.3s ease';
+                countdownNumber.offsetHeight;
+                countdownNumber.style.transform = 'scale(1)';
+
+                countdownInterval = setInterval(() => {
+                    if (!isCountdownActive) return;
+                    count--;
+                    if (count > 0) {
+                        countdownNumber.textContent = count;
+                        countdownNumber.style.transform = 'scale(0.5)';
+                        countdownNumber.offsetHeight;
+                        countdownNumber.style.transform = 'scale(1)';
+                    } else {
+                        clearInterval(countdownInterval);
+                        countdownOverlay.classList.add('hidden');
+                        isCountdownActive = false;
+                        resolve();
+                    }
+                }, 1000);
+            });
+        }
+
+        // ======================== SCREEN RECORDING ========================
+        async function startScreenRecording() {
+            if (isRecordingScreen) return;
+            if (recordingByOther) {
+                alert('Meeting sedang direkam oleh peserta lain.');
+                return;
+            }
+            recordingCanvas = document.getElementById('recordingCanvas');
+            if (!recordingCanvas) {
+                alert('Canvas tidak ditemukan.');
+                return;
+            }
+            recordingCanvasCtx = recordingCanvas.getContext('2d');
+            recordingChunks = [];
+
+            // Cache local participant video
+            if (localVideo) {
+                recordingVideoCache.set('local_' + currentUserId, {
+                    videoEl: localVideo,
+                    name: authName,
+                    identity: 'local_' + currentUserId,
+                    isSpeaking: false
+                });
+            }
+
+            // Init offscreen canvases for layer compositing
+            const W = recordingCanvas.width;
+            const H = recordingCanvas.height;
+            recordingBgCanvas = document.createElement('canvas');
+            recordingBgCanvas.width = W;
+            recordingBgCanvas.height = H;
+            recordingThumbCanvas = document.createElement('canvas');
+            recordingThumbCanvas.width = W;
+            recordingThumbCanvas.height = H;
+            bgDirty = true;
+            thumbnailsDirty = true;
+
+            // Collect audio streams from all participants
+            try {
+                const audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+                recordingAudioDestination = audioCtx.createMediaStreamDestination();
+
+                if (localStream) {
+                    const localTracks = localStream.getAudioTracks();
+                    if (localTracks.length > 0) {
+                        const localSource = audioCtx.createMediaStreamSource(new MediaStream(localTracks));
+                        localSource.connect(recordingAudioDestination);
+                    }
+                }
+
+                if (room) {
+                    room.remoteParticipants.forEach((participant) => {
+                        const audioPub = participant.getTrackPublication(LiveKit.Track.Source.Microphone);
+                        if (audioPub && audioPub.track) {
+                            const ms = audioPub.track.mediaStream;
+                            if (ms && ms.getAudioTracks().length > 0) {
+                                const source = audioCtx.createMediaStreamSource(new MediaStream(ms
+                                    .getAudioTracks()));
+                                source.connect(recordingAudioDestination);
+                            }
+                        }
+                    });
+                }
+
+                recordingAudioMixer = audioCtx;
+            } catch (e) {
+                console.warn('Audio mixer error, recording without audio:', e);
+            }
+
+            let recordingGridLayout = [];
+
+            function computeGridLayout(count) {
+                const layouts = [];
+                if (count === 1) {
+                    layouts.push({
+                        x: 0,
+                        y: 0,
+                        w: W,
+                        h: H
+                    });
+                } else if (count === 2) {
+                    layouts.push({
+                        x: 0,
+                        y: 0,
+                        w: W / 2,
+                        h: H
+                    });
+                    layouts.push({
+                        x: W / 2,
+                        y: 0,
+                        w: W / 2,
+                        h: H
+                    });
+                } else if (count === 3) {
+                    layouts.push({
+                        x: 0,
+                        y: 0,
+                        w: W / 2,
+                        h: H / 2
+                    });
+                    layouts.push({
+                        x: W / 2,
+                        y: 0,
+                        w: W / 2,
+                        h: H / 2
+                    });
+                    layouts.push({
+                        x: 0,
+                        y: H / 2,
+                        w: W,
+                        h: H / 2
+                    });
+                } else {
+                    layouts.push({
+                        x: 0,
+                        y: 0,
+                        w: W / 2,
+                        h: H / 2
+                    });
+                    layouts.push({
+                        x: W / 2,
+                        y: 0,
+                        w: W / 2,
+                        h: H / 2
+                    });
+                    layouts.push({
+                        x: 0,
+                        y: H / 2,
+                        w: W / 2,
+                        h: H / 2
+                    });
+                    layouts.push({
+                        x: W / 2,
+                        y: H / 2,
+                        w: W / 2,
+                        h: H / 2
+                    });
+                }
+                return layouts;
+            }
+
+            function renderBackground() {
+                const ctx = recordingBgCanvas.getContext('2d');
+                ctx.clearRect(0, 0, W, H);
+                ctx.fillStyle = '#1a1a2e';
+                ctx.fillRect(0, 0, W, H);
+
+                const ssVideo = document.getElementById('screenShareVideo');
+                const hasScreenShare = ssVideo && ssVideo.srcObject && !screenShareContainer?.classList.contains(
+                    'hidden');
+                if (hasScreenShare && ssVideo.readyState >= 2) {
+                    ctx.drawImage(ssVideo, 0, 0, W, H);
+                } else {
+                    const participants = recordingParticipants;
+                    const count = Math.min(participants.length, 4);
+                    if (count > 0) {
+                        recordingGridLayout = computeGridLayout(count);
+                        for (let i = 0; i < count; i++) {
+                            const p = participants[i];
+                            const l = recordingGridLayout[i];
+                            ctx.fillStyle = '#374151';
+                            ctx.fillRect(l.x, l.y, l.w, l.h);
+                            ctx.fillStyle = '#fff';
+                            ctx.font = 'bold 64px Inter, sans-serif';
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'middle';
+                            ctx.fillText((p.name || 'P').charAt(0).toUpperCase(), l.x + l.w / 2, l.y + l.h / 2);
+                            ctx.textBaseline = 'alphabetic';
+                            ctx.fillStyle = 'rgba(0,0,0,0.5)';
+                            ctx.fillRect(l.x, l.y + l.h - 30, l.w, 30);
+                            ctx.fillStyle = '#fff';
+                            ctx.font = '14px Inter, sans-serif';
+                            ctx.textAlign = 'center';
+                            ctx.fillText(p.name || '-', l.x + l.w / 2, l.y + l.h - 9);
+                        }
+                    } else {
+                        ctx.fillStyle = '#333';
+                        ctx.font = 'bold 48px Inter, sans-serif';
+                        ctx.textAlign = 'center';
+                        ctx.fillText('{{ $meeting->nama_rapat }}', W / 2, H / 2 - 20);
+                        ctx.font = '24px Inter, sans-serif';
+                        ctx.fillStyle = '#666';
+                        ctx.fillText(new Date().toLocaleString(), W / 2, H / 2 + 40);
+                    }
+                }
+                bgDirty = false;
+            }
+
+            function renderFrame() {
+                if (bgDirty) renderBackground();
+
+                const ctx = recordingCanvasCtx;
+                ctx.clearRect(0, 0, W, H);
+                ctx.drawImage(recordingBgCanvas, 0, 0);
+
+                const ssVideo = document.getElementById('screenShareVideo');
+                const hasScreenShare = ssVideo && ssVideo.srcObject && !screenShareContainer?.classList.contains(
+                    'hidden');
+                if (!hasScreenShare || ssVideo.readyState < 2) {
+                    const participants = recordingParticipants;
+                    const count = Math.min(participants.length, 4);
+                    if (count > 0 && recordingGridLayout.length >= count) {
+                        const layout = recordingGridLayout;
+                        for (let i = 0; i < count; i++) {
+                            const p = participants[i];
+                            const l = layout[i];
+                            const videoEl = p.videoEl;
+                            if (videoEl && videoEl.readyState >= 2) {
+                                ctx.drawImage(videoEl, l.x, l.y, l.w, l.h);
+                            }
+                        }
+                    }
+                }
+
+                const fc = recordingFrameCounter++;
+                if (fc % 30 < 15) {
+                    ctx.fillStyle = '#ef4444';
+                    ctx.beginPath();
+                    ctx.arc(40, 40, 14, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#fff';
+                    ctx.font = 'bold 14px Inter, sans-serif';
+                    ctx.textAlign = 'left';
+                    ctx.fillText('REC', 60, 47);
+                }
+            }
+
+            let recordingFrameCounter = 0;
+            isRecordingScreen = true;
+            recordingRenderTimer = setInterval(() => {
+                if (!isRecordingScreen) return;
+                renderFrame();
+            }, 66);
+
+            if (!recordingCanvas.captureStream) {
+                alert('Browser tidak mendukung fitur rekam layar (canvas.captureStream). Gunakan Chrome atau Firefox versi terbaru.');
+                isRecordingScreen = false;
+                clearInterval(recordingRenderTimer);
+                recordingRenderTimer = null;
+                return;
+            }
+
+            let videoStream, combinedStream;
+            try {
+                videoStream = recordingCanvas.captureStream(15);
+            } catch (e) {
+                alert('Gagal memulai rekaman: ' + e.message);
+                isRecordingScreen = false;
+                clearInterval(recordingRenderTimer);
+                recordingRenderTimer = null;
+                return;
+            }
+
+            try {
+                if (recordingAudioDestination) {
+                    const audioTracks = recordingAudioDestination.stream.getAudioTracks();
+                    if (audioTracks.length > 0) {
+                        combinedStream = new MediaStream([
+                            ...videoStream.getVideoTracks(),
+                            audioTracks[0]
+                        ]);
+                    } else {
+                        combinedStream = videoStream;
+                    }
+                } else {
+                    combinedStream = videoStream;
+                }
+            } catch (e) {
+                combinedStream = videoStream;
+            }
+
+            let mimeType = 'video/webm';
+            try {
+                if (MediaRecorder.isTypeSupported('video/webm;codecs=vp8,opus')) {
+                    mimeType = 'video/webm;codecs=vp8,opus';
+                } else if (MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus')) {
+                    mimeType = 'video/webm;codecs=vp9,opus';
+                }
+            } catch (e) {}
+
+            try {
+                recordingMediaRecorder = new MediaRecorder(combinedStream, { mimeType });
+            } catch (e) {
+                try {
+                    recordingMediaRecorder = new MediaRecorder(combinedStream);
+                } catch (e2) {
+                    alert('Gagal membuat MediaRecorder: ' + e2.message);
+                    isRecordingScreen = false;
+                    clearInterval(recordingRenderTimer);
+                    recordingRenderTimer = null;
+                    return;
+                }
+            }
+
+            recordingMediaRecorder.ondataavailable = (e) => {
+                if (e.data.size > 0) recordingChunks.push(e.data);
+            };
+            recordingMediaRecorder.onerror = (e) => {
+                console.error('MediaRecorder error:', e);
+                stopScreenRecording();
+            };
+            recordingMediaRecorder.onstop = () => {
+                if (recordingChunks.length > 0) {
+                    const blob = new Blob(recordingChunks, {
+                        type: 'video/webm'
+                    });
+                    uploadScreenRecording(blob);
+                }
+            };
+            recordingMediaRecorder.start(1000);
+
+            if (recordIconDefault) recordIconDefault.classList.add('hidden');
+            if (recordIconActive) recordIconActive.classList.remove('hidden');
+            if (recordActiveDot) recordActiveDot.classList.remove('hidden');
+            if (recordScreenBtn) recordScreenBtn.querySelector('span')?.classList.add('text-red-400');
+            showRecordingPopup(true, null);
+            sendBroadcast({
+                type: 'screen-recording-start',
+                name: authName,
+                sender_id: currentUserId
+            });
+        }
+
+        function stopScreenRecording() {
+            if (!isRecordingScreen) return;
+            isRecordingScreen = false;
+            if (recordingRenderTimer) {
+                clearInterval(recordingRenderTimer);
+                recordingRenderTimer = null;
+            }
+            if (recordingMediaRecorder && recordingMediaRecorder.state !== 'inactive') {
+                recordingMediaRecorder.stop();
+            }
+            if (recordingAudioMixer) {
+                recordingAudioMixer.close().catch(() => {});
+                recordingAudioMixer = null;
+            }
+            recordingCanvasCtx = null;
+            recordingAudioDestination = null;
+            recordingBgCanvas = null;
+            recordingThumbCanvas = null;
+            recordingVideoCache.delete('local_' + currentUserId);
+
+            if (recordIconDefault) recordIconDefault.classList.remove('hidden');
+            if (recordIconActive) recordIconActive.classList.add('hidden');
+            if (recordActiveDot) recordActiveDot.classList.add('hidden');
+            if (recordScreenBtn) recordScreenBtn.querySelector('span')?.classList.remove('text-red-400');
+            hideRecordingPopup();
+            sendBroadcast({
+                type: 'screen-recording-stop'
+            });
+        }
+
+        async function uploadScreenRecording(blob) {
+            try {
+                const formData = new FormData();
+                formData.append('recording', blob, `meeting_${meetingId}_${Date.now()}.webm`);
+                formData.append('duration_seconds', Math.floor(blob.size / 500000)); // estimate
+                const res = await fetch(baseUrl + '/upload-screen-recording', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: formData
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    alert('Rekaman terupload! Pipeline diproses di background.');
+                } else {
+                    alert('Gagal upload: ' + (data.message || 'Unknown error'));
+                }
+            } catch (e) {
+                alert('Gagal upload rekaman: ' + e.message);
+            }
+            recordingChunks = [];
+        }
+
+        // Keep old functions for backward compat
         function getVisibleParticipants() {
-            const allCards = getParticipantCards();
             const localEl = document.getElementById('localVideoContainer');
-            const remotes = allCards.filter(c => c.id !== 'localVideoContainer');
-            const result = [];
-            if (localEl) result.push(localEl);
+            const remotes = Array.from(document.querySelectorAll('#remoteVideos > [id^="remote-card-"]'));
+            const allCards = [];
+            if (localEl) allCards.push(localEl);
             const pinned = [];
             const unpinned = [];
             remotes.forEach(el => {
@@ -2471,10 +3608,193 @@
                 }
             });
             pinned.forEach(el => {
-                if (el) result.push(el);
+                if (el) allCards.push(el);
             });
-            unpinned.forEach(el => result.push(el));
-            return result;
+            unpinned.forEach(el => allCards.push(el));
+            return allCards;
+        }
+
+        // ======================== PIPELINE & NOTULENSI ========================
+        let pipelinePollTimer = null;
+
+        function applyPipelinePayload(data) {
+            const st = data.pipeline_status || 'idle';
+            const stage = data.pipeline_stage ? ` (${data.pipeline_stage})` : '';
+            const err = data.pipeline_error ? ` — ${data.pipeline_error}` : '';
+            const pipelineStatusEl = document.getElementById('pipelineStatus');
+            if (pipelineStatusEl) {
+                pipelineStatusEl.textContent = 'Pipeline: ' + st + stage + err;
+                pipelineStatusEl.className = 'text-xs ' + (st === 'failed' ? 'text-red-400' : st === 'completed' ?
+                    'text-emerald-400' : 'text-amber-200');
+            }
+            if (pdfBtn && data.has_pdf) {
+                pdfBtn.classList.remove('opacity-40', 'pointer-events-none');
+                pdfBtn.setAttribute('href', notulensiPdfUrl);
+            }
+        }
+
+        async function refreshPipelineStatus() {
+            try {
+                const res = await fetch(baseUrl + '/pipeline-status', {
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                if (!res.ok) return;
+                const data = await res.json();
+                applyPipelinePayload(data);
+                if (data.pipeline_status !== 'processing' && pipelinePollTimer) {
+                    clearInterval(pipelinePollTimer);
+                    pipelinePollTimer = null;
+                }
+            } catch (e) {
+                console.warn(e);
+            }
+        }
+
+        function startPipelinePolling() {
+            if (pipelinePollTimer) clearInterval(pipelinePollTimer);
+            pipelinePollTimer = setInterval(refreshPipelineStatus, 4000);
+            refreshPipelineStatus();
+        }
+
+        async function triggerGeminiNotulensi() {
+            showAiLoading(true);
+            try {
+                const res = await fetch(baseUrl + '/generate-notulensi', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    }
+                });
+                const data = await res.json();
+                showAiLoading(false);
+                if (!res.ok) throw new Error(data.message || 'Gagal membuat notulensi');
+                if (!data.notulensi || !data.notulensi.id) {
+                    throw new Error('Notulensi tidak tersimpan ke database (ID kosong)');
+                }
+                renderNotulensiModal(data.notulensi, data.pdf_url);
+                if (showNotulensiBtn) showNotulensiBtn.classList.remove('hidden');
+                if (pdfBtn) {
+                    pdfBtn.classList.remove('opacity-40', 'pointer-events-none');
+                    pdfBtn.setAttribute('href', data.pdf_url);
+                }
+                openNotulensiModal(true);
+            } catch (err) {
+                showAiLoading(false);
+                alert(err.message);
+            }
+        }
+
+        function showAiLoading(show) {
+            const overlay = document.getElementById('aiLoadingOverlay');
+            if (!overlay) return;
+            const isMobile = window.innerWidth <= 767;
+            if (show) {
+                if (isMobile) {
+                    overlay.style.position = 'fixed';
+                    overlay.style.bottom = '80px';
+                    overlay.style.left = '50%';
+                    overlay.style.transform = 'translateX(-50%)';
+                    overlay.style.zIndex = '200';
+                } else {
+                    overlay.style.position = '';
+                    overlay.style.bottom = '';
+                    overlay.style.left = '';
+                    overlay.style.transform = '';
+                    overlay.style.zIndex = '';
+                }
+                overlay.classList.remove('hidden');
+                setTimeout(() => overlay.classList.add('opacity-100'), 50);
+            } else {
+                overlay.style.position = '';
+                overlay.style.bottom = '';
+                overlay.style.left = '';
+                overlay.style.transform = '';
+                overlay.style.zIndex = '';
+                overlay.classList.remove('opacity-100');
+                setTimeout(() => overlay.classList.add('hidden'), 300);
+            }
+        }
+
+        function showRecordingPopup(show, name) {
+            const popup = document.getElementById('recordingPopup');
+            if (!popup) return;
+            const nameEl = document.getElementById('recordingByName');
+            if (nameEl && name) nameEl.textContent = 'oleh ' + name;
+            if (nameEl && !name) nameEl.textContent = 'oleh Anda';
+            const isMobile = window.innerWidth <= 767;
+            if (show) {
+                if (isMobile) {
+                    popup.style.position = 'fixed';
+                    popup.style.bottom = '80px';
+                    popup.style.left = '50%';
+                    popup.style.transform = 'translateX(-50%)';
+                    popup.style.zIndex = '200';
+                } else {
+                    popup.style.position = '';
+                    popup.style.bottom = '';
+                    popup.style.left = '';
+                    popup.style.transform = '';
+                    popup.style.zIndex = '';
+                }
+                popup.classList.remove('hidden');
+                setTimeout(() => popup.classList.add('opacity-100'), 50);
+            } else {
+                popup.style.position = '';
+                popup.style.bottom = '';
+                popup.style.left = '';
+                popup.style.transform = '';
+                popup.style.zIndex = '';
+                popup.classList.remove('opacity-100');
+                setTimeout(() => popup.classList.add('hidden'), 300);
+            }
+        }
+
+        function hideRecordingPopup() {
+            showRecordingPopup(false);
+        }
+
+        function openNotulensiModal(open) {
+            if (!notulensiModal) return;
+            if (open) {
+                notulensiModal.classList.remove('hidden');
+                setTimeout(() => {
+                    notulensiModal.classList.add('opacity-100');
+                    notulensiModal.firstElementChild.classList.remove('scale-95');
+                    notulensiModal.firstElementChild.classList.add('scale-100');
+                }, 50);
+            } else {
+                notulensiModal.classList.remove('opacity-100');
+                notulensiModal.firstElementChild.classList.remove('scale-100');
+                notulensiModal.firstElementChild.classList.add('scale-95');
+                setTimeout(() => notulensiModal.classList.add('hidden'), 300);
+            }
+        }
+
+        function renderNotulensiModal(notulensi, pdfUrl) {
+            document.getElementById('modalRingkasan').textContent = notulensi.ringkasan || '-';
+            document.getElementById('modalPdfBtn').setAttribute('href', pdfUrl);
+            const s = notulensi.structured_summary || {};
+            const topikEl = document.getElementById('modalTopik');
+            topikEl.innerHTML = (s.topik_dibahas || []).map((t, i) =>
+                `<li class="flex items-start gap-2.5"><span class="flex-shrink-0 w-5 h-5 rounded-full text-xs font-bold flex items-center justify-center mt-0.5" style="background:rgba(16,185,129,0.12);color:#34d399">${i + 1}</span><span class="text-sm leading-relaxed text-gray-300">${escapeHtml(t)}</span></li>`
+            ).join('') || '<li class="text-sm text-gray-500 italic">-</li>';
+            document.getElementById('modalKeputusan').innerHTML = (s.keputusan || []).map(k =>
+                `<li class="flex items-start gap-2.5"><svg class="flex-shrink-0 w-4 h-4 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="color:#fbbf24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span class="text-sm leading-relaxed text-gray-300">${escapeHtml(k)}</span></li>`
+            ).join('') || '<li class="text-sm text-gray-500 italic">-</li>';
+            const actionItems = s.action_items || [];
+            const tbody = document.getElementById('modalActionItems');
+            if (actionItems.length) tbody.innerHTML = actionItems.map(ai =>
+                `<tr><td class="px-4 py-3 text-sm text-gray-300">${escapeHtml(ai.task||'-')}</td><td class="px-4 py-3"><span class="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full" style="background:rgba(139,92,246,0.1);color:#a78bfa"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>${escapeHtml(ai.pic||'-')}</span></td><td class="px-4 py-3"><span class="inline-flex items-center gap-1.5 text-xs" style="color:#9ca3af"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>${escapeHtml(ai.deadline||'-')}</span></td></tr>`
+            ).join('');
+            else tbody.innerHTML =
+                '<tr><td colspan="3" class="px-4 py-4 text-center text-sm text-gray-500 italic">-</td></tr>';
+            document.getElementById('modalRisiko').innerHTML = (s.risiko_catatan || []).map(r =>
+                `<li class="flex items-start gap-2.5"><svg class="flex-shrink-0 w-4 h-4 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:#9ca3af"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><span class="text-sm leading-relaxed text-gray-300">${escapeHtml(r)}</span></li>`
+            ).join('') || '<li class="text-sm text-gray-500 italic">-</li>';
         }
 
         // ======================== EVENT LISTENERS ========================
@@ -2491,6 +3811,19 @@
             muteBtn.addEventListener('click', () => {
                 isMuted = !isMuted;
                 saveDeviceState();
+                if (room) {
+                    const pub = room.localParticipant.getTrackPublication(LiveKit.Track.Source.Microphone);
+                    if (pub && pub.track) {
+                        if (isMuted) {
+                            pub.track.mute().catch(e => console.warn(e));
+                        } else {
+                            pub.track.unmute().catch(e => console.warn(e));
+                        }
+                    }
+                }
+                if (localStream) {
+                    localStream.getAudioTracks().forEach(t => t.enabled = !isMuted);
+                }
                 if (isMuted) {
                     muteBtn.classList.add('text-red-400');
                     muteBtn.classList.remove('text-white');
@@ -2506,6 +3839,19 @@
             cameraBtn.addEventListener('click', () => {
                 isCameraOff = !isCameraOff;
                 saveDeviceState();
+                if (room) {
+                    const pub = room.localParticipant.getTrackPublication(LiveKit.Track.Source.Camera);
+                    if (pub && pub.track) {
+                        if (isCameraOff) {
+                            pub.track.mute().catch(e => console.warn(e));
+                        } else {
+                            pub.track.unmute().catch(e => console.warn(e));
+                        }
+                    }
+                }
+                if (localStream) {
+                    localStream.getVideoTracks().forEach(t => t.enabled = !isCameraOff);
+                }
                 const localAvatar = document.getElementById('localAvatar');
                 const localAvatarText = document.getElementById('localAvatarText');
                 if (isCameraOff) {
@@ -2515,12 +3861,18 @@
                         localAvatar.classList.remove('hidden');
                         if (localAvatarText) localAvatarText.textContent = authName.charAt(0).toUpperCase();
                     }
+                    startAudioMonitor();
                 } else {
                     cameraBtn.classList.add('text-white');
                     cameraBtn.classList.remove('text-red-400');
                     if (localAvatar) localAvatar.classList.add('hidden');
+                    stopAudioMonitor();
                 }
                 toggleCamIcons(isCameraOff);
+                sendBroadcast({
+                    type: 'camera-toggle',
+                    isOff: isCameraOff
+                });
             });
         }
 
@@ -2556,7 +3908,30 @@
 
         if (aiNotulenTriggerBtn) {
             aiNotulenTriggerBtn.addEventListener('click', async () => {
-                if (confirmNotulenModal) confirmNotulenModal.classList.remove('hidden');
+                if (liveTranscriptionActive) {
+                    if (confirmNotulenModal) confirmNotulenModal.classList.remove('hidden');
+                } else {
+                    try {
+                        await fetch('/meeting/{{ $meeting->id }}/start-recording', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            }
+                        });
+                        await startLiveTranscription();
+                        sendBroadcast({
+                            type: 'start-recording-broadcast'
+                        });
+                        if (aiNotulenActiveDot) aiNotulenActiveDot.classList.remove('hidden');
+                        const headerInd = document.getElementById('aiNotulenHeaderIndicator');
+                        if (headerInd) headerInd.classList.remove('hidden');
+                        if (transcriptSidebar) transcriptSidebar.classList.remove('collapsed');
+                        if (openSidebarBtn) openSidebarBtn.classList.add('hidden');
+                    } catch (err) {
+                        alert('Gagal memulai notulensi: ' + err.message);
+                    }
+                }
             });
         }
 
@@ -2569,9 +3944,15 @@
         if (simpanNotulenBtn) {
             simpanNotulenBtn.addEventListener('click', () => {
                 if (confirmNotulenModal) confirmNotulenModal.classList.add('hidden');
+                if (!liveTranscriptionActive) return;
+                sendBroadcast({
+                    type: 'stop-recording-broadcast'
+                });
+                stopLiveTranscription();
                 if (aiNotulenActiveDot) aiNotulenActiveDot.classList.add('hidden');
                 const headerInd = document.getElementById('aiNotulenHeaderIndicator');
                 if (headerInd) headerInd.classList.add('hidden');
+                triggerGeminiNotulensi();
             });
         }
 
@@ -2579,7 +3960,7 @@
             transcriptSidebar.classList.add('collapsed');
             openSidebarBtn.classList.remove('hidden');
             const activeDot = document.getElementById('sidebarActiveDot');
-            if (activeDot) activeDot.classList.remove('hidden');
+            if (activeDot && liveTranscriptionActive) activeDot.classList.remove('hidden');
         });
         if (openSidebarBtn) openSidebarBtn.addEventListener('click', () => {
             transcriptSidebar.classList.remove('collapsed');
@@ -2591,76 +3972,20 @@
 
         const closeModalBtns = [document.getElementById('closeNotulensiModalBtn'), document.getElementById(
             'closeNotulensiModalFooterBtn')];
-        closeModalBtns.forEach(btn => btn && btn.addEventListener('click', () => {
-            const modal = document.getElementById('notulensiModal');
-            if (modal) modal.classList.add('hidden');
-        }));
+        closeModalBtns.forEach(btn => btn && btn.addEventListener('click', () => openNotulensiModal(false)));
         if (notulensiModal) notulensiModal.addEventListener('click', (e) => {
-            if (e.target === notulensiModal) notulensiModal.classList.add('hidden');
+            if (e.target === notulensiModal) openNotulensiModal(false);
         });
-
-        // ======================== DELEGATED CLICKS (pin, focus) ========================
-        document.addEventListener('click', function(e) {
-            // Pin button click
-            const pinBtn = e.target.closest('[id^="pin-btn-"]');
-            if (pinBtn && pinBtn.dataset.identity) {
-                togglePin(pinBtn.dataset.identity);
-                return;
-            }
-            // Video card click → set active speaker
-            const tile = e.target.closest('.video-card');
-            if (!tile) return;
-            const identity = tile.dataset.identity;
-            if (identity && String(identity) !== String(currentUserId)) {
-                activeSpeakerIdentity = identity;
-                if (currentLayout === 'speaker' || currentLayout === 'sidebar' || currentLayout === 'spotlight') {
-                    updateParticipantUI();
-                }
-                document.querySelectorAll('.video-card').forEach(c => c.classList.remove('speaking-ring'));
-                tile.classList.add('speaking-ring');
-            }
-        });
-
-        // Auto-rotate active speaker every 5 seconds
-        setInterval(function() {
-            const allCards = getParticipantCards();
-            const remoteCards = allCards.filter(c => c.id !== 'localVideoContainer');
-            if (remoteCards.length === 0) return;
-            const identities = remoteCards.map(c => c.dataset?.identity).filter(Boolean);
-            if (identities.length === 0) return;
-            const currentIdx = identities.indexOf(activeSpeakerIdentity);
-            const nextIdx = (currentIdx + 1) % identities.length;
-            activeSpeakerIdentity = identities[nextIdx];
-            if (isStripLayout()) {
-                _lastUIUpdateKey = '';
-                updateParticipantUI();
-            }
-            document.querySelectorAll('.video-card').forEach(c => c.classList.remove('speaking-ring'));
-            const target = document.querySelector(`[data-identity="${activeSpeakerIdentity}"]`);
-            if (target) target.classList.add('speaking-ring');
-        }, 5000);
 
         // ======================== INIT ========================
-        initMockMeeting();
         updateParticipantUI();
-
-        // Update debug panel initial state
-        const debugName = document.getElementById('debugLayoutName');
-        if (debugName) debugName.textContent = currentLayout.charAt(0).toUpperCase() + currentLayout.slice(1);
-
-        // Set initial speaking ring on first remote
-        setTimeout(function() {
-            const firstRemote = getParticipantCards().find(c => c.id !== 'localVideoContainer');
-            if (firstRemote) {
-                firstRemote.classList.add('speaking-ring');
-                activeSpeakerIdentity = firstRemote.dataset?.identity;
-            }
-        }, 100);
+        connectToLiveKit();
 
         const shareBtn = document.getElementById('shareBtn');
         const sharePopup = document.getElementById('sharePopup');
         if (shareBtn && sharePopup) {
             shareBtn.addEventListener('click', () => {
+                // Reset to absolute positioning when opened from desktop
                 if (window.innerWidth >= 768) {
                     sharePopup.style.position = '';
                     sharePopup.style.bottom = '';
@@ -2804,138 +4129,5 @@
             if (moonIcon) moonIcon.classList.remove('hidden');
             if (toggle) toggle.addEventListener('click', () => setTheme(!html.classList.contains('dark')));
         })();
-        // ======================== DEBUG PANEL ========================
-        // Toggle debug panel
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'd' && e.ctrlKey) {
-                const panel = document.getElementById('debugPanel');
-                if (panel) panel.classList.toggle('hidden');
-            }
-        });
-
-        function setParticipantCount(count) {
-            count = Math.max(1, Math.min(15, count));
-            currentPage = 0;
-            const localName = 'Anda';
-            const names = ['Budi Santoso', 'Siti Rahma', 'Ahmad Fauzi', 'Dewi Lestari', 'Rudi Hermawan',
-                'Mega Putri', 'Adi Pratama', 'Rina Wijaya', 'Deni Saputra', 'Fitri Handayani',
-                'Agus Setiawan', 'Wulan Sari', 'Hendra Gunawan', 'Indah Permata'
-            ];
-
-            // Rebuild mockParticipants
-            mockParticipants.length = 0;
-            mockParticipants.push({
-                id: 1,
-                name: localName
-            });
-            for (let i = 0; i < count - 1; i++) {
-                mockParticipants.push({
-                    id: i + 2,
-                    name: names[i % names.length]
-                });
-            }
-
-            // Rebuild remote cards
-            const remoteContainer = document.getElementById('remoteVideos');
-            const grid = document.getElementById('videoGridMain');
-            // Remove old layout containers
-            grid.querySelectorAll('.speaker-strip, .sidebar-main-area, .sidebar-vertical-strip').forEach(el => el.remove());
-            // Remove existing remote cards
-            remoteContainer.querySelectorAll('[id^="remote-card-"]').forEach(el => el.remove());
-            // Reset local card position
-            const localEl = document.getElementById('localVideoContainer');
-            if (localEl && localEl.parentElement !== grid) grid.appendChild(localEl);
-
-            // Clear remoteParticipants map
-            remoteParticipants.clear();
-
-            // Create new remote cards
-            mockParticipants.filter(p => p.id !== 1).forEach((p) => {
-                const identity = String(p.id);
-                createMockRemoteCard(identity, p.name);
-            });
-
-            // Update display
-            document.getElementById('debugCount').textContent = mockParticipants.length;
-
-            // Preserve activeSpeakerIdentity if still valid
-            const prevSpeaker = activeSpeakerIdentity;
-            const speakerStillExists = prevSpeaker && mockParticipants.some(p => String(p.id) === prevSpeaker);
-            if (!speakerStillExists) {
-                activeSpeakerIdentity = null;
-            }
-
-            updateParticipantUI();
-
-            // Reset speaking ring
-            document.querySelectorAll('.video-card').forEach(c => c.classList.remove('speaking-ring'));
-            setTimeout(function() {
-                const speakerId = activeSpeakerIdentity;
-                if (speakerId) {
-                    const target = document.querySelector(`[data-identity="${speakerId}"]`);
-                    if (target) {
-                        target.classList.add('speaking-ring');
-                        return;
-                    }
-                }
-                const firstRemote = getParticipantCards().find(c => c.id !== 'localVideoContainer');
-                if (firstRemote) {
-                    firstRemote.classList.add('speaking-ring');
-                    activeSpeakerIdentity = firstRemote.dataset?.identity;
-                }
-            }, 50);
-        }
-
-        function resetLayout() {
-            localStorage.removeItem('layout_' + meetingId);
-            currentLayout = 'grid';
-            applyLayout('grid');
-        }
     </script>
-
-    <!-- Floating Debug Panel -->
-    <div id="debugPanel"
-        class="fixed top-4 right-4 z-[999] bg-gray-900/90 backdrop-blur-xl border border-white/10 rounded-xl p-4 min-w-[200px] shadow-2xl select-none font-sans">
-        <div class="flex items-center justify-between mb-3">
-            <span class="text-xs font-bold uppercase tracking-wider text-violet-400">Debug Panel</span>
-            <span class="text-[10px] text-gray-500">Ctrl+D</span>
-        </div>
-
-        <div class="space-y-3">
-            <div>
-                <label class="text-[10px] text-gray-500 uppercase tracking-wider font-semibold">Participants</label>
-                <div class="flex items-center gap-2 mt-1">
-                    <button onclick="setParticipantCount(mockParticipants.length - 1)"
-                        class="w-7 h-7 rounded-lg bg-red-500/20 hover:bg-red-500/40 text-red-400 flex items-center justify-center text-sm font-bold transition">&minus;</button>
-                    <span id="debugCount" class="text-white font-bold text-sm min-w-[24px] text-center">6</span>
-                    <button onclick="setParticipantCount(mockParticipants.length + 1)"
-                        class="w-7 h-7 rounded-lg bg-green-500/20 hover:bg-green-500/40 text-green-400 flex items-center justify-center text-sm font-bold transition">+</button>
-                </div>
-            </div>
-
-            <div>
-                <label class="text-[10px] text-gray-500 uppercase tracking-wider font-semibold">Current Layout</label>
-                <div id="debugLayoutName" class="text-white font-bold text-sm mt-1 capitalize">Grid</div>
-            </div>
-
-            <div class="flex gap-1.5">
-                <button onclick="applyLayout('grid')"
-                    class="flex-1 text-[10px] px-2 py-1.5 rounded-lg bg-white/5 hover:bg-violet-500/20 text-gray-400 hover:text-violet-400 transition font-semibold">Grid</button>
-                <button onclick="applyLayout('speaker')"
-                    class="flex-1 text-[10px] px-2 py-1.5 rounded-lg bg-white/5 hover:bg-violet-500/20 text-gray-400 hover:text-violet-400 transition font-semibold">Speaker</button>
-                <button onclick="applyLayout('sidebar')"
-                    class="flex-1 text-[10px] px-2 py-1.5 rounded-lg bg-white/5 hover:bg-violet-500/20 text-gray-400 hover:text-violet-400 transition font-semibold">Sidebar</button>
-                <button onclick="applyLayout('spotlight')"
-                    class="flex-1 text-[10px] px-2 py-1.5 rounded-lg bg-white/5 hover:bg-violet-500/20 text-gray-400 hover:text-violet-400 transition font-semibold">Spotlight</button>
-            </div>
-
-            <button id="debugResetLayout"
-                class="w-full text-[10px] px-2 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 transition font-semibold"
-                onclick="resetLayout()">
-                Reset Layout
-            </button>
-        </div>
-    </div>
-</body>
-
-</html>
+@endsection
