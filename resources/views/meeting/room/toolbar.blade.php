@@ -147,7 +147,7 @@
             </div>
 
             <!-- Layout Selector -->
-            <div class="relative flex flex-col items-center">
+            <div class="relative flex flex-col items-center mobile-hide">
                 <button id="layoutBtn"
                     class="flex flex-col items-center text-white hover:text-gray-200 transition toolbar-btn">
                     <div class="h-12 flex items-center justify-center">
@@ -161,7 +161,7 @@
                 <div id="layoutDropdown"
                     style="display:none;opacity:0"
                     class="absolute bottom-full mb-4 left-1/2 -translate-x-1/2 layout-dropdown min-w-[160px] transition-opacity">
-                    <button data-layout="grid"><svg class="w-4 h-4" fill="currentColor"
+                    <button data-layout="grid" class="active-layout"><svg class="w-4 h-4" fill="currentColor"
                             viewBox="0 0 24 24">
                             <path
                                 d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z" />

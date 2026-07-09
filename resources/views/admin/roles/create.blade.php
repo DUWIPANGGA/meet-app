@@ -34,7 +34,7 @@
                                     Pilih semua
                                 </label>
                             </div>
-                            <div class="p-4 grid grid-cols-2 md:grid-cols-3 gap-2">
+                            <div class="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
                                 @foreach($groupPerms as $perm)
                                 <label class="flex items-center gap-2.5 cursor-pointer text-sm px-2 py-1.5 rounded-lg hover:bg-[var(--nav-link-hover)] transition" style="color:var(--text-secondary)">
                                     <input type="checkbox" name="permissions[]" value="{{ $perm->name }}"
