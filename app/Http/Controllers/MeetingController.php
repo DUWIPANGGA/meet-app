@@ -7,6 +7,7 @@ use App\Enums\MeetingPipelineStatus;
 use App\Models\Meeting;
 use App\Models\MeetingParticipant;
 use App\Models\RekamanAudio;
+use App\Models\LiveAudio;
 use App\Services\MeetingAiPipelineDispatcher;
 use App\Services\NotulensiSummarizerService;
 use Illuminate\Http\Request;
@@ -50,9 +51,18 @@ class MeetingController extends Controller
                     ->orWhereHas('rekamanAudio');
             })
             ->latest()
-            ->paginate(20);
+            ->paginate(15);
 
-        return view('meeting.riwayat', compact('meetings'));
+        $liveAudios = LiveAudio::with('notulensi')
+            ->where('user_id', $userId)
+            ->where(function ($q) {
+                $q->whereNotNull('transcript')
+                    ->orWhereNotNull('notulensi_teks');
+            })
+            ->latest()
+            ->paginate(15, ['*'], 'audio_page');
+
+        return view('meeting.riwayat', compact('meetings', 'liveAudios'));
     }
 
     public function store(Request $request)
