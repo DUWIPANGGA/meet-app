@@ -20,6 +20,10 @@ async function toggleScreenShare() {
         await stopScreenShare();
         return;
     }
+    if (!navigator.mediaDevices?.getDisplayMedia) {
+        alert('Screen share tidak didukung di browser ini. Gunakan Chrome/Edge atau pastikan akses via HTTPS.');
+        return;
+    }
     if (isOtherSharing()) {
         if (!confirm('Peserta lain sedang share layar. Ambil alih?')) return;
         sendBroadcast({
@@ -51,7 +55,11 @@ async function toggleScreenShare() {
             showLocalScreenShareUI(true);
         }
     } catch (e) {
-        if (e.name !== 'NotAllowedError' && e.name !== 'AbortError') console.warn('Screen share failed:', e);
+        console.warn('Screen share failed:', e);
+        const msg = e.name === 'NotAllowedError'
+            ? 'Izin screen share ditolak atau dibatalkan.'
+            : 'Screen share gagal: ' + (e.message || e.name);
+        alert(msg);
     }
 }
 
