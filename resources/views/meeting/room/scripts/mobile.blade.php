@@ -58,6 +58,8 @@ if (moreGrid && mobileMoreBtn && mobileMoreDropdown) {
                 const currentIdx = layouts.indexOf(currentLayout);
                 const nextLayout = layouts[(currentIdx + 1) % layouts.length];
                 applyLayout(nextLayout);
+            } else if (item.id === 'screenShareBtn') {
+                toggleScreenShare();
             } else {
                 const target = document.getElementById(item.id);
                 if (target) target.click();
