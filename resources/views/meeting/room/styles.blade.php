@@ -687,15 +687,15 @@
     }
 
     #videoGridWrapper:has(#screenShareContainer:not(.hidden)) #screenShareContainer {
-        flex: 3 !important;
+        flex: 1 !important;
         min-width: 0 !important;
-        max-width: 75% !important;
+        max-width: 50% !important;
     }
 
     #videoGridWrapper:has(#screenShareContainer:not(.hidden)) #videoGridMain {
         flex: 1 !important;
         min-width: 180px !important;
-        max-width: 25% !important;
+        max-width: 50% !important;
         display: flex !important;
         flex-direction: column !important;
         overflow-y: auto !important;
@@ -792,14 +792,14 @@
         }
 
         #videoGridWrapper:has(#screenShareContainer:not(.hidden)) #screenShareContainer {
-            flex: 3 !important;
+            flex: 1 !important;
             min-height: 0 !important;
         }
 
         #videoGridWrapper:has(#screenShareContainer:not(.hidden)) #videoGridMain {
             flex: 1 !important;
             min-height: 0 !important;
-            max-height: 25vh !important;
+            max-height: 50vh !important;
             display: flex !important;
             flex-direction: row !important;
             overflow-x: auto !important;
