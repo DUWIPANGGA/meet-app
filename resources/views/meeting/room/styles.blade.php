@@ -681,6 +681,51 @@
         display: none;
     }
 
+    /* ── Desktop Screen Share Layout ── */
+    #videoGridWrapper:has(#screenShareContainer:not(.hidden)) {
+        flex-direction: row !important;
+    }
+
+    #videoGridWrapper:has(#screenShareContainer:not(.hidden)) #screenShareContainer {
+        flex: 3 !important;
+        min-width: 0 !important;
+        max-width: 75% !important;
+    }
+
+    #videoGridWrapper:has(#screenShareContainer:not(.hidden)) #videoGridMain {
+        flex: 1 !important;
+        min-width: 180px !important;
+        max-width: 25% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        gap: 4px !important;
+        padding: 4px !important;
+    }
+
+    #videoGridWrapper:has(#screenShareContainer:not(.hidden)) #videoGridMain .video-card {
+        width: 100% !important;
+        min-height: 100px !important;
+        max-height: 200px !important;
+        flex-shrink: 0 !important;
+        margin: 0 !important;
+    }
+
+    #videoGridWrapper:has(#screenShareContainer:not(.hidden)) #remoteVideos {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 4px !important;
+    }
+
+    #videoGridWrapper:has(#screenShareContainer:not(.hidden)) #remoteVideos .video-card {
+        width: 100% !important;
+        min-height: 100px !important;
+        max-height: 200px !important;
+        flex-shrink: 0 !important;
+        margin: 0 !important;
+    }
+
     /* ── Mobile Responsive ── */
     @media (max-width: 767px) {
         #videoGridMain.layout-grid {
