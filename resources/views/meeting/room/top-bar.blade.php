@@ -1,6 +1,6 @@
         <!-- Top Bar -->
         <div
-            class="static md:absolute md:top-0 md:left-0 md:right-0 px-6 py-4 flex justify-between items-center z-10 top-bar">
+            class="px-6 py-4 flex justify-between items-center z-10 top-bar">
             <div class="flex items-center gap-3">
                 <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
                     <path
