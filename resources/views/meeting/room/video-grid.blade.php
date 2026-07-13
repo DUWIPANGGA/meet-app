@@ -3,6 +3,7 @@
                 <!-- Screen Share Display -->
                 <div id="screenShareContainer" class="hidden flex-1 min-w-0 relative screen-share-container m-2"
                     style="background:#111">
+                    {{-- ini bad --}}
                     <video id="screenShareVideo" autoplay playsinline class="w-full h-full object-contain"></video>
                     <div id="screenShareOverlay"
                         class="absolute top-0 left-0 right-0 bg-gradient-to-b from-black/60 to-transparent p-3 flex items-center gap-2">
