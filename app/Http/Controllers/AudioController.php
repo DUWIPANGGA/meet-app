@@ -153,6 +153,7 @@ class AudioController extends Controller
             'live_audio_id'  => 'nullable|integer|exists:live_audios,id',
             'audio'          => 'required_without:live_audio_id|file|max:102400',
             'notulensi_teks' => 'required|string',
+            'transcript'     => 'nullable|string',
         ]);
 
         // Validasi bahwa notulensi_teks adalah JSON valid dari Gemini
@@ -166,9 +167,13 @@ class AudioController extends Controller
 
         if ($request->filled('live_audio_id')) {
             $liveAudio = LiveAudio::findOrFail($request->live_audio_id);
-            $liveAudio->update([
+            $updateData = [
                 'notulensi_teks' => json_encode($decoded, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT),
-            ]);
+            ];
+            if ($request->filled('transcript') && !$liveAudio->transcript) {
+                $updateData['transcript'] = $request->transcript;
+            }
+            $liveAudio->update($updateData);
         } else {
             // Simpan file audio (fallback behavior)
             $file = $request->file('audio');
@@ -189,6 +194,7 @@ class AudioController extends Controller
                 'file_size_bytes' => $file->getSize(),
                 'tanggal_rekam'   => now(),
                 'durasi'          => 'Unknown',
+                'transcript'      => $request->transcript,
                 'notulensi_teks'  => json_encode($decoded, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT),
             ]);
         }
@@ -273,6 +279,7 @@ class AudioController extends Controller
     public function history()
     {
         $audios = LiveAudio::where('user_id', auth()->id())
+            ->with('notulensi')
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -291,6 +298,17 @@ class AudioController extends Controller
         $notulensi = null;
         if ($liveAudio->notulensi_teks) {
             $notulensi = json_decode($liveAudio->notulensi_teks, true);
+        }
+
+        if (!$notulensi && $liveAudio->notulensi) {
+            $n = $liveAudio->notulensi;
+            $notulensi = [
+                'ringkasan' => $n->ringkasan,
+                'topik_dibahas' => $n->structured_summary['topik_dibahas'] ?? [],
+                'keputusan' => $n->structured_summary['keputusan'] ?? [],
+                'action_items' => $n->structured_summary['action_items'] ?? [],
+                'risiko_catatan' => $n->structured_summary['risiko_catatan'] ?? [],
+            ];
         }
 
         return view('audio.show', compact('liveAudio', 'notulensi'));
@@ -358,6 +376,17 @@ class AudioController extends Controller
         $notulensi = null;
         if ($liveAudio->notulensi_teks) {
             $notulensi = json_decode($liveAudio->notulensi_teks, true);
+        }
+
+        if (!$notulensi && $liveAudio->notulensi) {
+            $n = $liveAudio->notulensi;
+            $notulensi = [
+                'ringkasan' => $n->ringkasan,
+                'topik_dibahas' => $n->structured_summary['topik_dibahas'] ?? [],
+                'keputusan' => $n->structured_summary['keputusan'] ?? [],
+                'action_items' => $n->structured_summary['action_items'] ?? [],
+                'risiko_catatan' => $n->structured_summary['risiko_catatan'] ?? [],
+            ];
         }
 
         $pdf = Pdf::loadView('pdf.live_audio', compact('liveAudio', 'notulensi'))

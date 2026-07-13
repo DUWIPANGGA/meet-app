@@ -508,6 +508,7 @@ document.addEventListener('alpine:init', () => {
                 const formData = new FormData();
                 formData.append('live_audio_id', liveAudioId);
                 formData.append('notulensi_teks', notulensiJson);
+                formData.append('transcript', transcript);
 
                 const res = await fetch(this.saveUrl, {
                     method: 'POST',

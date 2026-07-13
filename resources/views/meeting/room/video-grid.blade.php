@@ -1,5 +1,5 @@
             <div id="videoGridWrapper"
-                class="md:flex-1 min-h-0 overflow-hidden relative flex flex-row video-grid-container m-1 md:m-2">
+                class="md:flex-1 h-full overflow-hidden relative flex flex-row video-grid-container m-1 md:m-2">
                 <!-- Screen Share Display -->
                 <div id="screenShareContainer" class="hidden flex-1 min-w-0 relative screen-share-container m-2"
                     style="background:#111">
@@ -19,7 +19,7 @@
                 </div>
                 <div id="videoGridMain" class="min-w-0 relative z-0 h-full" style="flex:1">
                     <!-- Local Video -->
-                    <div id="localVideoContainer" class="relative rounded-lg overflow-hidden h-full w-full video-card m-1">
+                    <div id="localVideoContainer" class="relative rounded-lg overflow-hidden h-full w-full video-card">
                         <video id="localVideo" autoplay muted playsinline
                             style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)"></video>
                         <div id="localAvatar" class="absolute inset-0 flex items-center justify-center hidden z-10"

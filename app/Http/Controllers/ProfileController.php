@@ -6,6 +6,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use App\Models\LiveAudio;
+use App\Models\Meeting;
+use App\Models\MeetingParticipant;
+use App\Models\Notulensi;
+use App\Models\RekamanAudio;
 use Illuminate\Validation\Rules\Password;
 
 class ProfileController extends Controller
@@ -43,6 +48,18 @@ $data = [
         return redirect()->route('profile.show')->with('success_profile', 'Profil berhasil diperbarui!');
     }
 
+    public function deletePhoto()
+    {
+        $user = auth()->user();
+
+        if ($user->photo) {
+            Storage::disk('public')->delete($user->photo);
+            $user->update(['photo' => null]);
+        }
+
+        return redirect()->route('profile.show')->with('success_profile', 'Foto profil berhasil dihapus!');
+    }
+
     public function updatePassword(Request $request)
     {
         $request->validate([
@@ -61,5 +78,53 @@ $data = [
         ]);
 
         return redirect()->route('profile.show')->with('success_password', 'Password berhasil diperbarui!')->with('tab', 'password');
+    }
+
+    public function destroy(Request $request)
+    {
+        $request->validate([
+            'password' => ['required', 'string'],
+        ]);
+
+        $user = auth()->user();
+
+        if (!Hash::check($request->password, $user->password)) {
+            return back()->withErrors(['password' => 'Password tidak sesuai.'])->with('tab', 'delete');
+        }
+
+        $userId = $user->id;
+
+        $liveAudios = LiveAudio::where('user_id', $userId)->get();
+        foreach ($liveAudios as $audio) {
+            Notulensi::where('live_audio_id', $audio->id)->delete();
+            RekamanAudio::where('file_audio', $audio->file_path)->delete();
+            if ($audio->file_path) {
+                Storage::disk('public')->delete($audio->file_path);
+            }
+        }
+        LiveAudio::where('user_id', $userId)->delete();
+
+        MeetingParticipant::where('user_id', $userId)->delete();
+
+        $meetings = Meeting::where('dibuat_oleh', $userId)->get();
+        foreach ($meetings as $meeting) {
+            Notulensi::where('meeting_id', $meeting->id)->delete();
+            if ($meeting->file_pdf) {
+                Storage::disk('public')->delete($meeting->file_pdf);
+            }
+        }
+        Meeting::where('dibuat_oleh', $userId)->delete();
+
+        if ($user->photo) {
+            Storage::disk('public')->delete($user->photo);
+        }
+
+        $user->delete();
+
+        auth()->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/');
     }
 }

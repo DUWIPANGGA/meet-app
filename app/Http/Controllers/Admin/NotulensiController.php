@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Notulensi;
+use App\Models\LiveAudio;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class NotulensiController extends Controller
 {
@@ -32,14 +34,32 @@ class NotulensiController extends Controller
 
     public function downloadPdf(Notulensi $notulensi)
     {
-        abort_if(blank($notulensi->file_pdf), 404, 'PDF notulensi belum tersedia.');
+        if ($notulensi->file_pdf) {
+            $disk = Storage::disk('local');
+            if ($disk->exists($notulensi->file_pdf)) {
+                $filename = 'notulensi-'.$notulensi->id.'.pdf';
+                return response()->download($disk->path($notulensi->file_pdf), $filename);
+            }
+        }
 
-        $disk = Storage::disk('local');
-        abort_unless($disk->exists($notulensi->file_pdf), 404, 'File PDF tidak ditemukan.');
+        if ($notulensi->live_audio_id && $notulensi->liveAudio) {
+            $liveAudio = $notulensi->liveAudio;
+            $notulensiData = [
+                'ringkasan' => $notulensi->ringkasan,
+                'topik_dibahas' => $notulensi->structured_summary['topik_dibahas'] ?? [],
+                'keputusan' => $notulensi->structured_summary['keputusan'] ?? [],
+                'action_items' => $notulensi->structured_summary['action_items'] ?? [],
+                'risiko_catatan' => $notulensi->structured_summary['risiko_catatan'] ?? [],
+            ];
 
-        $filename = 'notulensi-'.$notulensi->id.'.pdf';
+            $pdf = Pdf::loadView('pdf.live_audio', ['liveAudio' => $liveAudio, 'notulensi' => $notulensiData])
+                ->setPaper('a4', 'portrait');
 
-        return response()->download($disk->path($notulensi->file_pdf), $filename);
+            $filename = 'notulensi-audio-'.$notulensi->id.'.pdf';
+            return $pdf->download($filename);
+        }
+
+        abort(404, 'PDF notulensi belum tersedia.');
     }
 
     public function update(Request $request, Notulensi $notulensi)

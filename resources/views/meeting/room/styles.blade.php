@@ -293,6 +293,14 @@
         color: var(--page-color);
     }
 
+    :root.camera-off #roomThemeToggle svg {
+        color: #fff;
+    }
+
+    :root.camera-off #roomThemeToggle {
+        color: #fff;
+    }
+
     :root .participant-sidebar h2 {
         color: var(--page-color);
     }

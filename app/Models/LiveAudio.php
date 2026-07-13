@@ -30,4 +30,9 @@ class LiveAudio extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function notulensi()
+    {
+        return $this->hasOne(Notulensi::class);
+    }
 }

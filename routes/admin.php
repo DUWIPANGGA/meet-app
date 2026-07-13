@@ -91,6 +91,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Profile (tetap di layout admin)
     Route::get('profile', [AdminController::class, 'profile'])->name('profile');
     Route::put('profile', [AdminController::class, 'updateProfile'])->name('profile.update');
+    Route::delete('profile/photo', [AdminController::class, 'deletePhoto'])->name('profile.deletePhoto');
     Route::put('profile/password', [AdminController::class, 'updatePassword'])->name('profile.password');
+    Route::delete('profile', [AdminController::class, 'destroy'])->name('profile.destroy');
 
 });

@@ -49,6 +49,15 @@
                     Ubah Password
                 </div>
             </button>
+            <button @click="tab = 'delete'"
+                    class="px-4 py-3.5 text-sm font-medium border-b-2 transition -mb-px hidden"
+                    :class="tab === 'delete' ? 'border-red-500 text-red-600' : 'border-transparent'"
+                    :style="tab === 'delete' ? '' : 'color:var(--text-secondary)'">
+                <div class="flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    Hapus Akun
+                </div>
+            </button>
         </div>
 
         {{-- TAB: DATA DIRI --}}
@@ -98,6 +107,18 @@
                     </button>
                 </div>
             </form>
+
+            @if($user->photo)
+            <div class="px-8 pb-5">
+                <form action="{{ route('admin.profile.deletePhoto') }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus foto profil?');">
+                    @csrf @method('DELETE')
+                    <button type="submit" class="inline-flex items-center gap-1.5 text-sm font-medium py-2 px-4 rounded-lg transition text-red-500 hover:bg-red-500/10 border border-red-200 hover:border-red-300">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        Hapus Foto Profil
+                    </button>
+                </form>
+            </div>
+            @endif
         </div>
 
         {{-- TAB: UBAH PASSWORD --}}
@@ -155,6 +176,45 @@
                     <button type="submit" class="btn-primary">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                         Perbarui Password
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        {{-- TAB: HAPUS AKUN --}}
+        <div x-show="tab === 'delete'" style="display:none;" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-1" x-transition:enter-end="opacity-100 translate-y-0">
+
+            <div class="mx-6 mt-5 rounded-xl px-4 py-3 flex items-start gap-3" style="background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.2)">
+                <svg class="w-5 h-5 flex-shrink-0 mt-0.5 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+                <div>
+                    <p class="text-sm font-semibold text-red-600">Peringatan: Tindakan ini tidak dapat dibatalkan</p>
+                    <p class="text-xs mt-1" style="color:var(--text-secondary)">Semua data Anda akan dihapus secara permanen, termasuk riwayat rekaman, notulensi, dan pertemuan yang dibuat.</p>
+                </div>
+            </div>
+
+            <form action="{{ route('admin.profile.destroy') }}" method="POST" class="px-8 py-7 space-y-6"
+                  onsubmit="return confirm('Yakin ingin menghapus akun Anda? Semua data akan dihapus secara permanen.');">
+                @csrf @method('DELETE')
+
+                @if(session('tab') === 'delete' && $errors->has('password'))
+                <div class="flex items-center gap-3 px-4 py-3 rounded-xl surface-card" style="border-color:rgba(239,68,68,0.3);color:#dc2626">
+                    <svg class="w-5 h-5 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    {{ $errors->first('password') }}
+                </div>
+                @endif
+
+                <div>
+                    <label class="block text-sm font-semibold mb-1.5" style="color:var(--text-secondary)">Masukkan Password untuk Konfirmasi <span class="text-red-400">*</span></label>
+                    <input type="password" name="password"
+                           class="w-full px-4 py-2.5 input-theme rounded-xl outline-none text-sm transition @error('password') ring-2 ring-red-400 @enderror"
+                           placeholder="Masukkan password Anda saat ini">
+                    @error('password')<p class="mt-1.5 text-xs text-red-500">{{ $message }}</p>@enderror
+                </div>
+
+                <div class="flex justify-end pt-2">
+                    <button type="submit" class="inline-flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white font-semibold py-2.5 px-6 rounded-xl transition shadow-lg shadow-red-500/20">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        Hapus Akun Saya
                     </button>
                 </div>
             </form>

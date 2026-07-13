@@ -69,6 +69,7 @@ class ProcessLiveAudioJob implements ShouldQueue
 
         // 3. Save as JSON
         $liveAudio->update([
+            'transcript' => $transcriptText,
             'notulensi_teks' => json_encode($summaryResult['structured'], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
         ]);
 

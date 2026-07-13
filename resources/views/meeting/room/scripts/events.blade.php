@@ -58,6 +58,7 @@ if (cameraBtn) {
         if (isCameraOff) {
             cameraBtn.classList.add('text-red-400');
             cameraBtn.classList.remove('text-white');
+            document.body.classList.add('camera-off');
             if (localAvatar) {
                 localAvatar.classList.remove('hidden');
                 if (localAvatarText) localAvatarText.textContent = authName.charAt(0).toUpperCase();
@@ -66,6 +67,7 @@ if (cameraBtn) {
         } else {
             cameraBtn.classList.add('text-white');
             cameraBtn.classList.remove('text-red-400');
+            document.body.classList.remove('camera-off');
             if (localAvatar) localAvatar.classList.add('hidden');
             stopAudioMonitor();
         }

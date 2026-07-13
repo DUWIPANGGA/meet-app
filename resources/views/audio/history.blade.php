@@ -49,10 +49,9 @@
             @foreach ($audios as $audio)
                 @php
                     $notulensi = $audio->notulensi_teks ? json_decode($audio->notulensi_teks, true) : null;
-                    // Hanya valid jika tidak ada key 'error' dari AI
-                    $hasNotulensi = !empty($notulensi) && !isset($notulensi['error']);
-                    // Gunakan key Gemini: "topik_dibahas"
-                    $topik = $hasNotulensi ? ($notulensi['topik_dibahas'] ?? null) : null;
+                    $notulensiModel = $audio->notulensi;
+                    $hasNotulensi = (!empty($notulensi) && !isset($notulensi['error'])) || $notulensiModel;
+                    $topik = $hasNotulensi ? ($notulensi['topik_dibahas'] ?? ($notulensiModel?->structured_summary['topik_dibahas'] ?? null)) : null;
                     $topikText = is_array($topik) && count($topik)
                         ? implode(' · ', array_slice($topik, 0, 2))
                         : ($hasNotulensi ? 'Notulensi siap ditampilkan' : null);
@@ -70,7 +69,7 @@
                             </div>
                         </div>
                         @if($hasNotulensi)
-                            <span class="bg-green-400/30 text-green-100 text-xs font-medium py-1 px-2.5 rounded-full border border-green-300/40">✓ Gemini Selesai</span>
+                            <span class="bg-green-400/30 text-green-100 text-xs font-medium py-1 px-2.5 rounded-full border border-green-300/40">✓ Selesai</span>
                         @elseif(!empty($notulensi) && isset($notulensi['error']))
                             <span class="bg-red-400/30 text-red-100 text-xs font-medium py-1 px-2.5 rounded-full border border-red-300/40">✗ Error AI</span>
                         @else
@@ -97,14 +96,14 @@
                                 <p class="text-xs font-semibold uppercase tracking-wide mb-1 text-violet-600">Topik Dibahas</p>
                                 <p class="text-sm line-clamp-2" style="color:var(--text-secondary)">{{ $topikText }}</p>
                             </div>
-                            @elseif(!empty($notulensi) && isset($notulensi['error']))
+                            @elseif(!empty($notulensi) && isset($notulensi['error']) && !$notulensiModel)
                             <div class="mt-3 rounded-lg p-3 border" style="background:rgba(239,68,68,0.05);border-color:rgba(239,68,68,0.15)">
                                 <p class="text-xs font-semibold text-red-600 mb-1">Gemini AI Error</p>
                                 <p class="text-xs" style="color:var(--text-secondary)">{{ $notulensi['error'] }}</p>
                             </div>
                             @elseif(!$hasNotulensi)
                             <div class="mt-3 rounded-lg p-3 border" style="background:rgba(234,179,8,0.05);border-color:rgba(234,179,8,0.15)">
-                                <p class="text-xs" style="color:var(--text-secondary)">Gemini AI sedang menganalisis rekaman Anda...</p>
+                                <p class="text-xs" style="color:var(--text-secondary)">AI sedang menganalisis rekaman Anda...</p>
                             </div>
                             @endif
                         </div>

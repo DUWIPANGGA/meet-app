@@ -54,7 +54,9 @@ Route::middleware(['auth'])->group(function () {
     // ======================== PROFILE (semua user) ========================
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile/photo', [ProfileController::class, 'deletePhoto'])->name('profile.deletePhoto');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // ======================== JOIN MEETING ========================
     Route::middleware('user.permission:JoinMeeting')->group(function () {

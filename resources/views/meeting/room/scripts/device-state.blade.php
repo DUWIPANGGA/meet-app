@@ -37,6 +37,7 @@ function applyDeviceState() {
         cameraBtn.classList.toggle('text-white', !isCameraOff);
         toggleCamIcons(isCameraOff);
     }
+    document.body.classList.toggle('camera-off', isCameraOff);
     if (localAvatar) localAvatar.classList.toggle('hidden', !isCameraOff);
     if (localAvatarText && isCameraOff) localAvatarText.textContent = authName.charAt(0).toUpperCase();
 }
