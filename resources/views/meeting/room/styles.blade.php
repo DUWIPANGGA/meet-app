@@ -755,6 +755,34 @@
             flex: 1 !important;
             min-height: 0 !important;
             max-height: 25vh !important;
+            display: flex !important;
+            flex-direction: row !important;
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+            gap: 4px !important;
+            padding: 0 4px !important;
+        }
+
+        #videoGridWrapper:has(#screenShareContainer:not(.hidden)) #videoGridMain .video-card {
+            min-width: 120px !important;
+            max-width: 160px !important;
+            flex-shrink: 0 !important;
+            height: 100% !important;
+            margin: 0 !important;
+        }
+
+        #videoGridWrapper:has(#screenShareContainer:not(.hidden)) #remoteVideos {
+            display: flex !important;
+            flex-direction: row !important;
+            gap: 4px !important;
+        }
+
+        #videoGridWrapper:has(#screenShareContainer:not(.hidden)) #remoteVideos .video-card {
+            min-width: 120px !important;
+            max-width: 160px !important;
+            flex-shrink: 0 !important;
+            height: 100% !important;
+            margin: 0 !important;
         }
 
         #videoGridMain .video-card {
