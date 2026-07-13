@@ -455,6 +455,15 @@
                         </svg>
                         Agenda Rapat
                     </a>
+                    <a href="{{ route('meeting.riwayat') }}"
+                        class="nav-link flex items-center gap-3 font-medium py-2.5 px-4 mb-0.5 transition {{ request()->routeIs('meeting.riwayat') ? 'active' : '' }}">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Riwayat Rapat
+                    </a>
                 @endcan
                 @can('manage_meeting_recording')
                     <a href="{{ route('video.index') }}"

@@ -112,6 +112,10 @@ Route::middleware(['auth'])->group(function () {
             ->name('meeting.agenda');
     });
 
+    // ======================== RIWAYAT RAPAT ========================
+    Route::get('/riwayat', [MeetingController::class, 'riwayat'])
+        ->name('meeting.riwayat');
+
     // ======================== LIVE TRANSCRIPTION & AI NOTULEN ========================
     Route::middleware('user.permission:UseLiveTranscription')->group(function () {
         Route::post('/meeting/{meeting}/save-live-transcript', [MeetingController::class, 'saveLiveTranscript'])

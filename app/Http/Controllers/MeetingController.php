@@ -33,6 +33,28 @@ class MeetingController extends Controller
         return view('meeting.agenda', compact('meetings'));
     }
 
+    public function riwayat()
+    {
+        $userId = auth()->id();
+
+        $meetings = Meeting::with(['transkrip', 'notulensi', 'creator', 'participants'])
+            ->where(function ($q) use ($userId) {
+                $q->where('dibuat_oleh', $userId)
+                    ->orWhereHas('participants', function ($pq) use ($userId) {
+                        $pq->where('user_id', $userId);
+                    });
+            })
+            ->where(function ($q) {
+                $q->whereHas('transkrip')
+                    ->orWhereHas('notulensi')
+                    ->orWhereHas('rekamanAudio');
+            })
+            ->latest()
+            ->paginate(20);
+
+        return view('meeting.riwayat', compact('meetings'));
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
