@@ -36,7 +36,15 @@ class MeetingController extends Controller
 
     public function riwayat()
     {
+        $userId = auth()->id();
+
         $meetings = Meeting::with(['transkrip', 'notulensi', 'creator', 'participants'])
+            ->where(function ($q) use ($userId) {
+                $q->where('dibuat_oleh', $userId)
+                    ->orWhereHas('participants', function ($pq) use ($userId) {
+                        $pq->where('user_id', $userId);
+                    });
+            })
             ->where(function ($q) {
                 $q->whereHas('transkrip')
                     ->orWhereHas('notulensi')
@@ -46,6 +54,7 @@ class MeetingController extends Controller
             ->paginate(15);
 
         $liveAudios = LiveAudio::with('notulensi')
+            ->where('user_id', $userId)
             ->where(function ($q) {
                 $q->whereNotNull('transcript')
                     ->orWhereNotNull('notulensi_teks');
