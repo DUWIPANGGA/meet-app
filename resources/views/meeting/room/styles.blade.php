@@ -919,7 +919,6 @@
             height: 18px !important;
         }
 
-        #sharePopup,
         #recordingPopup,
         #aiLoadingOverlay {
             width: 260px !important;

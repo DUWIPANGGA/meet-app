@@ -6,19 +6,6 @@ const shareBtn = document.getElementById('shareBtn');
 const sharePopup = document.getElementById('sharePopup');
 if (shareBtn && sharePopup) {
     shareBtn.addEventListener('click', () => {
-        if (window.innerWidth >= 768) {
-            sharePopup.style.position = '';
-            sharePopup.style.bottom = '';
-            sharePopup.style.left = '';
-            sharePopup.style.transform = '';
-            sharePopup.style.zIndex = '';
-        } else {
-            sharePopup.style.position = 'fixed';
-            sharePopup.style.bottom = '80px';
-            sharePopup.style.left = '50%';
-            sharePopup.style.transform = 'translateX(-50%)';
-            sharePopup.style.zIndex = '200';
-        }
         sharePopup.classList.toggle('hidden');
         setTimeout(() => {
             sharePopup.classList.toggle('opacity-0');
