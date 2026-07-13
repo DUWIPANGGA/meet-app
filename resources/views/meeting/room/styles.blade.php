@@ -742,6 +742,21 @@
             max-height: none !important;
         }
 
+        #videoGridWrapper:has(#screenShareContainer:not(.hidden)) {
+            flex-direction: column !important;
+        }
+
+        #videoGridWrapper:has(#screenShareContainer:not(.hidden)) #screenShareContainer {
+            flex: 3 !important;
+            min-height: 0 !important;
+        }
+
+        #videoGridWrapper:has(#screenShareContainer:not(.hidden)) #videoGridMain {
+            flex: 1 !important;
+            min-height: 0 !important;
+            max-height: 25vh !important;
+        }
+
         #videoGridMain .video-card {
             border-radius: 12px !important;
         }
