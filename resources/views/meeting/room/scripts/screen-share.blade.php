@@ -20,8 +20,8 @@ async function toggleScreenShare() {
         await stopScreenShare();
         return;
     }
-    if (!navigator.mediaDevices?.getDisplayMedia) {
-        alert('Screen share tidak didukung di browser ini. Gunakan Chrome/Edge atau pastikan akses via HTTPS.');
+    if (!room || !room.localParticipant) {
+        alert('Belum terhubung ke meeting.');
         return;
     }
     if (isOtherSharing()) {
@@ -56,9 +56,14 @@ async function toggleScreenShare() {
         }
     } catch (e) {
         console.warn('Screen share failed:', e);
-        const msg = e.name === 'NotAllowedError'
-            ? 'Izin screen share ditolak atau dibatalkan.'
-            : 'Screen share gagal: ' + (e.message || e.name);
+        let msg = 'Screen share gagal.';
+        if (e.name === 'NotAllowedError') {
+            msg = 'Izin screen share ditolak atau dibatalkan.';
+        } else if (e.name === 'NotSupportedError' || e.message?.includes('not supported')) {
+            msg = 'Browser ini tidak mendukung screen share.\nGunakan Chrome/Edge terbaru di PC atau Android.';
+        } else {
+            msg = 'Screen share gagal: ' + (e.message || e.name || 'Unknown error');
+        }
         alert(msg);
     }
 }
