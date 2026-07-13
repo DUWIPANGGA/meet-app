@@ -21,7 +21,7 @@ class CheckUserPermission
             if ($request->expectsJson()) {
                 return $next($request);
             }
-            $allowedPaths = ['meeting/', 'meeting/*', 'audio-notulensi/', 'audio-notulensi/*', 'join', 'profile', 'riwayat'];
+            $allowedPaths = ['meeting/', 'meeting/*', 'audio-notulensi/', 'audio-notulensi/*', 'join', 'profile'];
             $path = $request->path();
             foreach ($allowedPaths as $allowed) {
                 $pattern = '/^' . str_replace('\*', '.*', preg_quote($allowed, '/')) . '/';
