@@ -217,16 +217,16 @@
                     <!-- User Picker (jika pilih_user) -->
                     <div x-show="aksesMode === 'pilih_user'" style="display: none;" x-cloak>
                         <label class="block text-sm font-semibold mb-1.5" style="color:var(--text-secondary)">Pilih Pengguna</label>
-                        <div class="relative">
+                        <div class="relative" @click.outside="showUserSearch = false">
                             <input type="text" placeholder="Ketik nama untuk mencari..."
                                 x-model="userSearch"
-                                @input.debounce.300ms="if(userSearch.length >= 2) { fetch('/api/users?search=' + userSearch).then(r => r.json()).then(d => searchResults = d) } else { searchResults = [] }"
+                                @input.debounce.300ms="if(userSearch.length >= 2) { fetch('/api/users?search=' + userSearch).then(r => r.json()).then(d => { searchResults = d; showUserSearch = true }) } else { searchResults = []; showUserSearch = false }"
                                 @focus="if(userSearch.length >= 2 && searchResults.length > 0) showUserSearch = true"
                                 class="w-full px-4 py-2.5 input-theme rounded-xl outline-none transition text-sm">
-                            <div x-show="showUserSearch && searchResults.length > 0" @click.away="showUserSearch = false"
+                            <div x-show="showUserSearch && searchResults.length > 0"
                                 class="absolute z-20 mt-1 w-full bg-gray-800 border border-gray-700 rounded-xl shadow-xl max-h-48 overflow-y-auto">
                                 <template x-for="user in searchResults" :key="user.id">
-                                    <div @click="if(!selectedUsers.find(u => u.id === user.id)) { selectedUsers.push(user); searchResults = searchResults.filter(u => u.id !== user.id); userSearch = ''; showUserSearch = false }"
+                                    <div @mousedown.prevent="if(!selectedUsers.find(u => u.id === user.id)) { selectedUsers.push(user); searchResults = searchResults.filter(u => u.id !== user.id); userSearch = ''; showUserSearch = false }"
                                         class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-700 cursor-pointer transition">
                                         <div class="w-8 h-8 rounded-full bg-violet-600 flex items-center justify-center text-white text-xs font-bold" x-text="user.name.charAt(0).toUpperCase()"></div>
                                         <div>
