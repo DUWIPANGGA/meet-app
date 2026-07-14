@@ -1,12 +1,12 @@
 @extends('layouts.app')
-@section('title', 'Riwayat')
+@section('title', 'Arsip')
 
 @section('content')
 <div class="p-4 sm:p-6 w-full max-w-5xl mx-auto">
     <div class="mb-6">
-        <h1 class="text-2xl sm:text-3xl font-medium tracking-tight" style="color:var(--text-primary)">Riwayat</h1>
+        <h1 class="text-2xl sm:text-3xl font-medium tracking-tight" style="color:var(--text-primary)">Arsip</h1>
         <p class="mt-1 text-sm" style="color:var(--text-secondary)">
-            Semua riwayat rapat, notulensi, dan transkrip yang bisa Anda akses.
+            Semua arsip rapat, notulensi, dan transkrip yang bisa Anda akses.
         </p>
     </div>
 
@@ -19,15 +19,15 @@
     </div>
     @endif
 
-    {{-- ═══════ SECTION: Riwayat Rapat ═══════ --}}
+    {{-- ═══════ SECTION: Arsip Rapat ═══════ --}}
     <div class="mb-8">
         <div class="flex items-center gap-2 mb-4">
             <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:rgba(124,58,237,0.1)">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:#7c3aed">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
                 </svg>
             </div>
-            <h2 class="text-lg font-semibold" style="color:var(--text-primary)">Riwayat Rapat</h2>
+            <h2 class="text-lg font-semibold" style="color:var(--text-primary)">Arsip Rapat</h2>
             <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(124,58,237,0.1);color:#7c3aed">{{ $meetings->total() }}</span>
         </div>
 
@@ -189,7 +189,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                     </svg>
-                    <p class="text-sm" style="color:var(--text-muted)">Belum ada riwayat rapat.</p>
+                    <p class="text-sm" style="color:var(--text-muted)">Belum ada arsip rapat.</p>
                 </div>
             </div>
             @endforelse
@@ -202,7 +202,7 @@
         </div>
     </div>
 
-    {{-- ═══════ SECTION: Riwayat Audio Notulensi ═══════ --}}
+    {{-- ═══════ SECTION: Arsip Audio Notulensi ═══════ --}}
     <div>
         <div class="flex items-center gap-2 mb-4">
             <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:rgba(6,182,212,0.1)">
@@ -210,7 +210,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
                 </svg>
             </div>
-            <h2 class="text-lg font-semibold" style="color:var(--text-primary)">Riwayat Audio Notulensi</h2>
+            <h2 class="text-lg font-semibold" style="color:var(--text-primary)">Arsip Audio Notulensi</h2>
             <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(6,182,212,0.1);color:#06b6d4">{{ $liveAudios->total() }}</span>
         </div>
 
@@ -339,7 +339,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
                     </svg>
-                    <p class="text-sm" style="color:var(--text-muted)">Belum ada riwayat audio notulensi.</p>
+                    <p class="text-sm" style="color:var(--text-muted)">Belum ada arsip audio notulensi.</p>
                 </div>
             </div>
             @endforelse

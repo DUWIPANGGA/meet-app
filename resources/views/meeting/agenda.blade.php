@@ -187,6 +187,69 @@
                     @error('jenis_rapat') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
 
+                <!-- Hak Akses Rapat -->
+                <div>
+                    <label class="block text-sm font-semibold mb-2" style="color:var(--text-secondary)">Hak Akses Rapat</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="akses_meeting" value="semua_orang" x-model="aksesMode" class="peer sr-only">
+                            <div class="rounded-xl border-2 px-4 py-3 text-center hover:border-violet-300 peer-checked:border-violet-500 peer-checked:bg-violet-500/10 transition"
+                                style="border-color:var(--card-border);color:var(--text-secondary)">
+                                <div class="text-lg mb-0.5">👥</div>
+                                <div class="font-semibold text-sm" style="color:var(--text-primary)">Semua Orang</div>
+                                <div class="text-xs mt-0.5" style="color:var(--text-muted)">Bisa gabung pakai kode</div>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="akses_meeting" value="pilih_user" x-model="aksesMode" class="peer sr-only">
+                            <div class="rounded-xl border-2 px-4 py-3 text-center hover:border-violet-300 peer-checked:border-violet-500 peer-checked:bg-violet-500/10 transition"
+                                style="border-color:var(--card-border);color:var(--text-secondary)">
+                                <div class="text-lg mb-0.5">🔒</div>
+                                <div class="font-semibold text-sm" style="color:var(--text-primary)">Undang User</div>
+                                <div class="text-xs mt-0.5" style="color:var(--text-muted)">Pilih siapa yang boleh masuk</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- User Picker (jika pilih_user) -->
+                <div x-show="aksesMode === 'pilih_user'" style="display: none;" x-cloak>
+                    <label class="block text-sm font-semibold mb-1.5" style="color:var(--text-secondary)">Pilih Pengguna</label>
+                    <div class="relative">
+                        <input type="text" placeholder="Ketik nama untuk mencari..."
+                            x-model="userSearch"
+                            @input.debounce.300ms="if(userSearch.length >= 2) { fetch('/api/users?search=' + userSearch).then(r => r.json()).then(d => searchResults = d) } else { searchResults = [] }"
+                            @focus="if(userSearch.length >= 2 && searchResults.length > 0) showUserSearch = true"
+                            class="w-full px-4 py-2.5 input-theme rounded-xl outline-none transition text-sm">
+                        <div x-show="showUserSearch && searchResults.length > 0" @click.away="showUserSearch = false"
+                            class="absolute z-20 mt-1 w-full bg-gray-800 border border-gray-700 rounded-xl shadow-xl max-h-48 overflow-y-auto">
+                            <template x-for="user in searchResults" :key="user.id">
+                                <div @click="if(!selectedUsers.find(u => u.id === user.id)) { selectedUsers.push(user); searchResults = searchResults.filter(u => u.id !== user.id); userSearch = ''; showUserSearch = false }"
+                                    class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-700 cursor-pointer transition">
+                                    <div class="w-8 h-8 rounded-full bg-violet-600 flex items-center justify-center text-white text-xs font-bold" x-text="user.name.charAt(0).toUpperCase()"></div>
+                                    <div>
+                                        <div class="text-sm font-medium text-white" x-text="user.name"></div>
+                                        <div class="text-xs text-gray-400" x-text="user.email"></div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                    <!-- Selected Users -->
+                    <div class="flex flex-wrap gap-2 mt-2">
+                        <template x-for="(user, idx) in selectedUsers" :key="user.id">
+                            <div class="flex items-center gap-1.5 bg-violet-500/15 border border-violet-500/30 text-violet-300 text-xs px-2.5 py-1 rounded-full">
+                                <span x-text="user.name"></span>
+                                <button type="button" @click="selectedUsers.splice(idx, 1)" class="hover:text-white transition">&times;</button>
+                                <input type="hidden" name="akses_user_ids[]" :value="user.id">
+                            </div>
+                        </template>
+                    </div>
+                    <div x-show="selectedUsers.length === 0" class="text-xs mt-2" style="color:var(--text-muted)">
+                        Belum ada pengguna yang dipilih. Ketik nama di atas untuk mencari.
+                    </div>
+                </div>
+
                 <!-- Tanggal & Waktu -->
                 <div class="grid grid-cols-2 gap-3">
                     <div>
@@ -387,6 +450,11 @@
             showEventModal: false,
             showCreateModal: false,
             createJenis: 'online',
+            aksesMode: 'semua_orang',
+            userSearch: '',
+            searchResults: [],
+            selectedUsers: [],
+            showUserSearch: false,
             selectedEvent: {
                 title: '',
                 time: '',

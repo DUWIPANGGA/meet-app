@@ -36,6 +36,9 @@ class MeetingController extends Controller
             'jenis_rapat' => 'nullable|in:Online,Offline',
             'link_meeting' => 'nullable|string|max:255',
             'status_rapat' => 'nullable|string|max:50',
+            'akses_meeting' => 'nullable|in:semua_orang,pilih_user',
+            'akses_user_ids' => 'nullable|array',
+            'akses_user_ids.*' => 'exists:users,id',
         ]);
 
         if (($validated['tipe_rapat'] ?? '') !== 'instan') {
@@ -48,6 +51,7 @@ class MeetingController extends Controller
 
         $isInstant = $validated['tipe_rapat'] === 'instan';
         $tipeRapatDb = $validated['jenis_rapat'];
+        $akses = $validated['akses_meeting'] ?? 'semua_orang';
 
         $meeting = Meeting::create([
             'nama_rapat' => $validated['nama_rapat'],
@@ -58,7 +62,12 @@ class MeetingController extends Controller
             'link_meeting' => $validated['link_meeting'] ?? null,
             'dibuat_oleh' => auth()->id(),
             'status_rapat' => $isInstant ? 'Berlangsung' : ($validated['status_rapat'] ?? 'Menunggu'),
+            'akses_meeting' => $akses,
         ]);
+
+        if ($akses === 'pilih_user' && ! empty($validated['akses_user_ids'])) {
+            $meeting->accessUsers()->sync($validated['akses_user_ids']);
+        }
 
         if ($isInstant) {
             return redirect()->route('meeting.room', $meeting->id);

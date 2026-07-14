@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title', 'Riwayat Meeting')
+@section('title', 'Arsip Meeting')
 
 @push('head')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -8,7 +8,7 @@
 @section('content')
 <div class="page-header flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <div>
-        <h1>Riwayat Meeting</h1>
+        <h1>Arsip Meeting</h1>
         <p>Total {{ $meetings->total() }} meeting dengan notulensi atau transkrip</p>
     </div>
 </div>
@@ -140,7 +140,7 @@
     <div class="card">
         <div class="empty-state">
             <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="width:48px;height:48px"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-            <p>Belum ada riwayat meeting.</p>
+            <p>Belum ada arsip meeting.</p>
         </div>
     </div>
     @endforelse

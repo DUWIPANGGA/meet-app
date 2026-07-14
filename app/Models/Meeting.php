@@ -20,6 +20,7 @@ class Meeting extends Model
         'password_rapat',
         'dibuat_oleh',
         'status_rapat',
+        'akses_meeting',
         'pipeline_status',
         'pipeline_stage',
         'pipeline_error',
@@ -100,6 +101,29 @@ class Meeting extends Model
     public function activeParticipants()
     {
         return $this->participants()->whereNull('left_at');
+    }
+
+    public function accessUsers()
+    {
+        return $this->belongsToMany(User::class, 'meeting_access_users')->withTimestamps();
+    }
+
+    public function isInvitationOnly(): bool
+    {
+        return $this->akses_meeting === 'pilih_user';
+    }
+
+    public function canUserAccess(int $userId): bool
+    {
+        if ((int) $this->dibuat_oleh === $userId) {
+            return true;
+        }
+
+        if ($this->akses_meeting === 'semua_orang') {
+            return true;
+        }
+
+        return $this->accessUsers()->where('user_id', $userId)->exists();
     }
 
     public function getGeneratedLinkMeetingAttribute(): string

@@ -857,9 +857,9 @@
                         class="nav-link {{ request()->routeIs('admin.riwayat-meeting.*') ? 'active' : '' }}">
                         <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"
                             viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
                         </svg>
-                        Riwayat Meeting
+                        Arsip Meeting
                     </a>
 
                 @endcan

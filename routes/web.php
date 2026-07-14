@@ -6,6 +6,7 @@ use App\Http\Controllers\AudioController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Meeting;
 use App\Models\MeetingParticipant;
+use App\Models\User;
 // use Illuminate\Support\Facades\Request;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -57,6 +58,19 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile/photo', [ProfileController::class, 'deletePhoto'])->name('profile.deletePhoto');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // ======================== USER SEARCH (for meeting access) ========================
+    Route::get('/api/users', function (Request $request) {
+        $search = $request->input('search', '');
+        if (strlen($search) < 2) {
+            return response()->json([]);
+        }
+        $users = User::where('name', 'like', "%{$search}%")
+            ->orWhere('email', 'like', "%{$search}%")
+            ->limit(10)
+            ->get(['id', 'name', 'email']);
+        return response()->json($users);
+    })->name('api.users.search');
 
     // ======================== JOIN MEETING ========================
     Route::middleware('user.permission:JoinMeeting')->group(function () {
@@ -112,7 +126,7 @@ Route::middleware(['auth'])->group(function () {
             ->name('meeting.agenda');
     });
 
-    // ======================== RIWAYAT RAPAT ========================
+    // ======================== ARSIP RAPAT ========================
     Route::get('/riwayat', [MeetingController::class, 'riwayat'])
         ->name('meeting.riwayat');
 

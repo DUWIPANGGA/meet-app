@@ -76,6 +76,9 @@ class MeetingController extends Controller
             'waktu' => 'nullable|date_format:H:i',
             'deskripsi_rapat' => 'nullable|string|max:5000',
             'keterangan' => 'nullable|string|max:5000',
+            'akses_meeting' => 'nullable|in:semua_orang,pilih_user',
+            'akses_user_ids' => 'nullable|array',
+            'akses_user_ids.*' => 'exists:users,id',
         ]);
 
         $waktuRapat = $validated['waktu_rapat'] ?? $validated['tipe_rapat'] ?? 'instant';
@@ -90,6 +93,7 @@ class MeetingController extends Controller
             }
         }
         $tipeRapatDb = $jenisRapat === 'online' ? 'Online' : 'Offline';
+        $akses = $validated['akses_meeting'] ?? 'semua_orang';
 
         $meeting = Meeting::create([
             'nama_rapat' => $validated['nama_rapat'],
@@ -99,7 +103,12 @@ class MeetingController extends Controller
             'tipe_rapat' => $tipeRapatDb,
             'dibuat_oleh' => auth()->id(),
             'status_rapat' => $isInstant ? 'Berlangsung' : 'Menunggu',
+            'akses_meeting' => $akses,
         ]);
+
+        if ($akses === 'pilih_user' && ! empty($validated['akses_user_ids'])) {
+            $meeting->accessUsers()->sync($validated['akses_user_ids']);
+        }
 
         if ($isInstant && $jenisRapat === 'online') {
             return redirect()->route('meeting.room', $meeting->id);
@@ -116,6 +125,12 @@ class MeetingController extends Controller
 
         $meeting = Meeting::query()->findOrFail($request->integer('meeting_id'));
         $userId = auth()->id();
+
+        if ($meeting->isInvitationOnly() && ! $meeting->canUserAccess($userId)) {
+            return back()->withErrors([
+                'meeting_id' => 'Anda tidak memiliki akses untuk bergabung ke rapat ini. Hanya pengguna yang diundang yang dapat masuk.',
+            ]);
+        }
 
         if (! $this->enterMeeting($meeting, $userId)) {
             return back()->withErrors([
@@ -449,6 +464,10 @@ class MeetingController extends Controller
             return;
         }
 
+        if ($meeting->accessUsers()->where('user_id', $user->id)->exists()) {
+            return;
+        }
+
         $everJoined = $meeting->participants()
             ->where('user_id', $user->id)
             ->exists();
@@ -458,6 +477,10 @@ class MeetingController extends Controller
 
     private function enterMeeting(Meeting $meeting, int $userId): bool
     {
+        if ($meeting->isInvitationOnly() && ! $meeting->canUserAccess($userId)) {
+            return false;
+        }
+
         $existing = $meeting->participants()
             ->where('user_id', $userId)
             ->first();
