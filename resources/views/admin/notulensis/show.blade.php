@@ -54,22 +54,37 @@
                             @elseif($notulensi->akses_notulensi === 'pilih_user')
                                 Pilih User ({{ $notulensi->accessUsers->count() }} user)
                             @else
-                                Peserta Rapat
+                                Peserta Rapat ({{ $notulensi->meeting->participants->count() }} orang)
                             @endif
                         </p>
                     </div>
                 </div>
-                @if($notulensi->akses_notulensi === 'pilih_user' && $notulensi->accessUsers->count())
-                <div class="flex flex-wrap gap-1.5">
-                    @foreach($notulensi->accessUsers->take(5) as $user)
-                    <div class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(124,58,237,0.1);color:#7c3aed">{{ $user->name }}</div>
-                    @endforeach
-                    @if($notulensi->accessUsers->count() > 5)
-                    <div class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(124,58,237,0.1);color:#7c3aed">+{{ $notulensi->accessUsers->count() - 5 }}</div>
-                    @endif
-                </div>
-                @endif
             </div>
+            @if($notulensi->akses_notulensi === 'pilih_user' && $notulensi->accessUsers->count())
+            <div class="mt-3 pt-3 border-t" style="border-color:var(--card-border)">
+                <p class="text-xs font-medium mb-2" style="color:var(--text-muted)">User yang diizinkan:</p>
+                <div class="flex flex-wrap gap-1.5">
+                    @foreach($notulensi->accessUsers as $user)
+                    <div class="flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full" style="background:rgba(124,58,237,0.1);color:#7c3aed">
+                        <span class="w-5 h-5 rounded-full flex items-center justify-center text-white text-[10px] font-bold" style="background:#7c3aed">{{ strtoupper(substr($user->name, 0, 1)) }}</span>
+                        {{ $user->name }}
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+            @elseif($notulensi->akses_notulensi === 'participants' && $notulensi->meeting->participants->count())
+            <div class="mt-3 pt-3 border-t" style="border-color:var(--card-border)">
+                <p class="text-xs font-medium mb-2" style="color:var(--text-muted)">Peserta rapat:</p>
+                <div class="flex flex-wrap gap-1.5">
+                    @foreach($notulensi->meeting->participants as $p)
+                    <div class="flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full" style="background:rgba(16,185,129,0.1);color:#10b981">
+                        <span class="w-5 h-5 rounded-full flex items-center justify-center text-white text-[10px] font-bold" style="background:#10b981">{{ strtoupper(substr($p->user?->name ?? '?', 0, 1)) }}</span>
+                        {{ $p->user?->name ?? '-' }}
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+            @endif
         </div>
 
         <hr style="border-color:var(--divider)">

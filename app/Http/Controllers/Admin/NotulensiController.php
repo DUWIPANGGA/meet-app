@@ -22,13 +22,13 @@ class NotulensiController extends Controller
 
     public function show(Notulensi $notulensi)
     {
-        $notulensi->load(['meeting', 'liveAudio', 'accessUsers']);
+        $notulensi->load(['meeting.participants.user', 'liveAudio', 'accessUsers']);
         return view('admin.notulensis.show', compact('notulensi'));
     }
 
     public function edit(Notulensi $notulensi)
     {
-        $notulensi->load(['meeting', 'liveAudio']);
+        $notulensi->load(['meeting.participants.user', 'liveAudio', 'accessUsers']);
         return view('admin.notulensis.edit', compact('notulensi'));
     }
 
