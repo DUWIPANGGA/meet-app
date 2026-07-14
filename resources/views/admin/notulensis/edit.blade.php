@@ -38,7 +38,7 @@ $risikoCatatan = old('structured_summary.risiko_catatan', $s['risiko_catatan'] ?
                         @elseif($notulensi->akses_notulensi === 'pilih_user')
                             Pilih User ({{ $notulensi->accessUsers->count() }} user)
                         @else
-                            Peserta Rapat ({{ $notulensi->meeting->participants->count() }} orang)
+                            Peserta Rapat ({{ $notulensi->meeting?->participants?->count() ?? 0 }} orang)
                         @endif
                     </p>
                 </div>
@@ -49,8 +49,7 @@ $risikoCatatan = old('structured_summary.risiko_catatan', $s['risiko_catatan'] ?
                 Ubah Akses
             </button>
         </div>
-        @if($notulensi->akses_notulensi === 'pilih_user' && $notulensi->accessUsers->count())
-        <div class="pt-3 border-t" style="border-color:var(--card-border)">
+        @if($notulensi->akses_notulensi === 'pilih_user' && $notulensi->accessUsers->count())        <div class="pt-3 border-t" style="border-color:var(--card-border)">
             <p class="text-xs font-medium mb-2" style="color:var(--text-muted)">User yang diizinkan:</p>
             <div class="flex flex-wrap gap-1.5">
                 @foreach($notulensi->accessUsers as $user)
@@ -61,11 +60,11 @@ $risikoCatatan = old('structured_summary.risiko_catatan', $s['risiko_catatan'] ?
                 @endforeach
             </div>
         </div>
-        @elseif($notulensi->akses_notulensi === 'participants' && $notulensi->meeting->participants->count())
+        @elseif($notulensi->akses_notulensi === 'participants' && $notulensi->meeting?->participants?->count())
         <div class="pt-3 border-t" style="border-color:var(--card-border)">
             <p class="text-xs font-medium mb-2" style="color:var(--text-muted)">Peserta rapat:</p>
             <div class="flex flex-wrap gap-1.5">
-                @foreach($notulensi->meeting->participants as $p)
+                @foreach($notulensi->meeting?->participants ?? [] as $p)
                 <div class="flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full" style="background:rgba(16,185,129,0.1);color:#10b981">
                     <span class="w-5 h-5 rounded-full flex items-center justify-center text-white text-[10px] font-bold" style="background:#10b981">{{ strtoupper(substr($p->user?->name ?? '?', 0, 1)) }}</span>
                     {{ $p->user?->name ?? '-' }}
