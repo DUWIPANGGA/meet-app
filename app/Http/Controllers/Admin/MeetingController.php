@@ -16,7 +16,7 @@ class MeetingController extends Controller
 
     public function show(Meeting $meeting)
     {
-        $meeting->load(['creator', 'participants.user', 'rekamanAudio', 'notulensi', 'agendas']);
+        $meeting->load(['creator', 'participants.user', 'rekamanAudio', 'notulensi', 'agendas', 'accessUsers']);
         return view('admin.meetings.show', compact('meeting'));
     }
 
@@ -84,6 +84,7 @@ class MeetingController extends Controller
 
     public function edit(Meeting $meeting)
     {
+        $meeting->load('accessUsers');
         return view('admin.meetings.edit', compact('meeting'));
     }
 
@@ -97,6 +98,9 @@ class MeetingController extends Controller
             'jenis_rapat' => 'required|in:Online,Offline',
             'link_meeting' => 'nullable|string|max:255',
             'status_rapat' => 'required|string|max:50',
+            'akses_meeting' => 'nullable|in:semua_orang,pilih_user',
+            'akses_user_ids' => 'nullable|array',
+            'akses_user_ids.*' => 'exists:users,id',
         ]);
 
         $tanggal = $validated['tanggal'];
@@ -108,7 +112,17 @@ class MeetingController extends Controller
         $validated['tipe_rapat'] = $validated['jenis_rapat'];
         unset($validated['jenis_rapat']);
 
+        $akses = $validated['akses_meeting'] ?? $meeting->akses_meeting;
+        $validated['akses_meeting'] = $akses;
+        unset($validated['akses_user_ids']);
+
         $meeting->update($validated);
+
+        if ($akses === 'pilih_user' && isset($request->akses_user_ids)) {
+            $meeting->accessUsers()->sync($request->akses_user_ids);
+        } else {
+            $meeting->accessUsers()->detach();
+        }
 
         return redirect()->route('admin.meetings.index')
             ->with('success', 'Rapat berhasil diperbarui.');

@@ -44,6 +44,26 @@
                     <p class="text-xs font-medium uppercase tracking-wider mb-1" style="color:var(--text-muted)">Status Pipeline</p>
                     <p style="color:var(--text-primary)">{{ $meeting->pipeline_status ?? 'Idle' }}</p>
                 </div>
+                <div>
+                    <p class="text-xs font-medium uppercase tracking-wider mb-1" style="color:var(--text-muted)">Hak Akses</p>
+                    <span class="badge" style="background:{{ $meeting->akses_meeting === 'pilih_user' ? 'rgba(251,191,36,0.1)' : 'rgba(16,185,129,0.1)' }};color:{{ $meeting->akses_meeting === 'pilih_user' ? '#d97706' : '#10b981' }}">{{ $meeting->akses_meeting === 'pilih_user' ? 'Undangan' : 'Semua Orang' }}</span>
+                </div>
+            </div>
+
+            @if($meeting->akses_meeting === 'pilih_user' && $meeting->accessUsers->count())
+            <hr class="my-6" style="border-color:var(--divider)">
+            <div>
+                <p class="text-xs font-semibold uppercase tracking-wider mb-3" style="color:var(--text-muted)">User Diundang ({{ $meeting->accessUsers->count() }})</p>
+                <div class="flex flex-wrap gap-2">
+                    @foreach($meeting->accessUsers as $user)
+                    <div class="flex items-center gap-2 bg-violet-500/10 border border-violet-500/20 text-violet-300 text-sm px-3 py-1.5 rounded-full">
+                        <div class="w-6 h-6 rounded-full bg-violet-600 flex items-center justify-center text-white text-xs font-bold">{{ strtoupper(substr($user->name, 0, 1)) }}</div>
+                        <span>{{ $user->name }}</span>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+            @endif
             </div>
 
             @if($meeting->deskripsi_rapat)
