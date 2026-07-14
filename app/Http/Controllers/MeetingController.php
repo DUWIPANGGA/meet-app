@@ -38,7 +38,7 @@ class MeetingController extends Controller
     {
         $userId = auth()->id();
 
-        $meetings = Meeting::with(['transkrip', 'notulensi', 'creator', 'participants'])
+        $meetings = Meeting::with(['transkrip', 'notulensi.accessUsers', 'creator', 'participants'])
             ->where(function ($q) use ($userId) {
                 $q->where('dibuat_oleh', $userId)
                     ->orWhereHas('participants', function ($pq) use ($userId) {
@@ -425,6 +425,33 @@ class MeetingController extends Controller
         abort_if(! $notulensi, 404, 'Notulensi belum tersedia untuk meeting ini.');
 
         return view('meeting.notulensi', compact('meeting', 'notulensi'));
+    }
+
+    public function updateNotulensiAccess(Request $request, Meeting $meeting)
+    {
+        $notulensi = $meeting->notulensi;
+        abort_if(! $notulensi, 404, 'Notulensi belum tersedia.');
+
+        if ((int) $meeting->dibuat_oleh !== (int) auth()->id()) {
+            abort(403, 'Hanya pembuat meeting yang bisa mengubah akses notulensi.');
+        }
+
+        $validated = $request->validate([
+            'akses_notulensi' => 'required|in:participants,all_users,pilih_user',
+            'akses_user_ids' => 'nullable|array',
+            'akses_user_ids.*' => 'exists:users,id',
+        ]);
+
+        $akses = $validated['akses_notulensi'];
+        $notulensi->update(['akses_notulensi' => $akses]);
+
+        if ($akses === 'pilih_user' && ! empty($validated['akses_user_ids'])) {
+            $notulensi->accessUsers()->sync($validated['akses_user_ids']);
+        } else {
+            $notulensi->accessUsers()->detach();
+        }
+
+        return response()->json(['status' => 'success', 'akses_notulensi' => $akses]);
     }
 
     public function downloadNotulensiPdf(Meeting $meeting)

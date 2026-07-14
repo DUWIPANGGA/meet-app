@@ -19,6 +19,7 @@ class Notulensi extends Model
         'openai_usage',
         'file_pdf',
         'tanggal_generate',
+        'akses_notulensi',
     ];
 
     protected function casts(): array
@@ -43,5 +44,10 @@ class Notulensi extends Model
     public function arsip()
     {
         return $this->hasOne(Arsip::class);
+    }
+
+    public function accessUsers()
+    {
+        return $this->belongsToMany(User::class, 'notulensi_access_users')->withTimestamps();
     }
 }

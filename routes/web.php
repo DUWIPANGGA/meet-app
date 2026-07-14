@@ -155,6 +155,10 @@ Route::middleware(['auth'])->group(function () {
         ->middleware(['user.permission:AccessUserNotulensi', 'throttle:120,1'])
         ->name('meeting.pipeline.status');
 
+    Route::post('/meeting/{meeting}/notulensi-access', [MeetingController::class, 'updateNotulensiAccess'])
+        ->middleware('user.permission:AccessUserNotulensi')
+        ->name('meeting.notulensi-access');
+
     // ======================== AI SUMMARIZE (frontend audio page) ========================
     Route::middleware('user.permission:CreateUserAudio')->group(function () {
         Route::post('/summarize', [\App\Http\Controllers\AiSummarizeController::class, 'summarize'])

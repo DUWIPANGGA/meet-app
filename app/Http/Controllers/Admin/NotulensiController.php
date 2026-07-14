@@ -22,7 +22,7 @@ class NotulensiController extends Controller
 
     public function show(Notulensi $notulensi)
     {
-        $notulensi->load(['meeting', 'liveAudio']);
+        $notulensi->load(['meeting', 'liveAudio', 'accessUsers']);
         return view('admin.notulensis.show', compact('notulensi'));
     }
 
