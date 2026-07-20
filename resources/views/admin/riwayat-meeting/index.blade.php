@@ -8,7 +8,12 @@
 @section('content')
 <div class="page-header flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <div>
-        <h1>Arsip Meeting</h1>
+        <div class="flex items-center gap-3 mb-1">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:#7c3aed;flex-shrink:0">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+            </svg>
+            <h1>Arsip Meeting</h1>
+        </div>
         <p>Total {{ $meetings->total() }} meeting dengan notulensi atau transkrip</p>
     </div>
 </div>

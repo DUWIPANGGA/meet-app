@@ -5,7 +5,12 @@
 <div>
     <div class="page-header flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-            <h1>Meetings</h1>
+            <div class="flex items-center gap-3 mb-1">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:#7c3aed;flex-shrink:0">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                </svg>
+                <h1>Meetings</h1>
+            </div>
             <p>Total {{ $meetings->total() }} meeting terselenggara</p>
         </div>
         <a href="{{ route('admin.meetings.create') }}" class="btn-primary shrink-0">

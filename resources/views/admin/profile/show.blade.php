@@ -4,7 +4,12 @@
 @section('content')
 <div class="max-w-3xl mx-auto" x-data="{ tab: 'profile' }">
     <div class="page-header">
-        <h1>Profil Saya</h1>
+        <div class="flex items-center gap-3 mb-1">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:#7c3aed;flex-shrink:0">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+            </svg>
+            <h1>Profil Saya</h1>
+        </div>
         <p>Kelola informasi akun dan keamanan Anda</p>
     </div>
 

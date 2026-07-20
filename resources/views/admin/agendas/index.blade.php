@@ -173,7 +173,12 @@
 
     <div class="page-header flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-            <h1>Agenda</h1>
+            <div class="flex items-center gap-3 mb-1">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:#7c3aed;flex-shrink:0">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                <h1>Agenda</h1>
+            </div>
             <p>Kalender jadwal rapat dan kegiatan</p>
         </div>
         <button @click="showCreateModal = true" type="button" class="btn-primary">
