@@ -229,7 +229,8 @@ $risikoCatatan = old('structured_summary.risiko_catatan', $s['risiko_catatan'] ?
             x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95"
             x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-200"
             x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
-            class="card w-full max-w-md overflow-hidden">
+            class="card w-full max-w-md"
+             style="max-height:90vh;overflow-y:auto">
             <div class="px-6 py-5 border-b flex items-center justify-between" style="border-color:var(--divider)">
                 <div>
                     <h3 class="text-lg font-semibold" style="color:var(--text-primary)">Bagikan Hasil Notulensi</h3>
@@ -371,7 +372,7 @@ function adminNotulensiShare() {
 
         saveShareAccess() {
             this.shareSaving = true;
-            fetch(`/meeting/${this.shareMeetingId}/notulensi-access`, {
+            fetch(`/admin/notulensis/${this.shareNotulensiId}/access`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

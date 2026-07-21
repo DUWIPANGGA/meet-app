@@ -14,11 +14,16 @@ class RolePermissionSeeder extends Seeder
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         $permissions = [
-            // Old meeting (backward compat)
+            // ⚠️ Old meeting (backward compat) — tidak aktif digunakan di route/middleware.
+            // 'access_user_meeting' → digantikan oleh permission granular di bawah.
+            // 'create_user_meeting' → TIDAK dipakai. Untuk membuat meeting gunakan 'create_meeting'.
+            //     "Create User Meeting" dulu adalah fitur user membuat meeting dari panel user.
+            //     Sekarang semua pembuatan meeting via "Create Meet" (panel user) dikontrol oleh 'create_meeting'.
+            //     Tidak ada perbedaan fungsi — 'create_user_meeting' adalah legacy yg tidak perlu dicentang.
             'access_user_meeting',
             'create_user_meeting',
 
-            // Granular meeting permissions
+            // Granular meeting permissions (aktif digunakan di route & middleware)
             'join_meeting',
             'view_meeting_room',
             'manage_meeting_recording',

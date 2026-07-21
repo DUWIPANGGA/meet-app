@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\RekamanAudio;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -11,7 +12,14 @@ class RekamanAudioController extends Controller
 {
     public function index(Request $request)
     {
-        $query = RekamanAudio::with('meeting')->where('tipe_rekaman', 'audio');
+        $query = RekamanAudio::with('meeting', 'user')->where('tipe_rekaman', 'audio');
+
+        if (!auth()->user()->hasAnyRole(['super_admin', 'admin'])) {
+            $query->where(function ($q) {
+                $q->where('user_id', auth()->id())
+                  ->orWhereHas('meeting', fn ($m) => $m->where('dibuat_oleh', auth()->id()));
+            });
+        }
 
         $rekamans = $query->latest()->paginate(20)->withQueryString();
 
@@ -20,7 +28,14 @@ class RekamanAudioController extends Controller
 
     public function videoIndex(Request $request)
     {
-        $query = RekamanAudio::with('meeting')->where('tipe_rekaman', 'video');
+        $query = RekamanAudio::with('meeting', 'user', 'accessUsers')->where('tipe_rekaman', 'video');
+
+        if (!auth()->user()->hasAnyRole(['super_admin', 'admin'])) {
+            $query->where(function ($q) {
+                $q->where('user_id', auth()->id())
+                  ->orWhereHas('meeting', fn ($m) => $m->where('dibuat_oleh', auth()->id()));
+            });
+        }
 
         $rekamans = $query->latest()->paginate(20)->withQueryString();
 
@@ -82,6 +97,25 @@ class RekamanAudioController extends Controller
         return response()->download($fullPath, $filename, [
             'Content-Type' => $mime,
         ]);
+    }
+
+    public function updateAccess(Request $request, RekamanAudio $rekaman): JsonResponse
+    {
+        $request->validate([
+            'akses_rekaman' => 'required|in:pemilik,semua_orang,pilih_user',
+            'akses_user_ids' => 'nullable|array',
+            'akses_user_ids.*' => 'exists:users,id',
+        ]);
+
+        $rekaman->update(['akses_rekaman' => $request->akses_rekaman]);
+
+        if ($request->akses_rekaman === 'pilih_user' && $request->filled('akses_user_ids')) {
+            $rekaman->accessUsers()->sync($request->akses_user_ids);
+        } else {
+            $rekaman->accessUsers()->sync([]);
+        }
+
+        return response()->json(['message' => 'Akses rekaman berhasil diperbarui.']);
     }
 
     public function destroy(RekamanAudio $rekaman, Request $request)

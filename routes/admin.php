@@ -75,6 +75,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::get('rekaman-video', [RekamanAudioController::class, 'videoIndex'])->name('rekaman-video.index');
         Route::get('rekaman-video/{rekaman}/stream', [RekamanAudioController::class, 'stream'])->name('rekaman-video.stream');
         Route::get('rekaman-video/{rekaman}/download', [RekamanAudioController::class, 'download'])->name('rekaman-video.download');
+        Route::post('rekaman-video/{rekaman}/access', [RekamanAudioController::class, 'updateAccess'])->name('rekaman-video.access');
         Route::delete('rekaman-video/{rekaman}', [RekamanAudioController::class, 'destroy'])->name('rekaman-video.destroy');
     });
 
@@ -85,6 +86,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::get('notulensis/{notulensi}/pdf', [NotulensiController::class, 'downloadPdf'])->name('notulensis.pdf');
         Route::get('notulensis/{notulensi}/edit', [NotulensiController::class, 'edit'])->name('notulensis.edit');
         Route::put('notulensis/{notulensi}', [NotulensiController::class, 'update'])->name('notulensis.update');
+        Route::post('notulensis/{notulensi}/access', [NotulensiController::class, 'updateAccess'])->name('notulensis.access');
         Route::delete('notulensis/{notulensi}', [NotulensiController::class, 'destroy'])->name('notulensis.destroy');
     });
 

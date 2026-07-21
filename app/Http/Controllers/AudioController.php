@@ -81,6 +81,7 @@ class AudioController extends Controller
 
         // Simpan juga ke RekamanAudio agar tampil di admin/rekaman-audio
         RekamanAudio::create([
+            'user_id'        => auth()->id(),
             'meeting_id'     => null,
             'file_audio'     => $path,
             'durasi'          => 'Unknown',
@@ -206,7 +207,7 @@ class AudioController extends Controller
                 'meeting_id'         => null,
                 'ringkasan'          => $decoded['ringkasan'] ?? '-',
                 'structured_summary' => $decoded,
-                'openai_model'       => 'Gemini AI',
+                'openai_model'       => 'DeepSeek AI',
                 'prompt_version'     => '1.0',
                 'tanggal_generate'   => now()->toDateString(),
             ]
@@ -258,6 +259,7 @@ class AudioController extends Controller
 
         // Simpan juga ke RekamanAudio agar tampil di admin/rekaman-audio
         RekamanAudio::create([
+            'user_id'        => auth()->id(),
             'meeting_id'     => null,
             'file_audio'     => $path,
             'durasi'          => 'Unknown',
@@ -278,10 +280,25 @@ class AudioController extends Controller
      */
     public function history()
     {
-        $audios = LiveAudio::where('user_id', auth()->id())
+        $userId = auth()->id();
+
+        $ownAudios = LiveAudio::where('user_id', $userId)
             ->with('notulensi')
             ->orderBy('created_at', 'desc')
             ->get();
+
+        $sharedAudios = LiveAudio::where('user_id', '!=', $userId)
+            ->whereHas('notulensi', function ($q) use ($userId) {
+                $q->where('akses_notulensi', 'all_users')
+                    ->orWhereHas('accessUsers', function ($auq) use ($userId) {
+                        $auq->where('user_id', $userId);
+                    });
+            })
+            ->with('notulensi')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $audios = $ownAudios->concat($sharedAudios)->sortByDesc('created_at');
 
         return view('audio.history', compact('audios'));
     }
@@ -291,10 +308,25 @@ class AudioController extends Controller
      */
     public function show(LiveAudio $liveAudio)
     {
-        if ($liveAudio->user_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
+        $userId = auth()->id();
+
+        if ($liveAudio->user_id !== $userId) {
+            $notulensi = $liveAudio->notulensi;
+            if ($notulensi) {
+                $hasAccess = $notulensi->akses_notulensi === 'all_users'
+                    || $notulensi->accessUsers()->where('user_id', $userId)->exists();
+                if ($hasAccess) {
+                    return $this->renderShow($liveAudio);
+                }
+            }
+            abort(403, 'Unauthorized access.');
         }
 
+        return $this->renderShow($liveAudio);
+    }
+
+    private function renderShow(LiveAudio $liveAudio)
+    {
         $notulensi = null;
         if ($liveAudio->notulensi_teks) {
             $notulensi = json_decode($liveAudio->notulensi_teks, true);
@@ -369,8 +401,19 @@ class AudioController extends Controller
      */
     public function downloadPdf(LiveAudio $liveAudio)
     {
-        if ($liveAudio->user_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
+        $userId = auth()->id();
+
+        if ($liveAudio->user_id !== $userId) {
+            $notulensi = $liveAudio->notulensi;
+            if ($notulensi) {
+                $hasAccess = $notulensi->akses_notulensi === 'all_users'
+                    || $notulensi->accessUsers()->where('user_id', $userId)->exists();
+                if (!$hasAccess) {
+                    abort(403, 'Unauthorized action.');
+                }
+            } else {
+                abort(403, 'Unauthorized action.');
+            }
         }
 
         $notulensi = null;

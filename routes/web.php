@@ -198,7 +198,7 @@ Route::middleware(['auth'])->group(function () {
     })->name('meeting.layout-test');
 
     // ======================== VIDEO REKAMAN LAYAR ========================
-    Route::prefix('videos')->middleware('user.permission:ManageMeetingRecording')->group(function () {
+    Route::prefix('videos')->group(function () {
         Route::get('/', [\App\Http\Controllers\VideoController::class, 'index'])->name('video.index');
         Route::get('/{rekaman}', [\App\Http\Controllers\VideoController::class, 'show'])->name('video.show');
         Route::get('/{rekaman}/stream', [\App\Http\Controllers\VideoController::class, 'stream'])->name('video.stream');

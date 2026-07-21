@@ -110,6 +110,7 @@
                     </div>
 
                     {{-- Card Actions --}}
+                    @php($isOwner = $audio->user_id === auth()->id())
                     <div class="flex items-center gap-2 px-5 py-3" style="border-top:1px solid var(--divider);background:var(--surface-bg)">
                         {{-- View Detail --}}
                         <a href="{{ route('audio.show', $audio->id) }}"
@@ -118,6 +119,7 @@
                             Detail
                         </a>
 
+                        @if($isOwner)
                         {{-- Edit --}}
                         @can('edit_notulensi')
                         @if($hasNotulensi)
@@ -128,16 +130,6 @@
                         </a>
                         @endif
                         @endcan
-
-                        {{-- PDF --}}
-                        @if($hasNotulensi)
-                        <a href="{{ route('audio.pdf', $audio->id) }}"
-                           target="_blank"
-                           class="flex-1 inline-flex items-center justify-center gap-1.5 text-sm font-medium py-2 px-3 rounded-lg transition" style="color:var(--text-secondary)">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--text-muted)"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
-                            PDF
-                        </a>
-                        @endif
 
                         {{-- Delete --}}
                         @can('delete_user_audio')
@@ -150,6 +142,17 @@
                             </button>
                         </form>
                         @endcan
+                        @endif
+
+                        {{-- PDF --}}
+                        @if($hasNotulensi)
+                        <a href="{{ route('audio.pdf', $audio->id) }}"
+                           target="_blank"
+                           class="flex-1 inline-flex items-center justify-center gap-1.5 text-sm font-medium py-2 px-3 rounded-lg transition" style="color:var(--text-secondary)">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--text-muted)"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                            PDF
+                        </a>
+                        @endif
                     </div>
                 </div>
             @endforeach

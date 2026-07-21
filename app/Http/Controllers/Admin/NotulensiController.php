@@ -99,6 +99,25 @@ class NotulensiController extends Controller
             ->with('success', 'Notulensi berhasil diperbarui.');
     }
 
+    public function updateAccess(Request $request, Notulensi $notulensi)
+    {
+        $validated = $request->validate([
+            'akses_notulensi' => 'required|in:participants,all_users,pilih_user',
+            'akses_user_ids' => 'nullable|array',
+            'akses_user_ids.*' => 'exists:users,id',
+        ]);
+
+        $notulensi->update(['akses_notulensi' => $validated['akses_notulensi']]);
+
+        if ($validated['akses_notulensi'] === 'pilih_user' && ! empty($validated['akses_user_ids'])) {
+            $notulensi->accessUsers()->sync($validated['akses_user_ids']);
+        } else {
+            $notulensi->accessUsers()->detach();
+        }
+
+        return response()->json(['status' => 'success', 'akses_notulensi' => $validated['akses_notulensi']]);
+    }
+
     public function destroy(Notulensi $notulensi)
     {
         $notulensi->delete();

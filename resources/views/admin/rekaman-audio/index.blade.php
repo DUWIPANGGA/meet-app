@@ -21,7 +21,7 @@
         </div>
     </div>
 
-    <div class="card overflow-hidden">
+    <div class="card">
         @if($rekamans->count())
         <div class="overflow-x-auto">
         <table>
@@ -89,8 +89,8 @@
              x-transition:leave="transition ease-in duration-200"
              x-transition:leave-start="opacity-100 scale-100"
              x-transition:leave-end="opacity-0 scale-95"
-             class="card w-full max-w-4xl overflow-hidden relative"
-             style="height:650px">
+             class="card w-full max-w-4xl relative"
+             style="max-height:90vh;height:650px;overflow-y:auto">
 
             <!-- Close button -->
             <div class="absolute top-4 right-4 z-20">
@@ -101,7 +101,7 @@
                 </button>
             </div>
 
-            <div x-data="audioRecorder()" x-init="init()" class="w-full h-full relative overflow-hidden" style="color:var(--text-primary);background:transparent">
+            <div x-data="audioRecorder()" x-init="init()" class="w-full h-full relative" style="color:var(--text-primary);background:transparent">
 
                 <!-- Background blobs -->
                 <div class="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full pointer-events-none" style="background:radial-gradient(circle, rgba(139,92,246,0.06) 0%, transparent 70%)"></div>
@@ -229,7 +229,7 @@
                                     <template x-if="step === 2 && stepError"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></template>
                                     <span x-show="step < 2">2</span>
                                 </div>
-                                <p class="text-xs mt-2 font-medium text-center" :class="step === 2 ? 'text-violet-600' : (step > 2 ? 'text-green-600' : '')" style="color:var(--text-muted)">Gemini AI</p>
+                                <p class="text-xs mt-2 font-medium text-center" :class="step === 2 ? 'text-violet-600' : (step > 2 ? 'text-green-600' : '')" style="color:var(--text-muted)">DeepSeek AI</p>
                                 <p class="text-xs" style="color:var(--text-muted)">Notulensi</p>
                             </div>
                             <div class="step-connector mx-2" :class="step > 2 ? 'done' : 'idle'"></div>

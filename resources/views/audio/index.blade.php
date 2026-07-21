@@ -68,7 +68,7 @@
             <p style="color:var(--text-secondary)" class="text-lg">Rekam atau upload audio rapat — AI akan otomatis buat notulensinya.</p>
             <div class="mt-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium border surface-card" style="color:var(--text-secondary);border-color:rgba(139,92,246,0.2)">
                 <svg class="w-3.5 h-3.5 text-violet-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                Whisper → Gemini AI → Tersimpan otomatis
+                Whisper → DeepSeek AI → Tersimpan otomatis
             </div>
         </div>
 
@@ -202,7 +202,7 @@
                         <template x-if="step === 2 && stepError"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></template>
                         <span x-show="step < 2">2</span>
                     </div>
-                    <p class="text-xs mt-2 font-medium text-center" :class="step === 2 ? 'text-violet-600' : (step > 2 ? 'text-green-600' : '')" style="color:var(--text-muted)">Gemini AI</p>
+                    <p class="text-xs mt-2 font-medium text-center" :class="step === 2 ? 'text-violet-600' : (step > 2 ? 'text-green-600' : '')" style="color:var(--text-muted)">DeepSeek AI</p>
                     <p class="text-xs" style="color:var(--text-muted)">Notulensi</p>
                 </div>
 

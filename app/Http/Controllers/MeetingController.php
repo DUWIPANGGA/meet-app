@@ -43,6 +43,15 @@ class MeetingController extends Controller
                 $q->where('dibuat_oleh', $userId)
                     ->orWhereHas('participants', function ($pq) use ($userId) {
                         $pq->where('user_id', $userId);
+                    })
+                    ->orWhere('akses_meeting', 'semua_orang')
+                    ->orWhereHas('notulensi', function ($nq) use ($userId) {
+                        $nq->where(function ($aq) use ($userId) {
+                            $aq->where('akses_notulensi', 'all_users')
+                                ->orWhereHas('accessUsers', function ($auq) use ($userId) {
+                                    $auq->where('user_id', $userId);
+                                });
+                        });
                     });
             })
             ->where(function ($q) {
@@ -62,7 +71,21 @@ class MeetingController extends Controller
             ->latest()
             ->paginate(15, ['*'], 'audio_page');
 
-        return view('meeting.riwayat', compact('meetings', 'liveAudios'));
+        $sharedNotulensis = \App\Models\Notulensi::with('liveAudio')
+            ->whereNotNull('live_audio_id')
+            ->where('live_audio_id', '>', 0)
+            ->where(function ($q) use ($userId) {
+                $q->where('akses_notulensi', 'all_users')
+                    ->orWhereHas('accessUsers', function ($auq) use ($userId) {
+                        $auq->where('user_id', $userId);
+                    });
+            })
+            ->whereDoesntHave('liveAudio', function ($lq) use ($userId) {
+                $lq->where('user_id', $userId);
+            })
+            ->get();
+
+        return view('meeting.riwayat', compact('meetings', 'liveAudios', 'sharedNotulensis'));
     }
 
     public function store(Request $request)
@@ -499,7 +522,21 @@ class MeetingController extends Controller
             ->where('user_id', $user->id)
             ->exists();
 
-        abort_unless($everJoined, 403, 'Anda tidak memiliki akses dokumen meeting ini.');
+        if ($everJoined) {
+            return;
+        }
+
+        $notulensi = $meeting->notulensi;
+        if ($notulensi) {
+            if ($notulensi->akses_notulensi === 'all_users') {
+                return;
+            }
+            if ($notulensi->accessUsers()->where('user_id', $user->id)->exists()) {
+                return;
+            }
+        }
+
+        abort(403, 'Anda tidak memiliki akses dokumen meeting ini.');
     }
 
     private function enterMeeting(Meeting $meeting, int $userId): bool

@@ -67,6 +67,7 @@
                             </p>
                         </div>
                     </div>
+                    @php($isOwner = $m->dibuat_oleh === auth()->id())
                     <div class="flex items-center gap-1.5 shrink-0 flex-wrap justify-end">
                         @if($not)
                         <a href="{{ route('meeting.notulensi.show', $m) }}"
@@ -90,7 +91,7 @@
                             PDF
                         </a>
                         @endif
-                        @if($not)
+                        @if($not && $isOwner)
                         <button @click="openShareModal({{ $m->id }}, {{ $not->id }}, '{{ addslashes($m->nama_rapat) }}', '{{ $not->akses_notulensi }}', {{ Js::from($not->accessUsers->pluck('id')) }})"
                             class="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg transition hover:opacity-80"
                             style="background:rgba(251,191,36,0.1);color:#d97706">
@@ -366,6 +367,92 @@
             @endif
         </div>
     </div>
+
+    {{-- ═══════ SECTION: Notulensi Audio yang Dibagikan ═══════ --}}
+    @if($sharedNotulensis->count())
+    <div class="mt-6">
+        <div class="flex items-center gap-2 mb-4">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:rgba(124,58,237,0.1)">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:#7c3aed">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+                </svg>
+            </div>
+            <h2 class="text-lg font-semibold" style="color:var(--text-primary)">Notulensi Audio yang Dibagikan</h2>
+            <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(124,58,237,0.1);color:#7c3aed">{{ $sharedNotulensis->count() }}</span>
+        </div>
+
+        <div class="space-y-4">
+            @foreach($sharedNotulensis as $not)
+            @php($audio = $not->liveAudio)
+            <div class="page-card overflow-hidden">
+                <div class="flex items-center justify-between gap-4 p-5 border-b" style="border-color:var(--divider);background:var(--surface-bg)">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style="background:rgba(124,58,237,0.1)">
+                            <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:#7c3aed">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
+                            </svg>
+                        </div>
+                        <div class="min-w-0">
+                            <p class="font-semibold truncate" style="color:var(--text-primary)">
+                                Audio Notulensi #{{ $audio->id ?? $not->id }}
+                            </p>
+                            <p class="text-xs" style="color:var(--text-muted)">
+                                Dibagikan kepada Anda
+                                @if($not->created_at) &middot; {{ $not->created_at->translatedFormat('d M Y') }} @endif
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        @if($audio)
+                        <a href="{{ route('audio.show', $audio) }}"
+                            class="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg transition hover:opacity-80"
+                            style="background:rgba(16,185,129,0.1);color:#10b981">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            Lihat
+                        </a>
+                        @endif
+                        @if($not->file_pdf)
+                        <a href="{{ $audio ? route('audio.pdf', $audio) : '#' }}" target="_blank"
+                            class="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg transition hover:opacity-80"
+                            style="background:rgba(59,130,246,0.1);color:#3b82f6">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            PDF
+                        </a>
+                        @endif
+                    </div>
+                </div>
+                @if($not->ringkasan)
+                <div class="px-5 py-4" x-data="{ expanded: false }">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--text-muted)">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            <span class="text-sm font-medium" style="color:var(--text-secondary)">Ringkasan</span>
+                        </div>
+                        @if(strlen($not->ringkasan) > 500)
+                        <button @click="expanded = !expanded" class="text-xs font-medium transition hover:opacity-70" style="color:#7c3aed">
+                            <span x-show="!expanded">Lihat Lengkap</span>
+                            <span x-show="expanded">Sembunyikan</span>
+                        </button>
+                        @endif
+                    </div>
+                    <div class="text-sm leading-relaxed whitespace-pre-line" style="color:var(--text-secondary);line-height:1.8"
+                        :class="expanded ? '' : 'line-clamp-6'"
+                        x-bind:style="expanded ? '' : 'display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;overflow:hidden'">
+                        {{ $not->ringkasan }}
+                    </div>
+                </div>
+                @endif
+            </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
 
     <!-- Share Modal -->
     <div x-show="showShareModal" style="display: none;"

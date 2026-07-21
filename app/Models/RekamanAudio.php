@@ -12,6 +12,7 @@ class RekamanAudio extends Model
     protected $table = 'rekaman_audio';
 
     protected $fillable = [
+        'user_id',
         'meeting_id',
         'file_audio',
         'raw_recording_path',
@@ -24,6 +25,7 @@ class RekamanAudio extends Model
         'durasi',
         'tanggal_upload',
         'tipe_rekaman',
+        'akses_rekaman',
     ];
 
     protected function casts(): array
@@ -36,5 +38,15 @@ class RekamanAudio extends Model
     public function meeting()
     {
         return $this->belongsTo(Meeting::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function accessUsers()
+    {
+        return $this->belongsToMany(User::class, 'rekaman_audio_access_users')->withTimestamps();
     }
 }

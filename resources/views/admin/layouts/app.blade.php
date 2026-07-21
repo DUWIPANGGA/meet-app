@@ -849,7 +849,11 @@
             @endcanany
 
             {{-- PENGARSIPAN --}}
-            @canany(['admin_access_arsips', 'admin_access_rekaman_audio'])
+            @php
+                $showPengarsipan = auth()->user()->can('admin_access_arsips')
+                    || auth()->user()->can('admin_access_rekaman_audio');
+            @endphp
+            @if ($showPengarsipan)
                 <div class="sidebar-section-label">Pengarsipan</div>
 
                 @can('admin_access_arsips')
@@ -861,11 +865,9 @@
                         </svg>
                         Arsip Meeting
                     </a>
-
                 @endcan
-            @endcanany
 
-            @can('admin_access_rekaman_audio')
+                @can('admin_access_rekaman_audio')
                     <a href="{{ route('admin.rekaman-audio.index') }}"
                         class="nav-link {{ request()->routeIs('admin.rekaman-audio.*') ? 'active' : '' }}">
                         <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"
@@ -885,6 +887,7 @@
                         Rekaman Video
                     </a>
                 @endcan
+            @endif
 
                 @can('admin_access_meetings')
                     <a href="{{ route('admin.notulensis.index') }}"
